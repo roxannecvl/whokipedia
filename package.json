@@ -6,11 +6,9 @@
     "dev": "nuxi dev",
     "start": "nuxi preview"
   },
-  "devDependencies": {
-    "@nuxt/examples-ui": "latest",
-    "nuxt": "^3.8.1"
-  },
   "dependencies": {
-    "@nuxt/ui": "^2.14.2"
+    "@iconify-json/simple-icons": "^1.1.95",
+    "@nuxt/ui": "^2.14.2",
+    "nuxt": "^3.10.3"
   }
 }
