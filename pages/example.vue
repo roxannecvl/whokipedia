@@ -4,6 +4,11 @@
 
 import MyComponent
   from "~/views/MyComponent";
+import InfoboxView
+  from "~/views/infoboxView.vue";
+import {
+  GameModel
+} from "~/model/GameModel";
 
 const Welcome = () =>
     <span>Welcome </span>
@@ -27,16 +32,26 @@ const InlineComponent = () => (
 </script>
 
 <template>
-  <InlineComponent/>
-  <MyComponent
-      message="Average between 1 and 2 is : "
-      :n1=1
-      :n2=2
-  />
-  <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-    <ULink
-        to="/">
-      Go to home
-    </ULink>
+  <div class="flex justify-between">
+    <div>
+      <InlineComponent/>
+      <MyComponent
+          message="Average between 1 and 2 is : "
+          :n1=1
+          :n2=2
+      />
+      <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+        <ULink
+            to="/">
+          Go to home
+        </ULink>
+      </div>
+    </div>
+    <div class="w-60 ">
+      <InfoboxView
+          :model="new GameModel('Albert Einstein', 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Albert_Einstein_Head.jpg', 1879)"
+      />
+    </div>
   </div>
+
 </template>
