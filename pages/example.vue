@@ -3,7 +3,7 @@
     lang="tsx">
 
 import MyComponent
-  from "~/views/MyComponent";
+  from "~/views/MyComponent.vue";
 import InfoboxView
   from "~/views/infoboxView.vue";
 import {
