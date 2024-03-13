@@ -1,6 +1,8 @@
 export default defineNuxtConfig({
-    extends: [
-        '@nuxt/examples-ui'
+    modules: [
+        '@nuxt/ui',
     ],
-    modules: ['@nuxt/ui']
+    ui: {
+        icons: ['simple-icons']
+    }
 })
