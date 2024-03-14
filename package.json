@@ -7,8 +7,14 @@
     "start": "nuxi preview"
   },
   "dependencies": {
+    "@firebase/app-types": "^0.9.0",
     "@iconify-json/simple-icons": "^1.1.95",
     "@nuxt/ui": "^2.14.2",
-    "nuxt": "^3.10.3"
+    "firebase": "^10.8.1",
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.8.0",
+    "nuxt": "^3.10.3",
+    "nuxt-vuefire": "^1.0.2",
+    "vuefire": "^3.1.23"
   }
 }
