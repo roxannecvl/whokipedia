@@ -20,6 +20,8 @@ export class GameModel {
     private _curGuess : string = '';
     private _prevGuesses : string[] = [];
     private _promiseState: any = {};
+    private _end: boolean = false;
+    private _win: boolean = false;
 
     /**
      * Model for the game
@@ -60,8 +62,10 @@ export class GameModel {
             this._curHintLevel ++;
             if(this._curHintLevel == 2){
                 this._blur = 2;
-            }else{
+            }else if(this._curHintLevel == 3){
                 this._blur = 0;
+            }else{ //no more hints available
+                this._end = true;
             }
         }else{
             const rdmHint = levelHintsLeft[Math.floor(Math.random() * listLength)];
@@ -82,6 +86,10 @@ export class GameModel {
             this._prevGuesses.push(newGuess);
             this._curGuess = newGuess;
             this._nbGuesses++;
+            if(this._curGuess == this._name){
+                this._end = true;
+                this._win = true;
+            }
             return true;
         }
     }
@@ -128,7 +136,15 @@ export class GameModel {
     }
 
     get nbGuesses() : number {
-        return this._nbGuesses; 
+        return this._nbGuesses;
+    }
+
+    get end() : boolean {
+        return this._end;
+    }
+
+    get win() : boolean {
+        return this._win;
     }
 
     set blur(value: number) {
