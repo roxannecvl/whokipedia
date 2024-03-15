@@ -36,6 +36,7 @@ async function fetchIntro(pageTitle: string): Promise<string> {
             }
             throw new Error(`Page with title ${pageTitle} was not found.`)
         })
+        .catch(error => console.error('Error fetching introduction of Wikipedia page : ', error))
 }
 
 /**
@@ -74,7 +75,8 @@ async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<stri
                }
            }
            throw new Error(`Image for page with title ${pageTitle} was not found.`)
-   });
+        })
+       .catch(error => console.error('Error fetching image URL of Wikipedia page : ', error))
 }
 
 export { fetchIntro, fetchImageUrl }
