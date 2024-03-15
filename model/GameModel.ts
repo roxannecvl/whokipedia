@@ -127,6 +127,10 @@ export class GameModel {
         return this._curGuess;
     }
 
+    get nbGuesses() : number {
+        return this._nbGuesses; 
+    }
+
     set blur(value: number) {
         if (value < 0 || value > 7) {
             throw new Error("Blur must be between 0 and 7");
