@@ -1,13 +1,10 @@
 <script
     setup
     lang="tsx">
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth'
     
-    import LoginView
-    from "~/views/loginView.vue";
-    import SignupView
-    from "~/views/signUpView.vue";
-
-    import { signIn, signOutUser, signUp } from "~/services/auth";
+    import LoginView from "~/views/loginView.vue";
+    import SignupView from "~/views/signUpView.vue";
 
     const items = [{
       key: 'login',
@@ -23,7 +20,7 @@
     const user = useCurrentUser()
 
     function login(username: string, password: string) {
-      signIn(auth, username, password)
+      signInWithEmailAndPassword(auth, username, password)
       .then(() => {
         console.log('Successfully logged in')
         message.value = 'Successfully logged in'
@@ -37,7 +34,7 @@
     }
 
     function signup(username: string, password: string) {
-      signUp(auth, username, password).then(() => {
+      createUserWithEmailAndPassword(auth, username, password).then(() => {
         console.log('Successfully signed up')
         message.value = 'Successfully signed up'
         isOpen.value = true
@@ -50,7 +47,7 @@
     }
 
     function logout() {
-      signOutUser(auth)
+      signOut(auth)
       .then(() => {
         console.log('Successfully logged out')
         message.value = 'Successfully logged out'
