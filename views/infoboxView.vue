@@ -65,22 +65,22 @@ export default {
         {{ model.name }}
       </div>
       <div class="text-lg">
-        {{model.birth.value.getDate()}} {{model.birth.value.toLocaleString('en-US', { month: 'long' })}} {{model.birth.value.getFullYear()}}
+        {{model.hints.birth.value.getDate()}} {{model.hints.birth.value.toLocaleString('en-US', { month: 'long' })}} {{model.hints.birth.value.getFullYear()}}
       </div>
       <div class="text-lg">
-        {{model.death.revealed ? " " + model.death.value.getDate()  + " "  + model.death.value.toLocaleString('en-US', { month: 'long' }) + " " + model.death.value.getFullYear(): "-"}}
+        {{model.hints.death.revealed ? " " + model.hints.death.value.getDate()  + " "  + model.hints.death.value.toLocaleString('en-US', { month: 'long' }) + " " + model.hints.death.value.getFullYear(): "-"}}
       </div>
       <div class="text-lg">
-        {{model.occupation.revealed ? model.occupation.value: "-"}}
+        {{model.hints.occupation.revealed ? model.hints.occupation.value: "-"}}
       </div>
       <div class="text-lg">
-        {{model.citizenship.revealed ? model.citizenship.value: "-"}}
+        {{model.hints.citizenship.revealed ? model.hints.citizenship.value: "-"}}
       </div>
       <div class="text-lg">
-        {{model.initials.revealed ? model.initials.value: "-"}}
+        {{model.hints.initials.revealed ? model.hints.initials.value: "-"}}
       </div>
       <div class="text-lg">
-        {{model.paragraph1.revealed ? model.paragraph1.value: "-"}}
+        {{model.hints.paragraph1.revealed ? model.hints.paragraph1.value: "-"}}
       </div>
     </div>
   </UCard>

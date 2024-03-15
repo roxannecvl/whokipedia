@@ -1,21 +1,17 @@
 import {resolvePromise} from "./resolvePromise.js";
+import {HintList, Hint} from "~/model/HintList";
+
 
 export class GameModel {
 
     //celebrity information
     private _name: string;
     private _imageUrl: string = '';
-    private _birth: Hint<Date> = new Hint(1, new Date(0,0,0), true);
-    private _death : Hint<Date> = new Hint(1, new Date(0,0,0));
-    private _occupation : Hint<string>= new Hint(1, '');
-    private _citizenship : Hint<string> = new Hint(1, '');
-    private _initials : Hint<string> = new Hint(2, '');
-    private _paragraph1 : Hint<string> = new Hint (2, '');
+    private _hints : HintList = new HintList();
 
     //game information
     private _blur: number = 4;
     private _curHintLevel: number = 1;
-    private _hints: Hint<any>[] = [this._death, this._occupation, this._citizenship, this._initials, this._paragraph1];
     private _nbGuesses = 0;
     private _curGuess : string = '';
     private _prevGuesses : string[] = [];
@@ -30,12 +26,12 @@ export class GameModel {
         this._name = name;
         resolvePromise(this.dummyPromise(), this._promiseState); //TODO: change the promise to a call to the api
         //TODO : initiate hints with parsing instead
-        this._birth.value = new Date(1879,2, 14);
-        this._death.value = new Date(1955,3, 18);
-        this._occupation.value = "Physicist";
-        this._citizenship.value = "Switzerland";
-        this._initials.value = "A. E."
-        this._paragraph1.value = "... was a German-born theoretical physicist who is widely held to be one of the " +
+        this._hints.birth.value = new Date(1879,2, 14);
+        this._hints.death.value = new Date(1955,3, 18);
+        this._hints.occupation.value = "Physicist";
+        this._hints.citizenship.value = "Switzerland";
+        this._hints.initials.value = "A. E."
+        this._hints.paragraph1.value = "... was a German-born theoretical physicist who is widely held to be one of the " +
             "greatest and most influential scientists of all time. Best known for developing the theory of relativity," +
             " ... also made important contributions to quantum mechanics, and was thus a central figure in the revolutionary" +
             " reshaping of the scientific understanding of nature that modern physics accomplished in the first decades of " +
@@ -55,7 +51,7 @@ export class GameModel {
      * that should be revealed
      */
     getNewHint() : void {
-        const levelHintsLeft = this._hints.filter(
+        const levelHintsLeft = this._hints.toList().filter(
             hint => !hint.revealed && hint.level == this._curHintLevel);
         const listLength = levelHintsLeft.length;
         if(listLength == 0){
@@ -103,28 +99,8 @@ export class GameModel {
         return this._imageUrl;
     }
 
-    get birth(): Hint<Date> {
-        return this._birth;
-    }
-
-    get death(): Hint<Date> {
-        return this._death;
-    }
-
-    get occupation(): Hint<string> {
-        return this._occupation;
-    }
-
-    get citizenship(): Hint<string> {
-        return this._citizenship;
-    }
-
-    get initials(): Hint<string> {
-        return this._initials;
-    }
-
-    get paragraph1(): Hint<string> {
-        return this._paragraph1;
+    get hints(): HintList {
+        return this._hints;
     }
 
     get blur(): number {
@@ -156,38 +132,3 @@ export class GameModel {
 }
 
 
-/**
- * this class represents a hint, the value being the core of the hint
- * revealed tells us if the hint has been revealed yet while level gives us
- * the level corresponding to the hint (1 being a small hint and 3 a huge hint)
- */
-export class Hint <T> {
-    private _level : number;
-    private _value : T;
-    private _revealed : boolean;
-
-    constructor(level: number, value : T, revealed : boolean = false ) {
-        this._level = level;
-        this._value = value;
-        this._revealed = revealed;
-    }
-
-    get level() : number {
-        return this._level;
-    }
-    get value(): T {
-        return this._value;
-    }
-
-    get revealed() : boolean {
-        return this._revealed;
-    }
-
-    set value(value : T){
-        this._value = value;
-    }
-
-    reveal(){
-        this._revealed = true;
-    }
-}
