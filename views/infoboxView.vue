@@ -52,6 +52,12 @@ export default {
               icon="i-heroicons-plus-solid"
               color="primary"/>
         </UButtonGroup>
+        <UButtonGroup>
+          <UButton
+              @click="model.getNewHint()"
+              icon="i-heroicons-plus-solid"
+              color="primary"/>
+        </UButtonGroup>
       </div>
     </template>
     <div class="flex flex-col items-center justify-center">
@@ -59,7 +65,22 @@ export default {
         {{ model.name }}
       </div>
       <div class="text-lg">
-        {{ model.birthYear }}
+        {{model.hints.birth.value.getDate()}} {{model.hints.birth.value.toLocaleString('en-US', { month: 'long' })}} {{model.hints.birth.value.getFullYear()}}
+      </div>
+      <div class="text-lg">
+        {{model.hints.death.revealed ? " " + model.hints.death.value.getDate()  + " "  + model.hints.death.value.toLocaleString('en-US', { month: 'long' }) + " " + model.hints.death.value.getFullYear(): "-"}}
+      </div>
+      <div class="text-lg">
+        {{model.hints.occupation.revealed ? model.hints.occupation.value: "-"}}
+      </div>
+      <div class="text-lg">
+        {{model.hints.citizenship.revealed ? model.hints.citizenship.value: "-"}}
+      </div>
+      <div class="text-lg">
+        {{model.hints.initials.revealed ? model.hints.initials.value: "-"}}
+      </div>
+      <div class="text-lg">
+        {{model.hints.paragraph1.revealed ? model.hints.paragraph1.value: "-"}}
       </div>
     </div>
   </UCard>
