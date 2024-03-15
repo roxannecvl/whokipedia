@@ -7,15 +7,18 @@ export class GameModel {
     private _imageUrl: string = '';
     private _birth: Hint<Date> = new Hint(1, new Date(0,0,0), true);
     private _death : Hint<Date> = new Hint(1, new Date(0,0,0));
-    private _occupation : Hint<String>= new Hint(1, '');
-    private _citizenship : Hint<String> = new Hint(1, '');
-    private _initials : Hint<String> = new Hint(2, '');
-    private _paragraph1 : Hint<String> = new Hint (2, '');
+    private _occupation : Hint<string>= new Hint(1, '');
+    private _citizenship : Hint<string> = new Hint(1, '');
+    private _initials : Hint<string> = new Hint(2, '');
+    private _paragraph1 : Hint<string> = new Hint (2, '');
 
     //game information
     private _blur: number = 4;
     private _curHintLevel: number = 1;
     private _hints: Hint<any>[] = [this._death, this._occupation, this._citizenship, this._initials, this._paragraph1];
+    private _nbGuesses = 0;
+    private _curGuess : string = '';
+    private _prevGuesses : string[] = [];
     private _promiseState: any = {};
 
     /**
@@ -34,7 +37,7 @@ export class GameModel {
             "greatest and most influential scientists of all time. Best known for developing the theory of relativity," +
             " ... also made important contributions to quantum mechanics, and was thus a central figure in the revolutionary" +
             " reshaping of the scientific understanding of nature that modern physics accomplished in the first decades of " +
-            "the twentieth centuryy theory..."
+            "the twentieth century theory..."
         this._imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Albert_Einstein_1947.jpg/440px-Albert_Einstein_1947.jpg";
     }
 
@@ -50,9 +53,9 @@ export class GameModel {
      * that should be revealed
      */
     getNewHint() : void {
-        var levelHintsLeft = this._hints.filter(
+        const levelHintsLeft = this._hints.filter(
             hint => !hint.revealed && hint.level == this._curHintLevel);
-        var listLength = levelHintsLeft.length;
+        const listLength = levelHintsLeft.length;
         if(listLength == 0){
             this._curHintLevel ++;
             if(this._curHintLevel == 2){
@@ -61,8 +64,25 @@ export class GameModel {
                 this._blur = 0;
             }
         }else{
-            var rdmHint = levelHintsLeft[Math.floor(Math.random() * listLength)];
+            const rdmHint = levelHintsLeft[Math.floor(Math.random() * listLength)];
             rdmHint.reveal()
+        }
+    }
+
+    /**
+     * This method is used to set a new guess for the user and to increment the number of guesses counter
+     * @param newGuess (the new guess the user wants to enter)
+     * @return boolean, true if the guess was correctly set, false either if the guess has already been played
+     * or the celebrity entered isn't in our database.
+     */
+    makeAGuess(newGuess : string) : boolean {
+        if(this._prevGuesses.includes(newGuess) || false){ //TODO: replace false by "!(ourCelebList.includes(newGuess)"
+            return false;
+        }else {
+            this._prevGuesses.push(newGuess);
+            this._curGuess = newGuess;
+            this._nbGuesses++;
+            return true;
         }
     }
 
@@ -83,24 +103,28 @@ export class GameModel {
         return this._death;
     }
 
-    get occupation(): Hint<String> {
+    get occupation(): Hint<string> {
         return this._occupation;
     }
 
-    get citizenship(): Hint<String> {
+    get citizenship(): Hint<string> {
         return this._citizenship;
     }
 
-    get initials(): Hint<String> {
+    get initials(): Hint<string> {
         return this._initials;
     }
 
-    get paragraph1(): Hint<String> {
+    get paragraph1(): Hint<string> {
         return this._paragraph1;
     }
 
     get blur(): number {
         return this._blur;
+    }
+
+    get curGuess() : string {
+        return this._curGuess;
     }
 
     set blur(value: number) {
@@ -113,7 +137,7 @@ export class GameModel {
 
 
 /**
- * this class reprensents a hint, the value being the core of the hint
+ * this class represents a hint, the value being the core of the hint
  * revealed tells us if the hint has been revealed yet while level gives us
  * the level corresponding to the hint (1 being a small hint and 3 a huge hint)
  */
