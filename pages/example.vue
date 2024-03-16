@@ -49,7 +49,7 @@ const InlineComponent = () => (
     </div>
     <div class="w-60 ">
       <InfoboxView
-          :model="new GameModel('Albert Einstein', 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Albert_Einstein_Head.jpg', 1879)"
+          :model="new GameModel('Albert Einstein')"
       />
     </div>
   </div>
