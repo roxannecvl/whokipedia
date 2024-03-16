@@ -18,7 +18,13 @@
     
     const auth = useFirebaseAuth()!
     const user = useCurrentUser()
-
+    
+    /**
+     * Logs in the user
+     *
+     * @param username - The username used to log in
+     * @param password - The password used to log in
+     */
     function login(username: string, password: string) {
       signInWithEmailAndPassword(auth, username, password)
       .then(() => {
@@ -32,7 +38,13 @@
         isOpen.value = true
       })
     }
-
+    
+    /**
+     * Signs up the user
+     *
+     * @param username - The username used to sign up
+     * @param password - The password used to sign up
+     */
     function signup(username: string, password: string) {
       createUserWithEmailAndPassword(auth, username, password).then(() => {
         console.log('Successfully signed up')
@@ -46,6 +58,9 @@
       })
     }
 
+    /**
+     * Logs out the user
+     */
     function logout() {
       signOut(auth)
       .then(() => {
