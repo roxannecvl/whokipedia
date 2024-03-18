@@ -1,3 +1,5 @@
+import parse from 'infobox-parser'
+
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
 
@@ -7,9 +9,9 @@ const ENDPOINT: string = "/w/api.php?"
  * Uses the MediaWiki Action API.
  * @param pageTitle the title of the Wikipedia page, must be first-capitalized
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
- * @throws Error if no page corresponding to the given title is found
+ * @return string
  */
-async function fetchIntro(pageTitle: string): Promise<string> {
+export async function fetchIntro(pageTitle: string): Promise<string> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -45,9 +47,9 @@ async function fetchIntro(pageTitle: string): Promise<string> {
  * @param pageTitle the title of the Wikipedia page, must be first-capitalized
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
  * @param thumbSize the width in pixels of the wanted thumbnail
- * @throws Error if no page corresponding to the given title is found
+ * @return string
  */
-async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<string> {
+export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<string> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -74,9 +76,39 @@ async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<stri
                    }
                }
            }
-           throw new Error(`Image for page with title ${pageTitle} was not found.`)
+           throw new Error(`Image for epage with title ${pageTitle} was not found.`)
         })
        .catch(error => console.error('Error fetching image URL of Wikipedia page : ', error))
 }
 
-export { fetchIntro, fetchImageUrl }
+/**
+ * Fetch and return the infobox of the given Wikipedia page as an object.
+ * Uses the MediaWiki Action API and the external library 'infobox-parser'.
+ * @param pageTitle the title of the Wikipedia page, must be first-capitalized
+ * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
+ * @return Object
+ */
+export async function fetchInfoBox(pageTitle: string): Promise<Object> {
+    const searchParams: Record<string, string> = {
+        action: "parse",
+        page: pageTitle,
+        format: "json",
+        prop: "wikitext",
+        section: "0",
+        origin: "*"
+    };
+
+    const queryParams: string = new URLSearchParams(searchParams).toString()
+    const url: string = BASE_URL + ENDPOINT + queryParams
+
+    return fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if ('parse' in data && 'wikitext' in data.parse) {
+                const wikitext: string = data.parse.wikitext["*"]
+                return parse(wikitext).general
+            }
+            throw new Error(`Infobox for page ${pageTitle} was not found.`)
+        })
+        .catch(error => console.error(`Error fetching infobox of Wikipedia page : `, error))
+}
