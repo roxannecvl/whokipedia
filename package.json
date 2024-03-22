@@ -16,5 +16,8 @@
     "nuxt": "^3.10.3",
     "nuxt-vuefire": "^1.0.2",
     "vuefire": "^3.1.23"
+    "@types/infobox-parser": "^3.3.4",
+    "infobox-parser": "^3.6.4",
+    "tailwindcss": "^3.4.1"
   }
 }
