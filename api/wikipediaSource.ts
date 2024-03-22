@@ -11,7 +11,7 @@ const ENDPOINT: string = "/w/api.php?"
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
  * @return string
  */
-export async function fetchIntro(pageTitle: string): Promise<string> {
+export async function fetchIntro(pageTitle: string): Promise<any> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -49,7 +49,7 @@ export async function fetchIntro(pageTitle: string): Promise<string> {
  * @param thumbSize the width in pixels of the wanted thumbnail
  * @return string
  */
-export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<string> {
+export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<any> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -88,7 +88,7 @@ export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promi
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
  * @return Object
  */
-export async function fetchInfoBox(pageTitle: string): Promise<Object> {
+export async function fetchInfoBox(pageTitle: string): Promise<any> {
     const searchParams: Record<string, string> = {
         action: "parse",
         page: pageTitle,
