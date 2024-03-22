@@ -1,0 +1,99 @@
+<script
+    setup
+    lang="tsx">
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth'
+    
+    import LoginView from "~/views/loginView.vue";
+    import SignupView from "~/views/signUpView.vue";
+
+    const isOpen = ref(false)
+    const message = ref('')
+    
+    const auth = useFirebaseAuth()!
+    const user = useCurrentUser()
+    
+    /**
+     * Logs in the user
+     *
+     * @param username - The username used to log in
+     * @param password - The password used to log in
+     */
+    function login(username: string, password: string) {
+      signInWithEmailAndPassword(auth, username, password)
+      .then(() => {
+        console.log('Successfully logged in')
+        message.value = 'Successfully logged in'
+        isOpen.value = true
+      })
+      .catch((reason) => {
+        console.error('Failed log in: ', reason)
+        message.value = 'Failed log in: '+ reason
+        isOpen.value = true
+      })
+    }
+    
+    /**
+     * Signs up the user
+     *
+     * @param username - The username used to sign up
+     * @param password - The password used to sign up
+     */
+    function signup(username: string, password: string) {
+      createUserWithEmailAndPassword(auth, username, password).then(() => {
+        console.log('Successfully signed up')
+        message.value = 'Successfully signed up'
+        isOpen.value = true
+      })
+      .catch((reason) => {
+        console.error('Failed sign up: ', reason)
+        message.value = 'Failed sign up: '+reason
+        isOpen.value = true
+      })
+    }
+
+    /**
+     * Logs out the user
+     */
+    function logout() {
+      signOut(auth)
+      .then(() => {
+        console.log('Successfully logged out')
+        message.value = 'Successfully logged out'
+        isOpen.value = true
+      })
+      .catch((reason) => {
+        console.error('Failed log out: ', reason)
+        message.value = 'Failed log out: '+reason
+        isOpen.value = true
+      })
+    }
+
+</script>
+
+<template>
+  <div class="flex justify-center">
+    <div class="w-60 ">
+      <UTabs :items="[
+        { key: 'login', label: 'Log in' },
+        { key: 'signup', label: 'Sign up' }
+        ]">
+        <template #item="{ item }">
+          <div v-if="item.key === 'login'">
+            <LoginView @login-event="login"/>
+          </div>
+          <div v-else-if="item.key === 'signup'">
+            <SignupView @signup-event="signup"/>
+          </div>
+        </template>
+      </UTabs>
+      <UButton v-if="user" :ui="{ rounded: 'rounded-full' }" @click="logout" label="Logout" />
+      <UButton v-else :ui="{ rounded: 'rounded-full' }" disabled label="Logout" />
+    </div>
+  </div>
+
+  <UModal v-model="isOpen">
+    <div class="p-4">
+      <p>{{message}}</p>
+    </div>
+  </UModal>
+</template>

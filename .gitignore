@@ -68,3 +68,6 @@ Temporary Items
 **/test-results/
 **/playwright-report/
 **/playwright/.cache/
+
+# Service account file
+service-account.json

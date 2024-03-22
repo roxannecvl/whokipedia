@@ -1,6 +1,8 @@
 import {resolvePromise} from "./resolvePromise";
 import {HintList, Hint} from "~/model/HintList";
 import {Utils} from "~/utilities/Utils"
+import {fetchIntro} from "~/api/wikipediaSource";
+
 
 
 export class GameModel {
@@ -25,7 +27,7 @@ export class GameModel {
      */
     constructor(name: string) {
         this._name = name;
-        resolvePromise(this.dummyPromise(), this._promiseState); //TODO: change the promise to a call to the api
+        resolvePromise(fetchIntro('Albert_Einstein'), this._promiseState);
         //TODO : initiate hints with parsing instead
         this._hints.birth.value = new Date(1879,2, 14);
         this._hints.death.value = new Date(1955,3, 18);
@@ -38,13 +40,6 @@ export class GameModel {
             " reshaping of the scientific understanding of nature that modern physics accomplished in the first decades of " +
             "the twentieth century theory..."
         this._imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Albert_Einstein_1947.jpg/440px-Albert_Einstein_1947.jpg";
-    }
-
-    //TODO: remove this method, needed only for testing purposes while api promises are not implemented
-    async dummyPromise() : Promise <any> {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        return fetch('https://jsonplaceholder.typicode.com/todos/1')
-            .then(response => response.json());
     }
 
     /**
