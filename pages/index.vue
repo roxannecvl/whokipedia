@@ -3,7 +3,22 @@
   lang="ts">
 
 import SignupLoginPresenter from "~/presenter/signupLoginPresenter.vue"
+
 const isOpen = ref(false)
+
+import { ref } from 'vue';
+import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
+
+const selectedName = ref("Albert_Einstein");
+const intro = ref("");
+const imageUrl = ref("");
+const infoBox = ref("");
+
+const getData = async () => {
+  intro.value = await fetchIntro(selectedName.value);
+  imageUrl.value = await fetchImageUrl(selectedName.value, 100);
+  infoBox.value = await fetchInfoBox(selectedName.value);
+}
 
 </script>
 
@@ -31,19 +46,3 @@ const isOpen = ref(false)
   <img alt="profile picture" :src="imageUrl" v-if="imageUrl" class="m-4"/>
   <UCard class="m-4">{{ infoBox }}</UCard>
 </template>
-
-<script lang="ts" setup>
-import { ref } from 'vue';
-import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
-
-const selectedName = ref("Albert_Einstein");
-const intro = ref("");
-const imageUrl = ref("");
-const infoBox = ref("");
-
-const getData = async () => {
-  intro.value = await fetchIntro(selectedName.value);
-  imageUrl.value = await fetchImageUrl(selectedName.value, 100);
-  infoBox.value = await fetchInfoBox(selectedName.value);
-}
-</script>
