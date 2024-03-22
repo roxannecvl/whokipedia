@@ -40,7 +40,6 @@ watch(selectedName, getData)
       </div>
     </UModal>
   </div>
-  <form @submit.prevent="getData">
   <UInputMenu
       v-model="selectedName"
       :search="getAutocompleteSuggestions"
@@ -49,8 +48,6 @@ watch(selectedName, getData)
       trailing
       by="id"
   />
-    <button type="submit">Get Data</button>
-  </form>
   <UCard class="m-4">{{ intro }}</UCard>
   <img alt="profile picture" :src="imageUrl" v-if="imageUrl" class="m-4"/>
   <UCard class="m-4">{{ infoBox }}</UCard>
