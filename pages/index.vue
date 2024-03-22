@@ -2,9 +2,21 @@
   setup
   lang="ts">
 
-import SignupLoginPresenter from "~/presenter/signupLoginPresenter.vue"
-const isOpen = ref(false)
+import SignupLoginPresenter from "~/presenter/signupLoginPresenter.vue";
+import { ref } from 'vue';
+import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
 
+const isOpen = ref(false)
+const selectedName = ref("Albert_Einstein");
+const intro = ref("");
+const imageUrl = ref("");
+const infoBox = ref("");
+
+const getData = async () => {
+  intro.value = await fetchIntro(selectedName.value);
+  imageUrl.value = await fetchImageUrl(selectedName.value, 100);
+  infoBox.value = await fetchInfoBox(selectedName.value);
+}
 </script>
 
 <template>
@@ -32,18 +44,3 @@ const isOpen = ref(false)
   <UCard class="m-4">{{ infoBox }}</UCard>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
-import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
-
-const selectedName = ref("Albert_Einstein");
-const intro = ref("");
-const imageUrl = ref("");
-const infoBox = ref("");
-
-const getData = async () => {
-  intro.value = await fetchIntro(selectedName.value);
-  imageUrl.value = await fetchImageUrl(selectedName.value, 100);
-  infoBox.value = await fetchInfoBox(selectedName.value);
-}
-</script>
