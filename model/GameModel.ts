@@ -1,5 +1,6 @@
-import {resolvePromise} from "./resolvePromise.js";
+import {resolvePromise} from "./resolvePromise";
 import {HintList, Hint} from "~/model/HintList";
+import {Utils} from "~/utilities/Utils"
 
 
 export class GameModel {
@@ -64,7 +65,7 @@ export class GameModel {
                 this._end = true;
             }
         }else{
-            const rdmHint = levelHintsLeft[Math.floor(Math.random() * listLength)];
+            const rdmHint = Utils.getRandom(levelHintsLeft);
             rdmHint.reveal()
         }
     }
