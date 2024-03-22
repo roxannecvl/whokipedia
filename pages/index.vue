@@ -2,7 +2,7 @@
   setup
   lang="ts">
 
-import LoginPresenter from "~/presenter/userFormPresenter.vue"
+import SignupLoginPresenter from "~/presenter/signupLoginPresenter.vue"
 const isOpen = ref(false)
 
 </script>
@@ -21,7 +21,7 @@ const isOpen = ref(false)
     <UButton label="Sign up / Log in" @click="isOpen = true" />
     <UModal v-model="isOpen">
       <div class="p-4">
-        <LoginPresenter />
+        <SignupLoginPresenter />
       </div>
     </UModal>
   </div>

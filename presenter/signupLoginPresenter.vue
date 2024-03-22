@@ -6,15 +6,8 @@
     import LoginView from "~/views/loginView.vue";
     import SignupView from "~/views/signUpView.vue";
 
-    const items = [{
-      key: 'login',
-      label: 'Log in'
-    }, {
-      key: 'signup',
-      label: 'Sign up'
-    }]
-
     const isOpen = ref(false)
+    const message = ref('')
     
     const auth = useFirebaseAuth()!
     const user = useCurrentUser()
@@ -34,7 +27,7 @@
       })
       .catch((reason) => {
         console.error('Failed log in: ', reason)
-        message.value = 'Failed log in: '+reason
+        message.value = 'Failed log in: '+ reason
         isOpen.value = true
       })
     }
@@ -75,13 +68,15 @@
       })
     }
 
-    const message = ref('')
 </script>
 
 <template>
   <div class="flex justify-center">
     <div class="w-60 ">
-      <UTabs :items="items">
+      <UTabs :items="[
+        { key: 'login', label: 'Log in' },
+        { key: 'signup', label: 'Sign up' }
+        ]">
         <template #item="{ item }">
           <div v-if="item.key === 'login'">
             <LoginView @login-event="login"/>
