@@ -1,7 +1,7 @@
-import {resolvePromise} from "./resolvePromise";
-import {HintList, Hint} from "~/model/HintList";
-import {Utils} from "~/utilities/Utils"
-import {fetchIntro} from "~/api/wikipediaSource";
+import { resolvePromise } from "./resolvePromise";
+import { HintList, Hint } from "~/model/HintList";
+import { Utils } from "~/utilities/Utils"
+import { fetchIntro } from "~/api/wikipediaSource";
 
 
 

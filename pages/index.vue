@@ -8,7 +8,7 @@ const isOpen = ref(false)
 
 import { ref } from 'vue';
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
-import { getAutocompleteSuggestions} from "~/model/CelebrityList";
+import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 
 const selectedName = ref("");
 const intro = ref("");

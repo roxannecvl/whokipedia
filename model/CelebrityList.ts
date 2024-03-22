@@ -1,7 +1,5 @@
 import Fuse from "fuse.js";
 
-
-
 export const celebrities : string[] = [
    "Taylor Swift",
    "Albert Einstein",
@@ -111,17 +109,21 @@ export const celebrities : string[] = [
 
 /**
  * This function takes a string as input, which should be a celebrity name
- * and returns this name in its Wikipedia URL version
- * @param celebrity - the name of the celebrity whose URL we're interested in
+ * and returns this name in its Wikipedia URL version. Might not be needed.
+ * @param celebrity - the name of the celebrity whose URL we're interested in.
  */
 export function toURL(celebrity : string) : string {
    return celebrity.replace(/ /g, "_");
 }
 
 /**
- * This functions takes a string as parameter and returns all celbrities from our list
- * whose name is close to the query
- * @param query - this string will filter the output of our function to return only celebrities close to our input
+ * This functions takes a string as parameter and returns all
+ * celbrities from our list whose name is close to the query.
+ * It uses Fuse.js which is a powerful, lightweight fuzzy-search
+ * library, fuzzy searching is the technique of finding strings
+ * that are approximately equal to a given pattern (our query).
+ * @param query - this string will filter the output of our
+ * function to return only celebrities close to our input.
  */
 export function getAutocompleteSuggestions(query: string): string[] {
 
