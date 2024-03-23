@@ -19,13 +19,15 @@ const isDark = computed({
       <template #header>
         <div class="flex justify-between items-center">
           <div>
-            <UTooltip
-                :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
-              <UButton
-                  :icon="isDark ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'"
-                  @click="isDark = !isDark"
-                  color="white"/>
-            </UTooltip>
+            <ClientOnly>
+              <UTooltip
+                  :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
+                <UButton
+                    :icon="isDark ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'"
+                    @click="isDark = !isDark"
+                    color="white"/>
+              </UTooltip>
+            </ClientOnly>
           </div>
           <div class="flex">
             <UIcon

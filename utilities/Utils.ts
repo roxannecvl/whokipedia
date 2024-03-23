@@ -9,5 +9,16 @@ export class Utils {
         return (x + y) / 2.0;
     }
 
+    /**
+     * Gives you a random element from the list
+     * @param list - a nonempty list
+     * @returns an element from the given list
+     */
+    public static getRandom(list : any[]) :any {
+        if(list.length == 0) return null;
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
     // Add more utility functions here
 }
+
