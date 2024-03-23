@@ -1,5 +1,4 @@
 import parse from 'infobox-parser'
-import {options} from "kolorist";
 
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
@@ -91,11 +90,12 @@ export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promi
  */
 export async function fetchInfoBox(pageTitle: string): Promise<any> {
     const searchParams: Record<string, string> = {
-        action: "parse",
-        page: pageTitle,
+        action: "query",
+        titles: pageTitle,
         format: "json",
-        prop: "wikitext",
-        section: "0",
+        prop: "revisions",
+        rvprop: "content",
+        rvsection: "0",
         origin: "*"
     };
 
@@ -105,9 +105,19 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
     return fetch(url)
         .then(response => response.json())
         .then(data => {
-            if ('parse' in data && 'wikitext' in data.parse) {
-                const wikitext: string = data.parse.wikitext["*"]
-                return parse(wikitext, {simplifyDataValues: false}).general
+            if ('query' in data && 'pages' in data.query) {
+                var pages = data.query.pages
+                var wikitext: string = ""
+                for (const key in pages) {
+                    if (pages.hasOwnProperty(key)) {
+                        wikitext = wikitext.concat(pages[key].revisions[0]["*"])
+                    }
+                }
+                // Find the end of infobox
+                const infoboxEnd = wikitext.toUpperCase().indexOf("}}\n\n");
+                wikitext = wikitext.slice(0, infoboxEnd);
+                console.log(wikitext)
+                return parse(wikitext).general
             }
             throw new Error(`Infobox for page ${pageTitle} was not found.`)
         })

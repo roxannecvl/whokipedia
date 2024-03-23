@@ -4,31 +4,17 @@
  * of the Wikipedia page of the celebrity.
  */
 export class HintList {
-    birth: Hint<Date> ;
-    ageOrDeath : Hint<Date | number> ;
-    occupation : Hint<string> ;
-    citizenship : Hint<string> ;
-    initials : Hint<string> ;
-    paragraph : Hint<string> ;
+
+    list: Hint<any>[] = [];
 
     constructor(
-        birth: Date | undefined ,
-        ageOrDeath: Date | number | undefined,
-        occupation: string | undefined,
-        citizenship: string | undefined,
-        initials: string | undefined,
-        paragraph: string | undefined
+        ...params: Hint<any>[]
     ){
-        this.birth = new Hint(1,  true, birth)
-        this.ageOrDeath = new Hint(1, true, ageOrDeath);
-        this.occupation = new Hint(1, true, occupation);
-        this.citizenship = new Hint(1, true, citizenship);
-        this.initials = new Hint(2, true, initials);
-        this.paragraph = new Hint(2, true, paragraph);
+        this.list = params
     }
 
     toList() : Hint<any>[]{
-        return [this.birth, this.ageOrDeath, this.occupation, this.citizenship, this.initials, this.paragraph] ;
+        return this.list ;
     }
 
 }
