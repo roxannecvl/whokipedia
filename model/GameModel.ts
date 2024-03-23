@@ -1,8 +1,9 @@
-import { resolvePromise } from "~/model/resolvePromise";
-import type { PromiseState } from "~/model/resolvePromise";
-import { HintList } from "~/model/HintList";
-import { fetchIntro, fetchImageUrl } from "~/api/wikipediaSource";
-import { parseHints } from "~/api/wikipediaParser";
+import { resolvePromise } from "~/model/resolvePromise"
+import type { PromiseState } from "~/model/resolvePromise"
+import { HintList } from "~/model/HintList"
+import { fetchIntro, fetchImageUrl } from "~/api/wikipediaSource"
+import { parseHints } from "~/api/wikipediaParser"
+import { Utils } from "~/utilities/Utils"
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -56,7 +57,7 @@ export class GameModel {
                 this._end = true;
             }
         }else{
-            const rdmHint = levelHintsLeft[Math.floor(Math.random() * listLength)];
+            const rdmHint = Utils.getRandom(levelHintsLeft);
             rdmHint.reveal()
         }
     }
