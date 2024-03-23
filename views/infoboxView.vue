@@ -3,8 +3,6 @@
 import { GameModel } from "~/model/GameModel";
 import { reactive } from "vue";
 
-
-
 export default {
   props: {
     model: {
@@ -61,7 +59,7 @@ export default {
       </div>
     </template>
     <div class="flex flex-col items-center justify-center">
-      <div class="text-2xl font-bold">
+      <!-- <div class="text-2xl font-bold">
         {{ model.name }}
       </div>
       <div class="text-lg">
@@ -80,8 +78,8 @@ export default {
         {{model.hints.initials.revealed ? model.hints.initials.value: "-"}}
       </div>
       <div class="text-lg">
-        {{model.hints.paragraph1.revealed ? model.hints.paragraph1.value: "-"}}
-      </div>
+        {{model.hints.paragraph.revealed ? model.hints.paragraph.value: "-"}}
+      </div>-->
     </div>
   </UCard>
 </template>

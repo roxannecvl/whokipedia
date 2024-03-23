@@ -8,6 +8,7 @@ const isOpen = ref(false)
 
 import { ref } from 'vue';
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
+import { parseHints } from "~/api/wikipediaParser";
 
 const selectedName = ref("Albert_Einstein");
 const intro = ref("");
@@ -18,6 +19,8 @@ const getData = async () => {
   intro.value = await fetchIntro(selectedName.value);
   imageUrl.value = await fetchImageUrl(selectedName.value, 100);
   infoBox.value = await fetchInfoBox(selectedName.value);
+  parseHints(infoBox.value)
+  console.log(infoBox.value)
 }
 
 </script>

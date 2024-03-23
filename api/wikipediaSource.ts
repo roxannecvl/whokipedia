@@ -1,4 +1,5 @@
 import parse from 'infobox-parser'
+import {options} from "kolorist";
 
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
@@ -9,7 +10,7 @@ const ENDPOINT: string = "/w/api.php?"
  * Uses the MediaWiki Action API.
  * @param pageTitle the title of the Wikipedia page, must be first-capitalized
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
- * @return string
+ * @return Promise<string> - the introduction of the Wikipedia page as plain text
  */
 export async function fetchIntro(pageTitle: string): Promise<any> {
     const searchParams: Record<string, string> = {
@@ -47,7 +48,7 @@ export async function fetchIntro(pageTitle: string): Promise<any> {
  * @param pageTitle the title of the Wikipedia page, must be first-capitalized
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
  * @param thumbSize the width in pixels of the wanted thumbnail
- * @return string
+ * @return Promise<string> - the URL of the main image of the Wikipedia page
  */
 export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<any> {
     const searchParams: Record<string, string> = {
@@ -86,7 +87,7 @@ export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promi
  * Uses the MediaWiki Action API and the external library 'infobox-parser'.
  * @param pageTitle the title of the Wikipedia page, must be first-capitalized
  * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
- * @return Object
+ * @return Promise<Object> - the infobox as a JSON object
  */
 export async function fetchInfoBox(pageTitle: string): Promise<any> {
     const searchParams: Record<string, string> = {
@@ -106,7 +107,7 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
         .then(data => {
             if ('parse' in data && 'wikitext' in data.parse) {
                 const wikitext: string = data.parse.wikitext["*"]
-                return parse(wikitext).general
+                return parse(wikitext, {simplifyDataValues: false}).general
             }
             throw new Error(`Infobox for page ${pageTitle} was not found.`)
         })

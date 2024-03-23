@@ -1,14 +1,20 @@
-import {resolvePromise} from "./resolvePromise.js";
-import {HintList, Hint} from "~/model/HintList";
-import {fetchIntro} from "~/api/wikipediaSource";
+import { resolvePromise } from "~/model/resolvePromise";
+import type { PromiseState } from "~/model/resolvePromise";
+import { HintList } from "~/model/HintList";
+import { fetchIntro, fetchImageUrl } from "~/api/wikipediaSource";
+import { parseHints } from "~/api/wikipediaParser";
 
-
+/**
+ * This class represents the model of the game. It contains all the information needed to play the game.
+ * These elements are the name of the celebrity, the URL of an image of the celebrity, the hint list,
+ * the blur level, the current hint level,
+ */
 export class GameModel {
 
-    //celebrity information
+    // Celebrity information
     private _name: string;
-    private _imageUrl: string = '';
-    private _hints : HintList = new HintList();
+    private _imageUrl: string ;
+    private _hints : HintList ;
 
     //game information
     private _blur: number = 4;
@@ -16,7 +22,7 @@ export class GameModel {
     private _nbGuesses = 0;
     private _curGuess : string = '';
     private _prevGuesses : string[] = [];
-    private _promiseState: any = {};
+    private _promiseState: PromiseState = { data: null, promise: null, error: null };
     private _end: boolean = false;
     private _win: boolean = false;
 
@@ -25,18 +31,10 @@ export class GameModel {
      */
     constructor(name: string) {
         this._name = name;
-        resolvePromise(fetchIntro('Albert_Einstein'), this._promiseState);
         //TODO : initiate hints with parsing instead
-        this._hints.birth.value = new Date(1879,2, 14);
-        this._hints.death.value = new Date(1955,3, 18);
-        this._hints.occupation.value = "Physicist";
-        this._hints.citizenship.value = "Switzerland";
-        this._hints.initials.value = "A. E."
-        this._hints.paragraph1.value = "... was a German-born theoretical physicist who is widely held to be one of the " +
-            "greatest and most influential scientists of all time. Best known for developing the theory of relativity," +
-            " ... also made important contributions to quantum mechanics, and was thus a central figure in the revolutionary" +
-            " reshaping of the scientific understanding of nature that modern physics accomplished in the first decades of " +
-            "the twentieth century theory..."
+        resolvePromise(fetchIntro('Albert Einstein'), this._promiseState);
+        this._hints = parseHints(this._promiseState);
+        resolvePromise(fetchImageUrl('Albert Einstein', 100), this._promiseState);
         this._imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Albert_Einstein_1947.jpg/440px-Albert_Einstein_1947.jpg";
     }
 
