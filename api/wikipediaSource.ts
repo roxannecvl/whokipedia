@@ -133,19 +133,16 @@ function parseWikitext(wikitext: string): any {
     let deathDate: Date | undefined = undefined
     let citizenship : string | undefined = undefined
     let occupation : string | undefined = undefined
+    let spouses : string[] | undefined = undefined
 
     // Description
     let match = wikitext.match(matchers.description);
     description = match ? match[1] : undefined;
     if(description == undefined) console.log(wikitext);
     else{
-        let occupation_index = description.length -1;
-        while(!(description.charCodeAt(occupation_index) >= 65 && description.charCodeAt(occupation_index) <= 90)) {
-            occupation_index--;
-        }
-        occupation_index += description.substring(occupation_index, description.length).indexOf(" ");
-        occupation = description.substring(occupation_index + 1);
-        citizenship = description.substring(0, occupation_index);
+        let occAndCiti = seperateDescription(description);
+        citizenship = occAndCiti.citizenship;
+        occupation = occAndCiti.occupation;
     }
 
     // Birthdate
@@ -163,18 +160,66 @@ function parseWikitext(wikitext: string): any {
         deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
     }
 
+    //spouses
+    while ((match = matchers.spouses.exec(wikitext)) !== null) {
+        if(spouses == undefined) spouses = [match[1]];
+        else spouses = [...spouses, match[1]];
+    }
+
+
     return {
-        description: description,
-        occupation : occupation,
-        citizenship : citizenship,
         birthDate: birthDate,
         deathDate: deathDate,
         alive: alive,
+        occupation : occupation,
+        citizenship : citizenship,
+        spouses :  spouses,
     }
 }
 
 const matchers = {
     description: /{{short description\|([^(){}]*)(?=[(){}])/i,
     birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
-    deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i
+    deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
+    spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
+}
+
+function seperateDescription(description : string){
+    let occupation_index = description.length -1;
+    while(!(description.charCodeAt(occupation_index) >= 65 && description.charCodeAt(occupation_index) <= 90)) {
+        occupation_index--;
+    }
+    occupation_index += description.substring(occupation_index, description.length).indexOf(" ");
+    let occupation = description.substring(occupation_index + 1);
+    let citizenship = description.substring(0, occupation_index);
+
+    //Handle exceptions
+    if(citizenship.search("President of France") != -1){
+        citizenship = "French";
+        occupation = "politician";
+    }else if(citizenship.search("President of South Africa ") != -1){
+        citizenship = "South African";
+        occupation = "politician";
+    }else if(citizenship.search("Pakistani education activist") != -1){
+        citizenship = "Pakistani";
+        occupation = "education activist";
+    }else if(citizenship.search("the British") != -1 || citizenship.search("the United Kingdom") != -1) {
+        citizenship = "British";
+        occupation = "member of the British royal family";
+    }else if(citizenship.search("of Queen") != -1 || citizenship.search("the Beatles") != -1 ){
+        citizenship = "British";
+        occupation = "musician";
+    }else if(citizenship.search("President of the United States") != -1){
+        citizenship = "American";
+        occupation = "politician";
+    }else if(citizenship.search("Chancellor of Germany") != -1){
+        citizenship = "German";
+        occupation = "politician";
+    }
+
+    return {
+        citizenship : citizenship,
+        occupation: occupation
+    };
+
 }
