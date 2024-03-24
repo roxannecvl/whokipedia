@@ -134,6 +134,7 @@ function parseWikitext(wikitext: string): any {
     let citizenship : string | undefined = undefined
     let occupation : string | undefined = undefined
     let spouses : string[] | undefined = undefined
+    let genres : string [] | undefined = undefined
 
     // Description
     let match = wikitext.match(matchers.description);
@@ -166,6 +167,17 @@ function parseWikitext(wikitext: string): any {
         else spouses = [...spouses, match[1]];
     }
 
+    //genres
+    match = wikitext.match(matchers.genres);
+    if(!match) match = wikitext.match(matchers.genresV2);
+    if (match){
+        let allGenres : string = match[1];
+        while((match = matchers.flatList.exec(allGenres)) !=null){
+            if(genres == undefined) genres = [match[1]];
+            else genres = [...genres, match[1]]
+        }
+    }
+
 
     return {
         birthDate: birthDate,
@@ -174,6 +186,7 @@ function parseWikitext(wikitext: string): any {
         occupation : occupation,
         citizenship : citizenship,
         spouses :  spouses,
+        genres : genres,
     }
 }
 
@@ -182,6 +195,9 @@ const matchers = {
     birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
     deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
     spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
+    genres: /genre\s*=\s*{{flatlist\|((?:.*?\n*)+?)}}/i,
+    genresV2 : /genre\s*=\s*(?:<!--.*?-->)?{{hlist\|((?:.*?\|)*.*?)}}/i,
+    flatList: /\[\[([^|\]]+)(?:\|[^|\]]+)?\]\]/g,
 }
 
 function seperateDescription(description : string){
