@@ -131,10 +131,22 @@ function parseWikitext(wikitext: string): any {
     let description: string | undefined
     let birthDate: Date | undefined = undefined
     let deathDate: Date | undefined = undefined
+    let citizenship : string | undefined = undefined
+    let occupation : string | undefined = undefined
 
     // Description
     let match = wikitext.match(matchers.description);
     description = match ? match[1] : undefined;
+    if(description == undefined) console.log(wikitext);
+    else{
+        let occupation_index = description.length -1;
+        while(!(description.charCodeAt(occupation_index) >= 65 && description.charCodeAt(occupation_index) <= 90)) {
+            occupation_index--;
+        }
+        occupation_index += description.substring(occupation_index, description.length).indexOf(" ");
+        occupation = description.substring(occupation_index + 1);
+        citizenship = description.substring(0, occupation_index);
+    }
 
     // Birthdate
     match = wikitext.match(matchers.birthDate);
@@ -153,9 +165,11 @@ function parseWikitext(wikitext: string): any {
 
     return {
         description: description,
+        occupation : occupation,
+        citizenship : citizenship,
         birthDate: birthDate,
         deathDate: deathDate,
-        alive: alive
+        alive: alive,
     }
 }
 
