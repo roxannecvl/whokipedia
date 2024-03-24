@@ -1,20 +1,32 @@
 import type { UidIdentifier } from "firebase-admin/auth";
 
 export class UserModel {
+    //private fields for the user's statistics
+
+    //name of the user
     private _userName: string = '';
 
+    //current streak of the user
     private _currentStreak: number = 0;
+    //max streak of the user
     private _maxStreak: number = 0;
 
+    //average rank of the user
     private _averageRank: number = 0;
+    //array of ranks of the user
     private _ranks: number[] = [];
 
+    //average number of guesses of the user
     private _averageGuesses: number = 0;
+    //array of number of guesses of the user
     private _guesses: number[] = [];
 
+    //average time taken by the user
     private _averageTime: number = 0;
+    //array of times taken by the user
     private _times: number[] = [];
 
+    //number of times the user has played
     private _timesPlayed: number = 0;
 
     constructor(userName: string) {
