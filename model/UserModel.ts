@@ -1,7 +1,7 @@
 import type { UidIdentifier } from "firebase-admin/auth";
 
 export class UserModel {
-    private _userUid: UidIdentifier = '';
+    private _userName: string = '';
 
     private _currentStreak: number = 0;
     private _maxStreak: number = 0;
@@ -17,22 +17,22 @@ export class UserModel {
 
     private _timesPlayed: number = 0;
 
-    constructor(userUid: UidIdentifier) {
-        this._userUid = userUid;
+    constructor(userName: string) {
+        this._userName = userName;
         this._currentStreak = 12;
         this._maxStreak = 14;
-        this._ranks = [1, 2, 3, 4, 5];
+        this._ranks = [36, 2, 12, 44, 17];
         this._averageRank = this._ranks.reduce((a, b) => a + b, 0) / this._ranks.length;
-        this._guesses = [7, 2, 3, 4, 5];
+        this._guesses = [7, 1, 22, 9, 3];
         this._averageGuesses = this._guesses.reduce((a, b) => a + b, 0) / this._guesses.length;
         this._times = [14, 28, 37, 48, 50];
         this._averageTime = this._times.reduce((a, b) => a + b, 0) / this._times.length;
         this._timesPlayed = 5;
     }
 
-    //getter for userUid
-    get userUid(): UidIdentifier {
-        return this._userUid;
+    //getter for userName
+    get userName(): string {
+        return this._userName;
     }
 
     //getter and setter for currentStreak

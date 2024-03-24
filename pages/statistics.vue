@@ -10,12 +10,12 @@ import {
 import { useCurrentUser } from "vuefire";
 
 const user = useCurrentUser()
-const userModel = user.value ? new UserModel(user.value.uid) : null
+const userModel = user.value?.email ? new UserModel(user.value.email) : undefined
 
 </script>
 
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-around">
     <div>
       <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
         <ULink
@@ -24,8 +24,7 @@ const userModel = user.value ? new UserModel(user.value.uid) : null
         </ULink>
       </div>
     </div>
-        <StatisticsView
-          :userModel
-      />
-    </div>
+      <StatisticsView
+        :userModel />
+  </div>
 </template>
