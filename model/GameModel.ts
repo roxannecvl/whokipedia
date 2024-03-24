@@ -2,7 +2,6 @@ import { resolvePromise } from "~/model/resolvePromise"
 import type { PromiseState } from "~/model/resolvePromise"
 import { HintList } from "~/model/HintList"
 import { fetchIntro, fetchImageUrl } from "~/api/wikipediaSource"
-import { parseHints } from "~/api/wikipediaParser"
 import { Utils } from "~/utilities/Utils"
 
 /**
@@ -32,9 +31,9 @@ export class GameModel {
      */
     constructor(name: string) {
         this._name = name;
+        this._hints = new HintList();
         //TODO : initiate hints with parsing instead
         resolvePromise(fetchIntro('Albert Einstein'), this._promiseState);
-        this._hints = parseHints(this._promiseState);
         resolvePromise(fetchImageUrl('Albert Einstein', 100), this._promiseState);
         this._imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Albert_Einstein_1947.jpg/440px-Albert_Einstein_1947.jpg";
     }

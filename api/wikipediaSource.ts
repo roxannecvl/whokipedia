@@ -1,8 +1,5 @@
-import parse from 'infobox-parser'
-
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
-
 
 /**
  * Fetch and return the introduction as plain text of the given Wikipedia page.
@@ -106,20 +103,66 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
         .then(response => response.json())
         .then(data => {
             if ('query' in data && 'pages' in data.query) {
-                var pages = data.query.pages
-                var wikitext: string = ""
+                let pages = data.query.pages
+                let wikitext: string = ""
                 for (const key in pages) {
                     if (pages.hasOwnProperty(key)) {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                // Find the end of infobox
-                const infoboxEnd = wikitext.toUpperCase().indexOf("}}\n\n");
-                wikitext = wikitext.slice(0, infoboxEnd);
-                console.log(wikitext)
-                return parse(wikitext).general
+                return parseWikitext(wikitext)
             }
             throw new Error(`Infobox for page ${pageTitle} was not found.`)
         })
         .catch(error => console.error(`Error fetching infobox of Wikipedia page : `, error))
+}
+
+/**
+ * Private function to parse the wikitext of the first section of a Wikipedia page.
+ * It returns an object containing all fields of the infobox.
+ * @param wikitext the wikitext of the first section of a Wikipedia page
+ */
+function parseWikitext(wikitext: string): any {
+
+    let wikitextEndIndex: number = wikitext.toUpperCase().indexOf("'''");
+    wikitext = wikitext.slice(0, wikitextEndIndex);
+
+    let alive: boolean | undefined
+    let description: string | undefined
+    let birthDate: Date | undefined = undefined
+    let deathDate: Date | undefined = undefined
+
+    // Description
+    let match = wikitext.match(matchers.description);
+    description = match ? match[1] : undefined;
+
+    // Birthdate
+    match = wikitext.match(matchers.birthDate);
+    if (match) {
+        const [, birthYear, birthMonth, birthDay] = match;
+        birthDate = new Date(parseInt(birthYear), parseInt(birthMonth) - 1, parseInt(birthDay));
+    }
+
+    // Death date
+    match = wikitext.match(matchers.deathDate);
+    if (match) {
+        alive = false;
+        const [, deathYear, deathMonth, deathDay] = match;
+        deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
+    } else {
+        alive = true;
+    }
+
+    return {
+        description: description,
+        birthDate: birthDate,
+        deathDate: deathDate,
+        alive: alive
+    }
+}
+
+const matchers = {
+    description: /{{short description\|([^(){}]*)(?=[(){}])/i,
+    birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
+    deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i
 }

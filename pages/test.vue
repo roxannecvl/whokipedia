@@ -5,7 +5,7 @@
 
 import { ref } from 'vue';
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
-import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import { getAutocompleteSuggestions, celebrities } from "~/model/CelebrityList";
 import SignupLoginPresenter from "~/presenter/signupLoginPresenter.vue"
 
 const isOpen = ref(false)
