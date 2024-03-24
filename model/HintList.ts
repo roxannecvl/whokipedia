@@ -4,17 +4,37 @@
  * of the Wikipedia page of the celebrity.
  */
 export class HintList {
-
-    list: Hint<any>[] = [];
+    birth: Hint<Date> ;
+    alive : boolean
+    death : Hint<Date | undefined> ;
+    occupation : Hint<string> ;
+    citizenship : Hint<string> ;
+    initials : Hint<string> ;
+    paragraph : Hint<string> ;
+    others: Hint<any>[] = [];
 
     constructor(
-        ...params: Hint<any>[]
+        birth: Date,
+        alive : boolean,
+        death: Date | undefined,
+        occupation: string,
+        citizenship: string,
+        initials: string,
+        paragraph: string,
+        ...others: Hint<any>[]
     ){
-        this.list = params
+        this.birth = new Hint("Birth", 1, birth, true);
+        this.alive = alive;
+        this.death = new Hint("Death", 1, death);
+        this.occupation = new Hint("Occupation", 1, occupation);
+        this.citizenship = new Hint("Citizenship", 1, citizenship);
+        this.initials = new Hint("Initials", 2, initials);
+        this.paragraph = new Hint("Paragraph", 2, paragraph);
+        this.others = others;
     }
 
     toList() : Hint<any>[]{
-        return this.list ;
+        return [this.birth, this.death, this.occupation, this.citizenship, this.initials, this.paragraph, ...this.others];
     }
 
 }
@@ -27,10 +47,12 @@ export class HintList {
  */
 export class Hint <T> {
     private _level : number;
-    private _value : T | null ;
+    private _value : T;
     private _revealed : boolean;
+    private _label : string;
 
-    constructor(level: number, revealed : boolean = false, value : T | null = null) {
+    constructor(label : string, level: number, value : T, revealed : boolean = false) {
+        this._label = label;
         this._level = level;
         this._revealed = revealed;
         this._value = value;
@@ -47,10 +69,9 @@ export class Hint <T> {
         return this._revealed;
     }
 
-    set value(value : T){
-        this._value = value;
+    get label() : string {
+        return this._label;
     }
-
     reveal(){
         this._revealed = true;
     }

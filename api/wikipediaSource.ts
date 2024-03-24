@@ -127,7 +127,7 @@ function parseWikitext(wikitext: string): any {
     let wikitextEndIndex: number = wikitext.toUpperCase().indexOf("'''");
     wikitext = wikitext.slice(0, wikitextEndIndex);
 
-    let alive: boolean | undefined
+    let alive: boolean | undefined = true
     let description: string | undefined
     let birthDate: Date | undefined = undefined
     let deathDate: Date | undefined = undefined
@@ -149,8 +149,6 @@ function parseWikitext(wikitext: string): any {
         alive = false;
         const [, deathYear, deathMonth, deathDay] = match;
         deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
-    } else {
-        alive = true;
     }
 
     return {
