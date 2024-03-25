@@ -40,7 +40,7 @@ export class HintList {
         let list : Hint<any>[] = this.toList()
         for(let i = 0; i < list.length ; i++){
             let h = list[i];
-            retVal += h.label + " : "  + "\n"
+            if(h.value != undefined) retVal += h.label + " : "  + h.value + "\n"
         }
         return retVal;
     }
