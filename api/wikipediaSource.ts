@@ -1,5 +1,9 @@
+import {Util} from "@google-cloud/storage/build/src/nodejs-common/util";
+
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
+
+import { Utils } from "~/utilities/Utils";
 
 /**
  * Fetch and return the introduction as plain text of the given Wikipedia page.
@@ -124,8 +128,12 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
  */
 function parseWikitext(wikitext: string): any {
 
-    let wikitextEndIndex: number = wikitext.toUpperCase().indexOf("'''");
-    wikitext = wikitext.slice(0, wikitextEndIndex);
+    // Remove introduction after infobox
+    wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
+
+    // Remove comments and remaining tags
+    wikitext = Utils.removeTag(wikitext, "<!--", "-->");
+    wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
 
     let alive: boolean | undefined = true
     let description: string | undefined
@@ -137,105 +145,88 @@ function parseWikitext(wikitext: string): any {
     let genres : string [] | undefined = undefined
 
     // Description
-    let match = wikitext.match(matchers.description);
+    let match = fieldMatchers.description.exec(wikitext);
     description = match ? match[1] : undefined;
-    if(description == undefined) console.log(wikitext);
-    else{
-        let occAndCiti = seperateDescription(description);
-        citizenship = occAndCiti.citizenship;
-        occupation = occAndCiti.occupation;
+    if (description) {
+        ({citizenship, occupation} = parseDescription(description));
     }
 
     // Birthdate
-    match = wikitext.match(matchers.birthDate);
+    match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
         const [, birthYear, birthMonth, birthDay] = match;
         birthDate = new Date(parseInt(birthYear), parseInt(birthMonth) - 1, parseInt(birthDay));
     }
 
     // Death date
-    match = wikitext.match(matchers.deathDate);
+    match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
         alive = false;
         const [, deathYear, deathMonth, deathDay] = match;
         deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
     }
 
-    //spouses
-    while ((match = matchers.spouses.exec(wikitext)) !== null) {
-        if(spouses == undefined) spouses = [match[1]];
-        else spouses = [...spouses, match[1]];
+    // Spouses
+    while ((match = fieldMatchers.spouses.exec(wikitext)) !== null) {
+        spouses = spouses ? [...spouses, match[1]] : [match[1]];
     }
 
-    //genres
-    match = wikitext.match(matchers.genres);
-    if(!match) match = wikitext.match(matchers.genresV2);
+    // Genres
+    match = fieldMatchers.genres.exec(wikitext);
     if (match){
-        let allGenres : string = match[1];
-        while((match = matchers.flatList.exec(allGenres)) !=null){
-            if(genres == undefined) genres = [match[1]];
-            else genres = [...genres, match[1]]
+        let genre: string = match[0]
+        while ((match = fieldMatchers.lists.exec(genre)) !== null) {
+            genres = genres ?
+                [...genres, match[1].split('|')[0].trim()] :
+                [match[1].split('|')[0].trim()]
         }
-    }
-
-
-    return {
-        birthDate: birthDate,
-        deathDate: deathDate,
-        alive: alive,
-        occupation : occupation,
-        citizenship : citizenship,
-        spouses :  spouses,
-        genres : genres,
     }
 }
 
-const matchers = {
+function parseDescription(description : string): {citizenship: string | undefined, occupation: string | undefined} {
+
+    let res: {citizenship: string | undefined, occupation: string | undefined} = {
+        citizenship: undefined,
+        occupation: undefined
+    }
+
+    // Check if nationality or country is contained in the description
+    for (const country in Utils.countries) {
+        const nationality: string = Utils.countries[country];
+        let copy: string = description
+        while (copy.includes(nationality) || copy.includes(country)) {
+            res.citizenship = res.citizenship !== undefined ? res.citizenship + " and " + nationality : nationality
+            copy = copy.replace(nationality, "").replace(country, "")
+        }
+    }
+
+    // Check if description matches a known occupation
+    for (const possibleOccupation in occupationMatchers){
+        const matcher: RegExp = occupationMatchers[possibleOccupation];
+        if(description.match(matcher)){
+            res.occupation = possibleOccupation;
+            return res
+        }
+    }
+
+    // If no occupation was found, occupation is description without citizenship
+    for (const permutation of Utils.getAndPermutations(res.citizenship || "")){
+        res.occupation = description.replace(permutation, "").trim()
+    }
+
+    return res
+}
+
+
+const fieldMatchers: {[key: string]: RegExp} = {
     description: /{{short description\|([^(){}]*)(?=[(){}])/i,
     birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
     deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
     spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
-    genres: /genre\s*=\s*{{flatlist\|((?:.*?\n*)+?)}}/i,
-    genresV2 : /genre\s*=\s*(?:<!--.*?-->)?{{hlist\|((?:.*?\|)*.*?)}}/i,
-    flatList: /\[\[([^|\]]+)(?:\|[^|\]]+)?\]\]/g,
+    genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
+    lists: /\[\[([^\]]+)]]/gi
 }
 
-function seperateDescription(description : string){
-    let occupation_index = description.length -1;
-    while(!(description.charCodeAt(occupation_index) >= 65 && description.charCodeAt(occupation_index) <= 90)) {
-        occupation_index--;
-    }
-    occupation_index += description.substring(occupation_index, description.length).indexOf(" ");
-    let occupation = description.substring(occupation_index + 1);
-    let citizenship = description.substring(0, occupation_index);
-
-    //Handle exceptions
-    if(citizenship.search("President of France") != -1){
-        citizenship = "French";
-        occupation = "politician";
-    }else if(citizenship.search("President of South Africa ") != -1){
-        citizenship = "South African";
-        occupation = "politician";
-    }else if(citizenship.search("Pakistani education activist") != -1){
-        citizenship = "Pakistani";
-        occupation = "education activist";
-    }else if(citizenship.search("the British") != -1 || citizenship.search("the United Kingdom") != -1) {
-        citizenship = "British";
-        occupation = "member of the British royal family";
-    }else if(citizenship.search("of Queen") != -1 || citizenship.search("the Beatles") != -1 ){
-        citizenship = "British";
-        occupation = "musician";
-    }else if(citizenship.search("President of the United States") != -1){
-        citizenship = "American";
-        occupation = "politician";
-    }else if(citizenship.search("Chancellor of Germany") != -1){
-        citizenship = "German";
-        occupation = "politician";
-    }
-
-    return {
-        citizenship : citizenship,
-        occupation: occupation
-    };
-
+const occupationMatchers: {[key: string]: RegExp} = {
+    politician: /^\w+\sof\s\w+(?:\s\w+)*\sfrom\s\d{4}\sto\s\d{4}$/i
 }
