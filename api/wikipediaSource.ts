@@ -1,9 +1,7 @@
-import {Util} from "@google-cloud/storage/build/src/nodejs-common/util";
+import { Utils } from "~/utilities/Utils";
 
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
-
-import { Utils } from "~/utilities/Utils";
 
 /**
  * Fetch and return the introduction as plain text of the given Wikipedia page.
@@ -136,7 +134,6 @@ function parseWikitext(wikitext: string): any {
     wikitext = Utils.removeTag(wikitext, "<ref", "/>");
     wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
 
-    let alive: boolean | undefined = true
     let description: string | undefined
     let birthDate: Date | undefined = undefined
     let deathDate: Date | undefined = undefined
@@ -162,7 +159,6 @@ function parseWikitext(wikitext: string): any {
     // Death date
     match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
-        alive = false;
         const [, deathYear, deathMonth, deathDay] = match;
         deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
     }
@@ -186,7 +182,6 @@ function parseWikitext(wikitext: string): any {
     return {
         birthDate: birthDate,
         deathDate: deathDate,
-        alive: alive,
         occupation: occupation,
         citizenship: citizenship,
         spouses: spouses,
@@ -226,8 +221,13 @@ function parseDescription(description : string): {citizenship: string | undefine
         res.occupation = res.occupation.replace(permutation, "").trim()
     }
 
-    // Remove words starting with "-" (i.e. "-born")
-    res.occupation = res.occupation.replace(/-\w+/g, "").trim()
+    // Handle the `-born`case (i.e. Albert Einstein)
+    if (res.citizenship &&
+        description.includes("-born") &&
+        (description.indexOf("-born") - description.indexOf(res.citizenship) === res.citizenship.length)) {
+        res.citizenship = res.citizenship + '-born'
+        res.occupation = res.occupation.replace("-born", "").trim()
+    }
 
     return res
 }
