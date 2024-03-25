@@ -11,7 +11,7 @@ export default {
     }
   },
   // Change this !!! Need to add reactive in presenter
-  setup(props) {
+  setup(props: { model: GameModel; }) {
     const model = reactive(props.model);
     return {
       model
@@ -20,7 +20,20 @@ export default {
 }
 </script>
 
-<template>
+<template>¨
+  <div v-if="(model.infoPromiseState.data == null || model.imagePromiseState.data == null || model.introPromiseState.data == null)">
+    <img src="https://brfenergi.se/iprog/loading.gif" alt="loading"/>
+  </div>
+  <div v-else>
+    <UCard class="m-4">{{ model.intro}}</UCard>
+    <img alt="profile picture" :src="model.imageUrl" class="m-4"/>
+    <UCard class="m-4">{{ model.hints?.toString() }}</UCard>
+  </div>
+  <div>
+    <UCard class="m-4">{{ model.infoPromiseState.data == null }}</UCard>
+    <UCard class="m-4">{{ model.imagePromiseState.data == null }}</UCard>
+    <UCard class="m-4">{{ model.introPromiseState.data == null }}</UCard>
+  </div>
   <UCard class="flex flex-col items-center justify-center">
     <template #header>
       <div class="flex flex-col items-center justify-center">

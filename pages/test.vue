@@ -5,7 +5,7 @@
 
 import { ref } from 'vue';
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
-import { getAutocompleteSuggestions, celebrities } from "~/model/CelebrityList";
+import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 import SignupLoginPresenter from "~/presenter/signupLoginPresenter.vue"
 
 const isOpen = ref(false)
@@ -20,7 +20,10 @@ const getData = async () => {
   infoBox.value = await fetchInfoBox(selectedName.value);
 }
 
+
 watch(selectedName, getData)
+
+
 
 </script>
 
@@ -50,4 +53,5 @@ watch(selectedName, getData)
   <UCard class="m-4">{{ intro }}</UCard>
   <img alt="profile picture" :src="imageUrl" v-if="imageUrl" class="m-4"/>
   <UCard class="m-4">{{ infoBox }}</UCard>
+
 </template>

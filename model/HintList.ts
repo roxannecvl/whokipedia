@@ -10,31 +10,39 @@ export class HintList {
     occupation : Hint<string> ;
     citizenship : Hint<string> ;
     initials : Hint<string> ;
-    paragraph : Hint<string> ;
     others: Hint<any>[] = [];
 
     constructor(
         birth: Date,
-        alive : boolean,
         death: Date | undefined,
         occupation: string,
         citizenship: string,
         initials: string,
-        paragraph: string,
-        ...others: Hint<any>[]
+        others: Hint<any>[]
     ){
-        this.birth = new Hint("Birth", 1, birth, true);
-        this.alive = alive;
-        this.death = new Hint("Death", 1, death);
-        this.occupation = new Hint("Occupation", 1, occupation);
-        this.citizenship = new Hint("Citizenship", 1, citizenship);
-        this.initials = new Hint("Initials", 2, initials);
-        this.paragraph = new Hint("Paragraph", 2, paragraph);
+        this.birth = new Hint<Date>("Birth", 1, birth, true);
+        this.alive = (death === undefined);
+        this.death = new Hint<Date>("Death", 1, death);
+        this.occupation = new Hint<string>("Occupation", 1, occupation);
+        this.citizenship = new Hint<string>("Citizenship", 1, citizenship);
+        this.initials = new Hint<string>("Initials", 2, initials);
         this.others = others;
     }
 
     toList() : Hint<any>[]{
-        return [this.birth, this.death, this.occupation, this.citizenship, this.initials, this.paragraph, ...this.others];
+        return [this.birth, this.death, this.occupation, this.citizenship, this.initials, ...this.others];
+    }
+
+
+    //For testing purposes, will be removed
+    toString() : string {
+        let retVal : string = "";
+        let list : Hint<any>[] = this.toList()
+        for(let i = 0; i < list.length ; i++){
+            let h = list[i];
+            retVal += h.label + " : "  + "\n"
+        }
+        return retVal;
     }
 
 }
@@ -47,11 +55,11 @@ export class HintList {
  */
 export class Hint <T> {
     private _level : number;
-    private _value : T;
+    private _value : T | undefined;
     private _revealed : boolean;
     private _label : string;
 
-    constructor(label : string, level: number, value : T, revealed : boolean = false) {
+    constructor(label : string, level: number, value : T | undefined, revealed : boolean = false) {
         this._label = label;
         this._level = level;
         this._revealed = revealed;
@@ -61,8 +69,8 @@ export class Hint <T> {
     get level() : number {
         return this._level;
     }
-    get value(): T {
-        return (this._value as T);
+    get value(): T | undefined {
+        return this._value;
     }
 
     get revealed() : boolean {

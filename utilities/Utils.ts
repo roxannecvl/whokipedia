@@ -20,6 +20,28 @@ export class Utils {
     }
 
     /**
+     * Given a name (string) this function returns a string containing the intials of the name
+     *
+     */
+    public static  getInitials(name: string): string {
+        // Split the name into individual words
+        const words: string[] = name.split(' ');
+
+        // Initialize an empty string to store the initials
+        let initials: string = '';
+
+        // Iterate through each word and add its first letter to the initials
+        for (const word of words) {
+            // If the word is not empty, add its first letter to the initials
+            if (word.length > 0) {
+                initials += word[0].toUpperCase() + ". ";
+            }
+        }
+
+        return initials;
+    }
+
+    /**
      * Given a sentence of words separated by "and", returns all
      * possible permutations of the words around these "and".
      * @param input - a sentence of words separated by "and"

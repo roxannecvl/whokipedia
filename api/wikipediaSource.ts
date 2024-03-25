@@ -11,6 +11,7 @@ const ENDPOINT: string = "/w/api.php?"
  * @return Promise<string> - the introduction of the Wikipedia page as plain text
  */
 export async function fetchIntro(pageTitle: string): Promise<any> {
+    console.log("start fetchIntro")
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -32,6 +33,7 @@ export async function fetchIntro(pageTitle: string): Promise<any> {
                 const pageIds: string[] = Object.keys(pages)
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
+                    console.log("done fetchIntro")
                     return pages[pageId].extract
                 }
             }
@@ -49,6 +51,7 @@ export async function fetchIntro(pageTitle: string): Promise<any> {
  * @return Promise<string> - the URL of the main image of the Wikipedia page
  */
 export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<any> {
+    console.log("start fetchImage")
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -71,6 +74,7 @@ export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promi
                if (pageIds.length === 1 && pageIds[0] !== '-1') {
                    const pageId: number = Number.parseInt(pageIds[0])
                    if ('thumbnail' in pages[pageId]) {
+                       console.log("done fetchImage")
                        return pages[pageId].thumbnail.source
                    }
                }
@@ -88,6 +92,7 @@ export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promi
  * @return Promise<Object> - the infobox as a JSON object
  */
 export async function fetchInfoBox(pageTitle: string): Promise<any> {
+    console.log("start fetchInfoBox")
     const searchParams: Record<string, string> = {
         action: "query",
         titles: pageTitle,
@@ -112,6 +117,7 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
+                console.log("done fetchInfoBox")
                 return parseWikitext(wikitext)
             }
             throw new Error(`Infobox for page ${pageTitle} was not found.`)
@@ -141,6 +147,19 @@ function parseWikitext(wikitext: string): any {
     let occupation : string | undefined = undefined
     let spouses : string[] | undefined = undefined
     let genres : string [] | undefined = undefined
+    let political_party : string | undefined = undefined
+    let instruments : string [] | undefined = undefined
+    let known_for : string [] | undefined = undefined
+    let education : string | undefined = undefined
+    let notable_work : string [] | undefined = undefined
+    let honours : string [] | undefined = undefined
+    let awards : string[] | undefined = undefined
+    let television : string [] | undefined = undefined
+    let partners : string [] | undefined = undefined
+    let other_names : string [] | undefined = undefined
+    let title : string | undefined = undefined
+    let children : number | undefined = undefined
+    let years_active : string | undefined = undefined
 
     // Description
     let match = fieldMatchers.description.exec(wikitext);
@@ -186,6 +205,19 @@ function parseWikitext(wikitext: string): any {
         citizenship: citizenship,
         spouses: spouses,
         genres: genres,
+        political_party : political_party,
+        instruments : instruments,
+        known_for : known_for,
+        education : education,
+        notable_work : notable_work,
+        honours : honours,
+        awards : awards,
+        television : television,
+        partners : partners,
+        other_names : other_names,
+        title : title,
+        children : children,
+        years_active : years_active,
     }
 }
 

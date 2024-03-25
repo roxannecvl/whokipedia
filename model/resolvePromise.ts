@@ -11,6 +11,7 @@ export type PromiseState = {
  * @param promiseState : PromiseState state object of the Model
  */
 export function resolvePromise(prms : Promise<any>, promiseState : PromiseState) : void{
+    console.log("promise");
 
     // Checks for null promise
     if(prms === null) return;
@@ -25,6 +26,8 @@ export function resolvePromise(prms : Promise<any>, promiseState : PromiseState)
         // Address race conditions
         if(promiseState.promise === prms){
             promiseState.data = res;
+            console.log("data set")
+            console.log(promiseState.data)
         }
     }
     function errorACB(error : string){
@@ -32,5 +35,6 @@ export function resolvePromise(prms : Promise<any>, promiseState : PromiseState)
         if(promiseState.promise === prms) {
             promiseState.error = error;
         }
+        console.log("promise done")
     }
 }
