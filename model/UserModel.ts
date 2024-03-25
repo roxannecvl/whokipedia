@@ -1,4 +1,4 @@
-import type { UidIdentifier } from "firebase-admin/auth";
+import { Utils } from '~/utilities/Utils';
 
 export class UserModel {
     //private fields for the user's statistics
@@ -34,11 +34,11 @@ export class UserModel {
         this._currentStreak = 12;
         this._maxStreak = 14;
         this._ranks = [36, 2, 12, 44, 17];
-        this._averageRank = this._ranks.reduce((a, b) => a + b, 0) / this._ranks.length;
+        this._averageRank = Utils.getMean(this._ranks);
         this._guesses = [7, 1, 22, 9, 3];
-        this._averageGuesses = this._guesses.reduce((a, b) => a + b, 0) / this._guesses.length;
+        this._averageGuesses = Utils.getMean(this._guesses);
         this._times = [14, 28, 37, 48, 50];
-        this._averageTime = this._times.reduce((a, b) => a + b, 0) / this._times.length;
+        this._averageTime = Utils.getMean(this._times);
         this._timesPlayed = 5;
     }
 
@@ -95,13 +95,13 @@ export class UserModel {
     //method to update the user's statistics
     updateStats(rank: number, guesses: number, time: number) {
         this._ranks.push(rank);
-        this._averageRank = this._ranks.reduce((a, b) => a + b, 0) / this._ranks.length;
+        this._averageRank = Utils.getMean(this._ranks);
 
         this._guesses.push(guesses);
-        this._averageGuesses = this._guesses.reduce((a, b) => a + b, 0) / this._guesses.length;
+        this._averageGuesses = Utils.getMean(this._guesses);
 
         this._times.push(time);
-        this._averageTime = this._times.reduce((a, b) => a + b, 0) / this._times.length;
+        this._averageTime = Utils.getMean(this._times);
 
         this._timesPlayed++;
     }
