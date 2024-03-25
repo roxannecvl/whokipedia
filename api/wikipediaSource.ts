@@ -213,7 +213,6 @@ function parseDescription(description : string): {citizenship: string | undefine
         }
     }
 
-
     // If no occupation was found, occupation is description without citizenship
     res.occupation = description
     for (const permutation of Utils.getAndPermutations(res.citizenship || "")){
@@ -234,7 +233,8 @@ const fieldMatchers: {[key: string]: RegExp} = {
 }
 
 const occupationMatchers: {[key: string]: RegExp} = {
-    "politician": /^\w+\sof\s\w+(?:\s\w+)*\sfrom\s\d{4}\sto\s\d{4}$/i,
-    "member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)/i
-
+    "politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
+    "member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)/i,
+    "activist": /\bactivist\b/i,
+    "musician": /\bmusician\b/i
 }
