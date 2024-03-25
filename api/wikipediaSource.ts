@@ -133,6 +133,7 @@ function parseWikitext(wikitext: string): any {
 
     // Remove comments and remaining tags
     wikitext = Utils.removeTag(wikitext, "<!--", "-->");
+    wikitext = Utils.removeTag(wikitext, "<ref", "/>");
     wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
 
     let alive: boolean | undefined = true
@@ -181,6 +182,9 @@ function parseWikitext(wikitext: string): any {
                 [match[1].split('|')[0].trim()]
         }
     }
+
+    console.log(occupation)
+    console.log(citizenship)
 }
 
 function parseDescription(description : string): {citizenship: string | undefined, occupation: string | undefined} {
@@ -209,9 +213,11 @@ function parseDescription(description : string): {citizenship: string | undefine
         }
     }
 
+
     // If no occupation was found, occupation is description without citizenship
+    res.occupation = description
     for (const permutation of Utils.getAndPermutations(res.citizenship || "")){
-        res.occupation = description.replace(permutation, "").trim()
+        res.occupation = res.occupation.replace(permutation, "").trim()
     }
 
     return res
@@ -228,5 +234,7 @@ const fieldMatchers: {[key: string]: RegExp} = {
 }
 
 const occupationMatchers: {[key: string]: RegExp} = {
-    politician: /^\w+\sof\s\w+(?:\s\w+)*\sfrom\s\d{4}\sto\s\d{4}$/i
+    "politician": /^\w+\sof\s\w+(?:\s\w+)*\sfrom\s\d{4}\sto\s\d{4}$/i,
+    "member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)/i
+
 }
