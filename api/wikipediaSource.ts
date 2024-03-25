@@ -183,7 +183,7 @@ function parseWikitext(wikitext: string): any {
         }
     }
 
-    console.log(occupation)
+   console.log(occupation)
     console.log(citizenship)
 }
 
@@ -218,6 +218,9 @@ function parseDescription(description : string): {citizenship: string | undefine
     for (const permutation of Utils.getAndPermutations(res.citizenship || "")){
         res.occupation = res.occupation.replace(permutation, "").trim()
     }
+
+    // Remove words starting with "-" (i.e. "-born")
+    res.occupation = res.occupation.replace(/-\w+/g, "").trim()
 
     return res
 }
