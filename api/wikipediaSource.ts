@@ -183,8 +183,15 @@ function parseWikitext(wikitext: string): any {
         }
     }
 
-   console.log(occupation)
-    console.log(citizenship)
+    return {
+        birthDate: birthDate,
+        deathDate: deathDate,
+        alive: alive,
+        occupation: occupation,
+        citizenship: citizenship,
+        spouses: spouses,
+        genres: genres,
+    }
 }
 
 function parseDescription(description : string): {citizenship: string | undefined, occupation: string | undefined} {
@@ -236,8 +243,8 @@ const fieldMatchers: {[key: string]: RegExp} = {
 }
 
 const occupationMatchers: {[key: string]: RegExp} = {
+    "member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
     "politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
-    "member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)/i,
     "activist": /\bactivist\b/i,
     "musician": /\bmusician\b/i
 }
