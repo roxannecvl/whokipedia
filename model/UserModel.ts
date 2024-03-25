@@ -4,7 +4,7 @@ export class UserModel {
     //private fields for the user's statistics
 
     //name of the user
-    private _userName: string = '';
+    private _username: string = '';
 
     //current streak of the user
     private _currentStreak: number = 0;
@@ -30,7 +30,7 @@ export class UserModel {
     private _timesPlayed: number = 0;
 
     constructor(userName: string) {
-        this._userName = userName;
+        this._username = userName;
         this._currentStreak = 12;
         this._maxStreak = 14;
         this._ranks = [36, 2, 12, 44, 17];
@@ -43,32 +43,23 @@ export class UserModel {
     }
 
     //getter for userName
-    get userName(): string {
-        return this._userName;
+    get username(): string {
+        return this._username;
     }
 
-    //getter and setter for currentStreak
+    //getter for currentStreak
     get currentStreak(): number {
         return this._currentStreak;
     }
-    set currentStreak(value: number) {
-        this._currentStreak = value;
-    }
 
-    //getter and setter for maxStreak
+    //getter for maxStreak
     get maxStreak(): number {
         return this._maxStreak;
     }
-    set maxStreak(value: number) {
-        this._maxStreak = value;
-    }
 
-    //getter and setter for averageRank
+    //getter for averageRank
     get averageRank(): number {
         return this._averageRank;
-    }
-    set averageRank(value: number) {
-        this._averageRank = value;
     }
 
     //getter for ranks
@@ -76,12 +67,9 @@ export class UserModel {
         return this._ranks;
     }
 
-    //getter and setter for averageGuesses
+    //getter for averageGuesses
     get averageGuesses(): number {
         return this._averageGuesses;
-    }
-    set averageGuesses(value: number) {
-        this._averageGuesses = value;
     }
 
     //getter for guesses
@@ -89,12 +77,9 @@ export class UserModel {
         return this._guesses;
     }
 
-    //getter and setter for averageTime
+    //getter for averageTime
     get averageTime(): number {
         return this._averageTime;
-    }
-    set averageTime(value: number) {
-        this._averageTime = value;
     }
 
     //getter for times
@@ -102,12 +87,9 @@ export class UserModel {
         return this._times;
     }
 
-    //getter and setter for timesPlayed
+    //getter for timesPlayed
     get timesPlayed(): number {
         return this._timesPlayed;
-    }
-    set timesPlayed(value: number) {
-        this._timesPlayed = value;
     }
 
     //method to update the user's statistics

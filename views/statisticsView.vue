@@ -41,7 +41,7 @@ export default {
 <template>
   <div v-if="userModel" class="flex flex-col items-center justify-center">
     <div>
-      <p>{{ 'User name: ' + userModel.userName }}</p>
+      <p>{{ 'User name: ' + userModel.username }}</p>
       <p>{{ 'Current streak: ' + userModel.currentStreak }}</p>
       <p>{{ 'Max streak: ' + userModel.maxStreak }}</p>
       <p>{{ 'Average rank: ' + userModel.averageRank }}</p>
