@@ -17,19 +17,23 @@ Finally, once the game is done and the celebrity revealed, a link to the wikiped
 Here is the list of our already implemented features 
 - Api Calls
 - Part of the parsing the response from fetchInfobox
-- Login form (v1)
+- Login form (view)
+- Signup form (view)
 - Statistics view (v1)
 - Search field with auto-complete and suggestion
 - GameModel
 - UserModel 
 
 ### To be done 
-- Daily Challenge page
-- Training Page
-- First page with the logo, rules and login 
+- Daily Challenge page (view, presenter and page) 
+- Training Page (view, presenter and page) 
+- First page with the logo, rules and login (view, presenter and page) 
 - Finish the parsing of the response from fetchInfobox
 - Final version of the statisctics page
-- Leaderboard page
+- Leaderboard page (view, presenter and page)
+- SignupLoginPresenter
+- Statistics page (page and presenter and view v2)
+- app.vue (update it with SignupLoginPresenter) 
 
 ### File structure 
 ```
