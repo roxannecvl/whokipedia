@@ -34,6 +34,7 @@ export class Utils {
      * Get random user model
      * @returns a random user model
      */
+    //TODO : remove after testing
     public static getRandomUserModel(): UserModel {
         const user = new UserModel();
         user.updateStats(321, 2321, 345, 435, 324, 2432)
