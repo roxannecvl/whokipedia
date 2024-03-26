@@ -1,13 +1,6 @@
 <script
   setup
   lang="ts">
-
-const isOpen = ref(false)
-
-import { ref } from 'vue';
-
-console.log(useAttrs().userModel)
-
 </script>
 
 <template>

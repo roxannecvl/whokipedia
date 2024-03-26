@@ -15,7 +15,7 @@ const isDark = computed({
     set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 })
 
-const userModel = reactive(new UserModel())
+const userModel: any = reactive(new UserModel())
 console.log(userModel)
 
 initialiseFirebase()

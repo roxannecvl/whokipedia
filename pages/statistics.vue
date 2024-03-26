@@ -7,7 +7,7 @@ import StatisticsView
 import { updateUserToFirebase } from '~/model/firebaseModel'
 import { Utils } from "~/utilities/Utils";
 
-const userModel = useAttrs().userModel
+const userModel: any = useAttrs().userModel
 const user = useCurrentUser()
 
 </script>
@@ -24,8 +24,8 @@ const user = useCurrentUser()
     </div>
       <StatisticsView
         :userModel />
-    <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-      <UButton @click="updateUserToFirebase(Utils.getRandomUserModel(), user?.uid)">Populate stats</UButton>
+    <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+      <UButton @click="updateUserToFirebase(Utils.getRandomUserModel(), user.uid)">Populate stats</UButton>
     </div>
   </div>
 </template>
