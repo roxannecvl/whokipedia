@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="https://github.com/roxannecvl/whokipedia/assets/125833841/be103f3e-8209-44b2-9df7-47c5b227d789" alt="image" width="300">
+  <img src="https://github.com/roxannecvl/whokipedia/assets/125833841/7c6187cd-d6ec-4b97-8928-ae01c4b08cc6" alt="image" width="300">
 </p>
-
 
 
 #### Test your knowledge of the who's who in Whokipedia, where each clue leads you closer to uncovering the celebrity behind the blur !
