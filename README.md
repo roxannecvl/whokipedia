@@ -82,8 +82,8 @@ whokipedia/                          #
 ```
 
 ### Tools used 
-Our project is written in typescript and vue. <br>
-Here is a presentation of some of our dependencies : <br>
+Our project is written in typescript and vue. Here is a presentation of some of our dependencies : <br>
+
 **Firebase** : Firebase is a comprehensive platform provided by Google for building web and mobile applications. We use its real-time database, authentication, and deployment functions.
 
 **Nuxt.js**: Nuxt.js is a framework built on top of Vue.js that provides a higher-level structure for building universal Vue.js applications. We use it to get Nuxt UI, a set of components and utilities provided by Nuxt.js for building user interfaces. It includes a variety of pre-designed UI components and layouts. It helps us create a beautiful and responsive user interface.
