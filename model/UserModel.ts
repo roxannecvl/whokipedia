@@ -3,9 +3,6 @@ import { Utils } from '~/utilities/Utils';
 export class UserModel {
     //private fields for the user's statistics
 
-    //name of the user
-    private _username: string = '';
-
     //current streak of the user
     private _currentStreak: number = 0;
     //max streak of the user
@@ -28,24 +25,6 @@ export class UserModel {
 
     //number of times the user has played
     private _timesPlayed: number = 0;
-
-    constructor(userName: string) {
-        this._username = userName;
-        this._currentStreak = 12;
-        this._maxStreak = 14;
-        this._ranks = [36, 2, 12, 44, 17];
-        this._averageRank = Utils.getMean(this._ranks);
-        this._guesses = [7, 1, 22, 9, 3];
-        this._averageGuesses = Utils.getMean(this._guesses);
-        this._times = [14, 28, 37, 48, 50];
-        this._averageTime = Utils.getMean(this._times);
-        this._timesPlayed = 5;
-    }
-
-    //getter for userName
-    get username(): string {
-        return this._username;
-    }
 
     //getter for currentStreak
     get currentStreak(): number {
@@ -91,19 +70,15 @@ export class UserModel {
     get timesPlayed(): number {
         return this._timesPlayed;
     }
-
+    
     //method to update the user's statistics
-    updateStats(rank: number, guesses: number, time: number) {
-        this._ranks.push(rank);
-        this._averageRank = Utils.getMean(this._ranks);
-
-        this._guesses.push(guesses);
-        this._averageGuesses = Utils.getMean(this._guesses);
-
-        this._times.push(time);
-        this._averageTime = Utils.getMean(this._times);
-
-        this._timesPlayed++;
+    updateStats(currentStreak: number, maxStreak: number, averageRank: number, averageGuesses: number, averageTime: number, timesPlayed: number) {
+        this._currentStreak = currentStreak;
+        this._maxStreak = maxStreak;
+        this._averageRank = averageRank;
+        this._averageGuesses = averageGuesses;
+        this._averageTime = averageTime;
+        this._timesPlayed = timesPlayed;
     }
 
     //method to update the user's streak
@@ -121,6 +96,9 @@ export class UserModel {
 
     //method to reset the user's statistics
     resetStats() {
+        this._currentStreak = 0;
+        this._maxStreak = 0;
+
         this._averageRank = 0;
         this._ranks = [];
 
