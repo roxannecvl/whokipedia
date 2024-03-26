@@ -38,7 +38,7 @@ export class Utils {
     public static getRandomUserModel(): UserModel {
         const max_value = 100;
         const userModel = new UserModel();
-        userModel.updateStats(Math.random() * max_value, Math.random() * max_value, Math.random() * max_value, Math.random() * max_value, Math.random() * max_value, Math.random() * max_value)
+        userModel.updateStats(Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value))
         return userModel;
     }
 
