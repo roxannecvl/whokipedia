@@ -14,7 +14,7 @@ There are two modes, daily challenges and training. In training, you play for yo
 Finally, once the game is done and the celebrity revealed, a link to the wikipedia page of the celebrity will appear, inviting you to learn more about the celebrity of the day if your curiosity has been spiked. If you are loged in, you can also browse through your old games, points, and celebrities found.
 
 ### Already implemented 
-Here is the list of our already implemted features 
+Here is the list of our already implemented features 
 - Api Calls
 - Part of the parsing the response from fetchInfobox
 - Login form (v1)
@@ -31,3 +31,47 @@ Here is the list of our already implemted features
 - Final version of the statisctics page
 - Leaderboard page
 
+### File structure 
+```
+whokipedia/                          # 
+├── LICENSE                          #
+├── README.md                        #
+├── api/                             # Contains all files for talking to the api and parsing the responses
+│   └── wikipediaSource.ts           #
+├── app.config.ts                    #
+├── app.vue                          # Contains signupLoginPresenter.vue, logo (title version), black mode button and git button
+├── model/                           #
+│   ├── CelebrityList.ts             # Contains the list of playable celebrity and function to get suggestions for seach field
+│   ├── GameModel.ts                 # Contains all the logic for the current game played 
+│   ├── HintList.ts                  # Declaration of HintList type (a list of Hints) and Hint type
+│   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
+│   ├── firebaseModel.ts             # Contains all logic for talking to our database
+│   └── resolvePromise.ts            # Contains the logic for promise resolution
+├── nuxt.config.ts                   #
+├── package.json                     # All our dependencies 
+├── pages/                           #
+│   ├── dailychallenge.vue           # with gamePresenter and sidebarPresenter together
+│   ├── index.vue                    # with welcomePagePresenter.vue
+│   ├── leaderboard.vue              # with leaderboardPresenter.vue
+│   ├── statistics.vue               # with statisticsPresenter.vue
+│   └── training.vue                 # with gamePresenter and sidebarPresenter together
+├── presenters/                      #
+│   ├── gamePresenter.vue            # with gameCenterView.vue and infoboxView.vue
+│   ├── leaderboardPresenter.vue     # with leaderboardView.vue
+│   ├── loginSignupPresenter.vue     # with loginView.view and signupView.vue
+│   ├── statisticsPresenter.vue      # with statisticsView.vue
+│   └── welcomePagePresenter.vue     # with welcomePageView.vue
+├── tailwind.config.ts               #
+├── tsconfig.json                    #
+├── utilities/                       #
+│   └── Utils.ts                     # utilities function, like getAverage(), getRandom(),  ...
+└── views/                           #
+    ├── gameCenterView.vue           # contains the search bar and the intro paragraph of the celebrity 
+    ├── infoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
+    ├── leaderboardView.vue          # contains the leadedboard (if  logged in) 
+    ├── loginView.vue                # log in form 
+    ├── sidebar.vue                  # rules, login button, logo (train and leaderboard button if done) 
+    ├── signupView.vue               # sign up form 
+    ├── statisticsView.vue           # statistics of the user (if loged in) 
+    └── welcomePageView.vue          # One play button, the rules and the logo
+```
