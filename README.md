@@ -1,7 +1,10 @@
-# whokipedia!
-[image](https://github.com/roxannecvl/whokipedia/assets/125833841/be103f3e-8209-44b2-9df7-47c5b227d789)
+<p align="center">
+  <img src="https://github.com/roxannecvl/whokipedia/assets/125833841/be103f3e-8209-44b2-9df7-47c5b227d789" alt="image" width="300">
+</p>
 
-Test your knowledge of the who's who in Whokipedia, where each clue leads you closer to uncovering the celebrity behind the blur.
+
+
+#### Test your knowledge of the who's who in Whokipedia, where each clue leads you closer to uncovering the celebrity behind the blur !
 
 ### Description 
 Our web app is a game called Whokipedia. It takes its root in the famous game "Guess Who ?", and is inspired from the wikipedia interface. As a player you will start with a wikipedia-like page with some basic information about a mysterious celebritiy. Your goal is to try to guess the celebrity, for instance a first hint could be the birthdate. If you fail to guess correctly at first, we will give you a second hint (could be a sentence from the wikipedia description, the occupation, nationality, blurred photo, …) and reveal it as a part of the wikipedia interface. Each time you make a guess, you get a new hint, until you finally uncover the celebrity is or until all hints are revealed. The less hints you needed, the better your rank ! <br>
