@@ -4,8 +4,11 @@
 
 import StatisticsView
   from "~/views/statisticsView.vue";
+import { updateUserToFirebase } from '~/model/firebaseModel'
+import { Utils } from "~/utilities/Utils";
 
 const userModel = useAttrs().userModel
+const user = useCurrentUser()
 
 </script>
 
@@ -21,5 +24,8 @@ const userModel = useAttrs().userModel
     </div>
       <StatisticsView
         :userModel />
+    <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+      <UButton @click="updateUserToFirebase(Utils.getRandomUserModel(), user?.uid)">Populate stats</UButton>
+    </div>
   </div>
 </template>

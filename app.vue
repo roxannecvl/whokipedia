@@ -4,7 +4,7 @@
 import { UserModel } from './model/UserModel';
 import { initialiseFirebase } from './model/firebaseModel';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, type UserCredential } from 'firebase/auth'
-import { saveUserToFirebase } from '~/model/firebaseModel';
+import { saveUserToFirebase, readUserFromFirebase } from '~/model/firebaseModel';
 import LoginView from "~/views/loginView.vue";
 import SignupView from "~/views/signUpView.vue";
 
@@ -42,6 +42,7 @@ onMounted(() => {
         message.value = 'Successfully logged in'
         isMessageOpen.value = true
         userModel.updateUsername(user.email ?? undefined)
+        readUserFromFirebase(userModel)
     }
   })
 })

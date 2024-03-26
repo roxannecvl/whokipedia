@@ -22,7 +22,6 @@ export default {
   components: {
     Line
   },
-  
   // Change this !!! Need to add reactive in presenter
   setup(props) {
     return {
@@ -62,8 +61,5 @@ export default {
   </div>
   <div v-else class="flex flex-col items-center justify-center">
     <p>User not logged in</p>
-  </div>
-  <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-    <ULink to="/statistics">Populate stats</ULink>
   </div>
 </template>

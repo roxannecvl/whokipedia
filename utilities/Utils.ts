@@ -1,3 +1,5 @@
+import { UserModel } from "~/model/UserModel";
+
 export class Utils {
     /**
      * Example of a utils function
@@ -26,6 +28,16 @@ export class Utils {
     public static getRandom(list : any[]) :any {
         if(list.length == 0) return null;
         return list[Math.floor(Math.random() * list.length)];
+    }
+
+    /**
+     * Get random user model
+     * @returns a random user model
+     */
+    public static getRandomUserModel(): UserModel {
+        const user = new UserModel();
+        user.updateStats(321, 2321, 345, 435, 324, 2432)
+        return user;
     }
 
     // Add more utility functions here
