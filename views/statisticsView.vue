@@ -1,7 +1,5 @@
 <script
     lang="ts">
-import { UserModel } from "~/model/UserModel";
-import { reactive } from "vue";
 
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale } from 'chart.js'
@@ -17,8 +15,8 @@ ChartJS.register(CategoryScale,
 export default {
   props: {
     userModel: {
-      type: UserModel,
-      required: false,
+      type: Object,
+      required: true,
     }
   },
   components: {
@@ -27,19 +25,15 @@ export default {
   
   // Change this !!! Need to add reactive in presenter
   setup(props) {
-    if (!props.userModel) {
-      return
-    }
-    const userModel = reactive(props.userModel);
     return {
-      userModel
+      userModel: props.userModel
     }
   }
 }
 </script>
 
 <template>
-  <div v-if="userModel" class="flex flex-col items-center justify-center">
+  <div v-if="userModel.username" class="flex flex-col items-center justify-center">
     <div>
       <p>{{ 'User name: ' + userModel.username }}</p>
       <p>{{ 'Current streak: ' + userModel.currentStreak }}</p>
@@ -68,5 +62,8 @@ export default {
   </div>
   <div v-else class="flex flex-col items-center justify-center">
     <p>User not logged in</p>
+  </div>
+  <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+    <ULink to="/statistics">Populate stats</ULink>
   </div>
 </template>

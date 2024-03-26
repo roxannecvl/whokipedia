@@ -4,13 +4,8 @@
 
 import StatisticsView
   from "~/views/statisticsView.vue";
-import {
-  UserModel
-} from "~/model/UserModel";
-import { useCurrentUser } from "vuefire";
 
-const user = useCurrentUser()
-const userModel = user.value?.email ? new UserModel(user.value.email) : undefined
+const userModel = useAttrs().userModel
 
 </script>
 
