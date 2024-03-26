@@ -41,7 +41,6 @@ onMounted(() => {
         console.log('Successfully logged in')
         message.value = 'Successfully logged in'
         isMessageOpen.value = true
-        userModel.updateUsername(user.email ?? undefined)
         readUserFromFirebase(userModel)
     }
   })

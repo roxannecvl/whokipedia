@@ -3,9 +3,6 @@ import { Utils } from '~/utilities/Utils';
 export class UserModel {
     //private fields for the user's statistics
 
-    //name of the user (undefined if not logged in)
-    private _username: string | undefined;
-
     //current streak of the user
     private _currentStreak: number = 0;
     //max streak of the user
@@ -28,11 +25,6 @@ export class UserModel {
 
     //number of times the user has played
     private _timesPlayed: number = 0;
-
-    //getter for userName
-    get username(): string | undefined{
-        return this._username;
-    }
 
     //getter for currentStreak
     get currentStreak(): number {
@@ -78,11 +70,6 @@ export class UserModel {
     get timesPlayed(): number {
         return this._timesPlayed;
     }
-
-    //update the user's username
-    updateUsername(username: string | undefined) {
-        this._username = username;
-    }
     
     //method to update the user's statistics
     updateStats(currentStreak: number, maxStreak: number, averageRank: number, averageGuesses: number, averageTime: number, timesPlayed: number) {
@@ -109,8 +96,6 @@ export class UserModel {
 
     //method to reset the user's statistics
     resetStats() {
-        this._username = undefined;
-
         this._currentStreak = 0;
         this._maxStreak = 0;
 
