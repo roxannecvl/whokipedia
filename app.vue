@@ -122,37 +122,33 @@ function logout() {
               Whokipedia
             </p>
           </div>
-          <div>
-            <UButton v-if="isUserLoggedIn" label="Log out" @click="logout" />
-            <UButton v-else label="Log in" @click="isLogInOpen = true" />
-            <UModal v-model="isLogInOpen">
-              <div class="p-4">
-                <div class="flex justify-center">
-                  <div class="w-60 ">
-                    <UTabs :items="[
-                      { key: 'login', label: 'Log in' },
-                      { key: 'signup', label: 'Sign up' }
-                      ]">
-                      <template #item="{ item }">
-                        <div v-if="item.key === 'login'">
-                          <LoginView @login-event="login"/>
-                        </div>
-                        <div v-else-if="item.key === 'signup'">
-                          <SignupView @signup-event="signup"/>
-                        </div>
-                      </template>
-                    </UTabs>
+          <div class="flex justify-between items-center">
+            <div class="p-3">
+              <UButton v-if="isUserLoggedIn" label="Log out" @click="logout"/>
+              <UButton v-else label="Log in" @click="isLogInOpen = true" />
+              <UModal v-model="isLogInOpen">
+                <div class="p-4">
+                  <div class="flex justify-center">
+                    <div class="w-60 ">
+                      <UTabs :items="[
+                        { key: 'login', label: 'Log in' },
+                        { key: 'signup', label: 'Sign up' }
+                        ]">
+                        <template #item="{ item }">
+                          <div v-if="item.key === 'login'">
+                            <LoginView @login-event="login"/>
+                          </div>
+                          <div v-else-if="item.key === 'signup'">
+                            <SignupView @signup-event="signup"/>
+                          </div>
+                        </template>
+                      </UTabs>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </UModal>
-          </div>
-            <UModal v-model="isErrorModalOpen">
-                  <div class="p-4">
-                    <p>{{errorMessage}}</p>
-                  </div>
-            </UModal>
-            <div>
+              </UModal>
+            </div>
+            <div class="p-3">
             <ClientOnly>
                 <UTooltip
                     text="Open on Github">
@@ -164,7 +160,13 @@ function logout() {
                 </UTooltip>
             </ClientOnly>
             </div>
+          </div>
         </div>
+        <UModal v-model="isErrorModalOpen">
+                  <div class="p-4">
+                    <p>{{errorMessage}}</p>
+                  </div>
+        </UModal>
       </template>
 
       <main>
