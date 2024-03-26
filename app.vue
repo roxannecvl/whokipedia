@@ -9,7 +9,7 @@ import LoginView from "~/views/loginView.vue";
 import SignupView from "~/views/signUpView.vue";
 
 const colorMode = useColorMode()
-const isMessageOpen = ref(false)
+const isErrorModalOpen = ref(false)
 const isDark = computed({
     get: () => colorMode.value === 'dark',
     set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
@@ -21,10 +21,12 @@ console.log(userModel)
 initialiseFirebase()
 
 const isLogInOpen = ref(false)
-const message = ref('')
+const errorMessage = ref('')
 
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
+
+const isUserLoggedIn = ref(false)
 
 // we don't need this watcher on server
 onMounted(() => {
@@ -33,15 +35,13 @@ onMounted(() => {
     if (prevUser && !user) {
         // user logged out
         console.log('Successfully logged out')
-        message.value = 'Successfully logged out'
-        isMessageOpen.value = true
         userModel.resetStats()
+        isUserLoggedIn.value = false
     } else if (user) {
         // user logged in
         console.log('Successfully logged in')
-        message.value = 'Successfully logged in'
-        isMessageOpen.value = true
         readUserFromFirebase(userModel)
+        isUserLoggedIn.value = true
     }
   })
 })
@@ -55,11 +55,12 @@ console.log('User: ', user)
  * @param password - The password used to log in
  */
 function login(username: string, password: string) {
+    isLogInOpen.value = false
     signInWithEmailAndPassword(auth, username, password)
     .catch((reason) => {
         console.error('Failed log in: ', reason)
-        message.value = 'Failed log in: '+ reason
-        isMessageOpen.value = true
+        errorMessage.value = 'Failed log in: '+ reason
+        isErrorModalOpen.value = true
     })
 }
 
@@ -76,8 +77,8 @@ function signup(username: string, password: string) {
     })
     .catch((reason) => {
         console.error('Failed sign up: ', reason)
-        message.value = 'Failed sign up: '+reason
-        isMessageOpen.value = true
+        errorMessage.value = 'Failed sign up: '+reason
+        isErrorModalOpen.value = true
     })
 }
 
@@ -88,8 +89,8 @@ function logout() {
     signOut(auth)
     .catch((reason) => {
         console.error('Failed log out: ', reason)
-        message.value = 'Failed log out: '+reason
-        isMessageOpen.value = true
+        errorMessage.value = 'Failed log out: '+reason
+        isErrorModalOpen.value = true
     })
 }
 
@@ -122,21 +123,9 @@ function logout() {
               Whokipedia
             </p>
           </div>
-
           <div>
-            <ClientOnly>
-              <UTooltip
-                  text="Open on Github">
-                <UButton
-                    :to="`https://github.com/roxannecvl/whokipedia`"
-                    icon="i-simple-icons-github"
-                    color="white"
-                    target="_blank"/>
-              </UTooltip>
-            </ClientOnly>
-          </div>
-          <div>
-            <UButton label="Sign up / Log in" @click="isLogInOpen = true" />
+            <UButton v-if="isUserLoggedIn" label="Log out" @click="logout" />
+            <UButton v-else label="Log in" @click="isLogInOpen = true" />
             <UModal v-model="isLogInOpen">
               <div class="p-4">
                 <div class="flex justify-center">
@@ -154,19 +143,28 @@ function logout() {
                         </div>
                       </template>
                     </UTabs>
-                    <UButton v-if="user" :ui="{ rounded: 'rounded-full' }" @click="logout" label="Logout" />
-                    <UButton v-else :ui="{ rounded: 'rounded-full' }" disabled label="Logout" />
                   </div>
                 </div>
-
-                <UModal v-model="isMessageOpen">
-                  <div class="p-4">
-                    <p>{{message}}</p>
-                  </div>
-                </UModal>
               </div>
             </UModal>
           </div>
+            <UModal v-model="isErrorModalOpen">
+                  <div class="p-4">
+                    <p>{{errorMessage}}</p>
+                  </div>
+            </UModal>
+            <div>
+            <ClientOnly>
+                <UTooltip
+                    text="Open on Github">
+                <UButton
+                    :to="`https://github.com/roxannecvl/whokipedia`"
+                    icon="i-simple-icons-github"
+                    color="white"
+                    target="_blank"/>
+                </UTooltip>
+            </ClientOnly>
+            </div>
         </div>
       </template>
 
