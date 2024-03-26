@@ -36,17 +36,15 @@ onMounted(() => {
         // user logged out
         console.log('Successfully logged out')
         userModel.resetStats()
-        isUserLoggedIn.value = false
+                isUserLoggedIn.value = false
     } else if (user) {
         // user logged in
         console.log('Successfully logged in')
-        readUserFromFirebase(userModel)
+                readUserFromFirebase(userModel)
         isUserLoggedIn.value = true
     }
   })
 })
-
-console.log('User: ', user)
 
 /**
  * Logs in the user
@@ -71,6 +69,7 @@ function login(username: string, password: string) {
  * @param password - The password used to sign up
  */
 function signup(username: string, password: string) {
+    isLogInOpen.value = false
     createUserWithEmailAndPassword(auth, username, password)
     .then((userCredentials: UserCredential) => {
         saveUserToFirebase(userModel, userCredentials.user?.uid);

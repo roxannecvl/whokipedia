@@ -10,6 +10,14 @@ import { Utils } from "~/utilities/Utils";
 const userModel: any = useAttrs().userModel
 const user = useCurrentUser()
 
+const populateStats = () => {
+  if(user.value){
+    const randomUserModel = Utils.getRandomUserModel()
+    userModel.updateStats(randomUserModel.currentStreak, randomUserModel.maxStreak, randomUserModel.averageRank, randomUserModel.averageGuesses, randomUserModel.averageTime, randomUserModel.timesPlayed, randomUserModel.times, randomUserModel.ranks, randomUserModel.guesses)
+    updateUserToFirebase(userModel, user.value.uid)
+  }
+}
+
 </script>
 
 <template>
@@ -25,7 +33,7 @@ const user = useCurrentUser()
       <StatisticsView
         :userModel />
     <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-      <UButton @click="updateUserToFirebase(Utils.getRandomUserModel(), user.uid)">Populate stats</UButton>
+      <UButton @click="populateStats">Populate stats</UButton>
     </div>
   </div>
 </template>

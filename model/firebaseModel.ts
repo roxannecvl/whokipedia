@@ -26,7 +26,7 @@ function persistenceToUserModel(persistence: any, model: UserModel) {
 }
 
 function saveUserToFirebase(model: UserModel, uid: string) {
-    const persistence = userModelToPersistence(model);
+        const persistence = userModelToPersistence(model);
     persistence.uid = uid;
     push(userRef, persistence);
 }
@@ -39,7 +39,8 @@ function updateUserToFirebase(model: UserModel, uid: string) {
 
 function readUserFromFirebase(model: UserModel) {
     return get(userRef).then(snapshot => {
-        persistenceToUserModel(snapshot.val(), model);
+                persistenceToUserModel(snapshot.val(), model);
+        return model;
     });
 }
 

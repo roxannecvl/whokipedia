@@ -36,9 +36,10 @@ export class Utils {
      */
     //TODO : remove after testing
     public static getRandomUserModel(): UserModel {
-        const user = new UserModel();
-        user.updateStats(321, 2321, 345, 435, 324, 2432)
-        return user;
+        const max_value = 100;
+        const userModel = new UserModel();
+        userModel.updateStats(Math.random() * max_value, Math.random() * max_value, Math.random() * max_value, Math.random() * max_value, Math.random() * max_value, Math.random() * max_value)
+        return userModel;
     }
 
     // Add more utility functions here
