@@ -1,4 +1,5 @@
 import { Utils } from "~/utilities/Utils";
+import { HintList } from "~/model/HintList";
 
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
@@ -117,8 +118,7 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                console.log("done fetchInfoBox")
-                return parseWikitext(wikitext)
+                return HintList.fromObject({...parseWikitext(wikitext), initials: Utils.getInitials(pageTitle)})
             }
             throw new Error(`Infobox for page ${pageTitle} was not found.`)
         })
@@ -130,7 +130,7 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
  * It returns an object containing all fields of the infobox.
  * @param wikitext the wikitext of the first section of a Wikipedia page
  */
-function parseWikitext(wikitext: string): any {
+function parseWikitext(wikitext: string): {[key: string]: string} {
 
     // Remove introduction after infobox
     wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
@@ -140,85 +140,52 @@ function parseWikitext(wikitext: string): any {
     wikitext = Utils.removeTag(wikitext, "<ref", "/>");
     wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
 
-    let description: string | undefined
-    let birthDate: Date | undefined = undefined
-    let deathDate: Date | undefined = undefined
-    let citizenship : string | undefined = undefined
-    let occupation : string | undefined = undefined
-    let spouses : string[] | undefined = undefined
-    let genres : string [] | undefined = undefined
-    let political_party : string | undefined = undefined
-    let instruments : string [] | undefined = undefined
-    let known_for : string [] | undefined = undefined
-    let education : string | undefined = undefined
-    let notable_work : string [] | undefined = undefined
-    let honours : string [] | undefined = undefined
-    let awards : string[] | undefined = undefined
-    let television : string [] | undefined = undefined
-    let partners : string [] | undefined = undefined
-    let other_names : string [] | undefined = undefined
-    let title : string | undefined = undefined
-    let children : number | undefined = undefined
-    let years_active : string | undefined = undefined
+    let hints: {[key: string]: string } = {}
 
     // Description
     let match = fieldMatchers.description.exec(wikitext);
-    description = match ? match[1] : undefined;
+    let description: string | undefined = match ? match[1] : undefined;
     if (description) {
-        ({citizenship, occupation} = parseDescription(description));
+        const {citizenship, occupation} = parseDescription(description)
+        if (citizenship !== undefined) hints["Citizenship"] = citizenship
+        if (occupation !== undefined) hints["Occupation"] = occupation
     }
 
     // Birthdate
     match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
         const [, birthYear, birthMonth, birthDay] = match;
-        birthDate = new Date(parseInt(birthYear), parseInt(birthMonth) - 1, parseInt(birthDay));
+        hints["Born"] = `${birthDay} ${Utils.months[parseInt(birthMonth)]} ${birthYear}`;
     }
 
     // Death date
     match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
         const [, deathYear, deathMonth, deathDay] = match;
-        deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
+        hints["Died"] = `${deathDay} ${Utils.months[parseInt(deathMonth)]} ${deathYear}`;
     }
 
     // Spouses
+    let spouses: string[] | undefined = undefined
     while ((match = fieldMatchers.spouses.exec(wikitext)) !== null) {
         spouses = spouses ? [...spouses, match[1]] : [match[1]];
+        hints["Spouses"] = spouses.join('\n')
     }
 
     // Genres
     match = fieldMatchers.genres.exec(wikitext);
     if (match){
         let genre: string = match[0]
+        let genres: string[] | undefined = undefined
         while ((match = fieldMatchers.lists.exec(genre)) !== null) {
             genres = genres ?
                 [...genres, match[1].split('|')[0].trim()] :
                 [match[1].split('|')[0].trim()]
+            hints["Genres"] = genres.join('\n')
         }
     }
 
-    return {
-        birthDate: birthDate,
-        deathDate: deathDate,
-        occupation: occupation,
-        citizenship: citizenship,
-        spouses: spouses,
-        genres: genres,
-        political_party : political_party,
-        instruments : instruments,
-        known_for : known_for,
-        education : education,
-        notable_work : notable_work,
-        honours : honours,
-        awards : awards,
-        television : television,
-        partners : partners,
-        other_names : other_names,
-        title : title,
-        children : children,
-        years_active : years_active,
-    }
+    return hints
 }
 
 function parseDescription(description : string): {citizenship: string | undefined, occupation: string | undefined} {
