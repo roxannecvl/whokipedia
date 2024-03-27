@@ -3,7 +3,7 @@ const compulsoryLabels: {[key: string]: number} = {
     'Died': 1,
     'Occupation': 1,
     'Citizenship': 1,
-    'Initials': 2,
+    'Initials': 3,
 }
 
 const arbitraryLabels: {[key: string]: number} = {
@@ -18,7 +18,10 @@ const arbitraryLabels: {[key: string]: number} = {
     'Partners': 2,
     'Title': 2,
     'Children': 2,
-    'Years active': 2
+    'Years active': 2,
+    'Known for': 3,
+    'Notable work': 3,
+    'Other names': 3
 }
 
 /**
