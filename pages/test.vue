@@ -2,7 +2,6 @@
     setup
     lang="ts">
 
-
 import { ref } from 'vue';
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource";
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
@@ -33,14 +32,6 @@ watch(selectedName, getData)
   </div>
   <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
     <ULink to="/">Home</ULink>
-  </div>
-  <div>
-    <UButton label="Sign up / Log in" @click="isOpen = true" />
-    <UModal v-model="isOpen">
-      <div class="p-4">
-        <SignupLoginPresenter />
-      </div>
-    </UModal>
   </div>
   <UInputMenu
       v-model="selectedName"

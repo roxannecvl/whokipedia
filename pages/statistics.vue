@@ -4,13 +4,19 @@
 
 import StatisticsView
   from "~/views/statisticsView.vue";
-import {
-  UserModel
-} from "~/model/UserModel";
-import { useCurrentUser } from "vuefire";
+import { updateUserToFirebase } from '~/model/firebaseModel'
+import { Utils } from "~/utilities/Utils";
 
+const userModel: any = useAttrs().userModel
 const user = useCurrentUser()
-const userModel = user.value?.email ? new UserModel(user.value.email) : undefined
+
+const populateStats = () => {
+  if(user.value){
+    const randomUserModel = Utils.getRandomUserModel()
+    userModel.updateStats(randomUserModel.currentStreak, randomUserModel.maxStreak, randomUserModel.averageRank, randomUserModel.averageGuesses, randomUserModel.averageTime, randomUserModel.timesPlayed, randomUserModel.times, randomUserModel.ranks, randomUserModel.guesses)
+    updateUserToFirebase(userModel, user.value.uid)
+  }
+}
 
 </script>
 
@@ -26,5 +32,8 @@ const userModel = user.value?.email ? new UserModel(user.value.email) : undefine
     </div>
       <StatisticsView
         :userModel />
+    <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+      <UButton @click="populateStats">Populate stats</UButton>
+    </div>
   </div>
 </template>

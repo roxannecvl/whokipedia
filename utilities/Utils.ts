@@ -1,3 +1,5 @@
+import { UserModel } from "~/model/UserModel";
+
 export class Utils {
     /**
      * Example of a utils function.
@@ -92,6 +94,16 @@ export class Utils {
         const regexStr = `${opening}[^]*?${closing}`;
         const regex = new RegExp(regexStr, 'g');
         return text.replace(regex, '');
+
+     * Get random user model
+     * @returns a random user model
+     */
+    //TODO : remove after testing
+    public static getRandomUserModel(): UserModel {
+        const max_value = 100;
+        const userModel = new UserModel();
+        userModel.updateStats(Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value))
+        return userModel;
     }
 
     // Add more utility functions here
