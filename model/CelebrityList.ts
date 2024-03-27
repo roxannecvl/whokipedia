@@ -104,7 +104,9 @@ export const celebrities : string[] = [
    "Coco Chanel",
    "Christian Dior",
    "Jacques Brel",
-   "Charles Aznavour"
+   "Charles Aznavour",
+   "Joe Biden",
+   "Greta Thunberg",
 ];
 
 /**

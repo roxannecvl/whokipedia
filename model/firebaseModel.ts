@@ -1,4 +1,4 @@
-import {ref as dbRef, push, update, get, Database, type DatabaseReference} from "firebase/database";
+import { ref as dbRef, push, update, get, Database, type DatabaseReference } from "firebase/database";
 import type { UserModel } from "./UserModel.js";
 
 let database: Database;

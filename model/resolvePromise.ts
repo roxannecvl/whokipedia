@@ -1,11 +1,16 @@
+export type PromiseState = {
+    promise: Promise<any> | null,
+    data: any | null,
+    error: string | null
+}
+
 /**
- * @credits : comes from the tutorial
- * Saves promise results in a `state` object (typically held in the Model),
- * so that the results can be shown in the UI.
+ * @credits : comes from the tutorial of the course "Interaction Programming and the Dynamic Web" by KTH University.
+ * Saves promise results in a `state` object (typically held in the Model), so that the results can be shown in the UI.
  * @param prms : Promise promise to resolve
- * @param promiseState state object of the Model
+ * @param promiseState : PromiseState state object of the Model
  */
-export function resolvePromise(prms : Promise<any>, promiseState : any){
+export function resolvePromise(prms : Promise<any>, promiseState : PromiseState) : void{
 
     // Checks for null promise
     if(prms === null) return;
