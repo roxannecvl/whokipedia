@@ -11,6 +11,16 @@ export class Utils {
 
     /**
      * Gives you a random element from the list.
+     * Get mean function
+     * @param tab - the table of numbers to get the mean from
+     * @returns the mean of the numbers in the table
+     */
+    public static getMean(tab: number[]): number {
+        return tab.reduce((a, b) => a + b, 0) / tab.length;
+    }
+
+    /**
+     * Gives you a random element from the list
      * @param list - a nonempty list
      * @returns an element from the given list
      */
