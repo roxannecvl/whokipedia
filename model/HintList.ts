@@ -1,24 +1,24 @@
 const compulsoryLabels: {[key: string]: number} = {
-    'birthDate': 1,
-    'deathDate': 1,
-    'occupation': 1,
-    'citizenship': 1,
-    'initials': 2,
+    'Born': 1,
+    'Died': 1,
+    'Occupation': 1,
+    'Citizenship': 1,
+    'Initials': 2,
 }
 
 const arbitraryLabels: {[key: string]: number} = {
-    'spouses': 2,
-    'genres': 2,
-    'politicalParty': 2,
-    'instruments': 2,
-    'education': 2,
-    'awards': 2,
-    'honours': 2,
-    'television': 2,
-    'partners': 2,
-    'title': 2,
-    'children': 2,
-    'yearsActive': 2
+    'Spouses': 2,
+    'Genres': 2,
+    'Political party': 2,
+    'Instruments': 2,
+    'Education': 2,
+    'Awards': 2,
+    'Honours': 2,
+    'Television': 2,
+    'Partners': 2,
+    'Title': 2,
+    'Children': 2,
+    'Years active': 2
 }
 
 /**
