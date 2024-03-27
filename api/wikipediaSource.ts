@@ -130,7 +130,7 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
  * It returns an object containing all fields of the infobox.
  * @param wikitext the wikitext of the first section of a Wikipedia page
  */
-function parseWikitext(wikitext: string): any {
+function parseWikitext(wikitext: string): {[key: string]: string} {
 
     // Remove introduction after infobox
     wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
@@ -140,11 +140,11 @@ function parseWikitext(wikitext: string): any {
     wikitext = Utils.removeTag(wikitext, "<ref", "/>");
     wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
 
-    let hints: {[key: string]: string | string[] | Date} = {}
+    let hints: {[key: string]: string } = {}
 
     // Description
     let match = fieldMatchers.description.exec(wikitext);
-    let description = match ? match[1] : undefined;
+    let description: string | undefined = match ? match[1] : undefined;
     if (description) {
         const {citizenship, occupation} = parseDescription(description)
         if (citizenship !== undefined) hints.citizenship = citizenship
@@ -155,21 +155,21 @@ function parseWikitext(wikitext: string): any {
     match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
         const [, birthYear, birthMonth, birthDay] = match;
-        hints.birthDate = new Date(parseInt(birthYear), parseInt(birthMonth) - 1, parseInt(birthDay));
+        hints.birthDate = `${birthDay} ${birthMonth} ${birthYear}`;
     }
 
     // Death date
     match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
         const [, deathYear, deathMonth, deathDay] = match;
-        hints.deathDate = new Date(parseInt(deathYear), parseInt(deathMonth) - 1, parseInt(deathDay));
+        hints.deathDate = `${deathDay} ${deathMonth} ${deathYear}`;
     }
 
     // Spouses
     let spouses: string[] | undefined = undefined
     while ((match = fieldMatchers.spouses.exec(wikitext)) !== null) {
         spouses = spouses ? [...spouses, match[1]] : [match[1]];
-        hints.spouses = spouses
+        hints.spouses = spouses.join('\n')
     }
 
     // Genres
@@ -181,7 +181,7 @@ function parseWikitext(wikitext: string): any {
             genres = genres ?
                 [...genres, match[1].split('|')[0].trim()] :
                 [match[1].split('|')[0].trim()]
-            hints.genres = genres
+            hints.genres = genres.join('\n')
         }
     }
 

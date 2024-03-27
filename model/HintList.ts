@@ -29,11 +29,11 @@ const arbitraryLabels: {[key: string]: number} = {
 export class HintList {
 
     static fromObject(obj: {[key: string]:  string}): HintList {
-        let compulsoryHints: Hint<any>[] = [];
-        let arbitraryHints: Hint<any>[] = [];
+        let compulsoryHints: Hint<string>[] = [];
+        let arbitraryHints: Hint<string>[] = [];
         Object.entries(obj).forEach(([key, value]) => {
             if(arbitraryLabels.hasOwnProperty(key)) {
-                arbitraryHints.push(new Hint(key, arbitraryLabels[key], value, ))
+                arbitraryHints.push(new Hint(key, arbitraryLabels[key], value))
             } else if (compulsoryLabels.hasOwnProperty(key)) {
                 compulsoryHints.push(new Hint(key, compulsoryLabels[key], value))
             }
@@ -41,13 +41,13 @@ export class HintList {
         return new HintList([...compulsoryHints, ...arbitraryHints.slice(0, 2)]);
     }
 
-    hints: Hint<any>[] = [];
+    hints: Hint<string>[] = [];
 
-    constructor(hints: Hint<any>[]) {
+    constructor(hints: Hint<string>[]) {
         this.hints = hints;
     }
 
-    toList() : Hint<any>[] {
+    toList() : Hint<string>[] {
         return [...this.hints];
     }
 }
