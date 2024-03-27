@@ -29,8 +29,8 @@ const arbitraryLabels: {[key: string]: number} = {
 export class HintList {
 
     static fromObject(obj: {[key: string]:  string}): HintList {
-        let compulsoryHints: Hint<string>[] = [];
-        let arbitraryHints: Hint<string>[] = [];
+        let compulsoryHints: Hint[] = [];
+        let arbitraryHints: Hint[] = [];
         Object.entries(obj).forEach(([key, value]) => {
             if(arbitraryLabels.hasOwnProperty(key)) {
                 arbitraryHints.push(new Hint(key, arbitraryLabels[key], value))
@@ -41,13 +41,13 @@ export class HintList {
         return new HintList([...compulsoryHints, ...arbitraryHints.slice(0, 2)]);
     }
 
-    hints: Hint<string>[] = [];
+    hints: Hint[] = [];
 
-    constructor(hints: Hint<string>[]) {
+    constructor(hints: Hint[]) {
         this.hints = hints;
     }
 
-    toList() : Hint<string>[] {
+    toList() : Hint[] {
         return [...this.hints];
     }
 }
@@ -58,13 +58,13 @@ export class HintList {
  * hint (from 1 to 3) and `value` is the value of the hint (can be of any type).
  * @param T - the type of the value of the hint
  */
-export class Hint <T> {
+export class Hint {
     private readonly _level : number;
-    private readonly _value : T | undefined;
+    private readonly _value : string;
     private _revealed : boolean;
     private readonly _label : string;
 
-    constructor(label : string, level: number, value : T | undefined, revealed : boolean = false) {
+    constructor(label : string, level: number, value: string, revealed : boolean = false) {
         this._label = label;
         this._level = level;
         this._revealed = revealed;
@@ -74,7 +74,7 @@ export class Hint <T> {
     get level() : number {
         return this._level;
     }
-    get value(): T | undefined {
+    get value(): string {
         return this._value;
     }
 
