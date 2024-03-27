@@ -1,4 +1,6 @@
-import { UserModel } from "~/model/UserModel";
+import {
+    UserModel
+} from "~/model/UserModel";
 
 export class Utils {
     /**
@@ -26,8 +28,8 @@ export class Utils {
      * @param list - a nonempty list
      * @returns an element from the given list
      */
-    public static getRandom(list : any[]) :any {
-        if(list.length == 0) return null;
+    public static getRandom(list: any[]): any {
+        if (list.length == 0) return null;
         return list[Math.floor(Math.random() * list.length)];
     }
 
@@ -35,7 +37,7 @@ export class Utils {
      * Given a name (string) this function returns a string containing the intials of the name
      *
      */
-    public static  getInitials(name: string): string {
+    public static getInitials(name: string): string {
         // Split the name into individual words
         const words: string[] = name.split(' ');
 
@@ -95,7 +97,7 @@ export class Utils {
         const regex = new RegExp(regexStr, 'g');
         return text.replace(regex, '');
     }
-    
+
     /**
      * Get random user model
      * @returns a random user model
@@ -109,7 +111,9 @@ export class Utils {
     }
 
     // Add more utility functions here
-    static countries: {[key: string]: string} = {
+    static countries: {
+        [key: string]: string
+    } = {
         "Afghanistan": "Afghan",
         "Albania": "Albanian",
         "Algeria": "Algerian",

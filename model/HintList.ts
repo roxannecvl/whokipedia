@@ -69,7 +69,14 @@ export class Hint <T> {
     get level() : number {
         return this._level;
     }
-    get value(): T | undefined {
+    get value(): T | string | undefined {
+        if(this._value instanceof Date){
+            let date = this._value as Date;
+            let day = date.getDate();
+            let month = date.toLocaleString('en-US', { month: 'long' });
+            let year = date.getFullYear();
+            return day + " " + month + " " + year;
+        }
         return this._value;
     }
 

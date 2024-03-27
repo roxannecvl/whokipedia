@@ -40,7 +40,7 @@ whokipedia/                          #
 ├── LICENSE                          #
 ├── README.md                        #
 ├── api/                             # Contains all files for talking to the api and parsing the responses
-│   └── wikipediaSource.ts           #
+│   └── WikipediaSource.ts           #
 ├── app.config.ts                    #
 ├── app.vue                          # Contains signupLoginPresenter.vue, logo (title version), black mode button and git button
 ├── model/                           #
@@ -48,12 +48,12 @@ whokipedia/                          #
 │   ├── GameModel.ts                 # Contains all the logic for the current game played 
 │   ├── HintList.ts                  # Declaration of HintList type (a list of Hints) and Hint type
 │   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
-│   ├── firebaseModel.ts             # Contains all logic for talking to our database
-│   └── resolvePromise.ts            # Contains the logic for promise resolution
+│   ├── FirebaseModel.ts             # Contains all logic for talking to our database
+│   └── ResolvePromise.ts            # Contains the logic for promise resolution
 ├── nuxt.config.ts                   #
 ├── package.json                     # All our dependencies 
 ├── pages/                           #
-│   ├── dailychallenge.vue           # with gamePresenter and sidebarPresenter together
+│   ├── daily-challenge.vue           # with gamePresenter and sidebarPresenter together
 │   ├── index.vue                    # with welcomePagePresenter.vue
 │   ├── leaderboard.vue              # with leaderboardPresenter.vue
 │   ├── statistics.vue               # with statisticsPresenter.vue

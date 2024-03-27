@@ -1,8 +1,11 @@
-import { resolvePromise} from "~/model/resolvePromise"
-import type { PromiseState } from "~/model/resolvePromise"
+import { resolvePromise} from "~/model/ResolvePromise"
+import type { PromiseState } from "~/model/ResolvePromise"
 import { Hint, HintList } from "~/model/HintList"
-import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource"
+import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource"
 import { Utils } from "~/utilities/Utils"
+import {
+    celebrities
+} from "~/model/CelebrityList";
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -64,20 +67,20 @@ export class GameModel {
      * that should be revealed
      */
     public getNewHint() : void {
-        if(this._hints != undefined && this._imageUrl != ""  && this._intro[0] !== ""){
+        if (this._hints != undefined && this._imageUrl != ""  && this._intro[0] !== "") {
             const levelHintsLeft = this._hints.toList().filter(
                 hint => !hint.revealed && hint.level == this._curHintLevel);
             const listLength = levelHintsLeft.length;
-            if(listLength == 0){
+            if (listLength == 0) {
                 this._curHintLevel ++;
-                if(this._curHintLevel == 2){
+                if (this._curHintLevel == 2) {
                     this._blur = 2;
-                }else if(this._curHintLevel == 3){
+                } else if (this._curHintLevel == 3) {
                     this._blur = 0;
-                }else{ //no more hints available
+                } else { //no more hints available
                     this._end = true;
                 }
-            }else{
+            } else {
                 const rdmHint = Utils.getRandom(levelHintsLeft);
                 rdmHint.reveal()
             }
@@ -92,18 +95,22 @@ export class GameModel {
      * or the celebrity entered isn't in our database.
      */
     public makeAGuess(newGuess : string) : boolean {
-        if(this._prevGuesses.includes(newGuess) || false){ //TODO: replace false by "!(ourCelebList.includes(newGuess)"
+        if (this._prevGuesses.length != 0 && this._prevGuesses.includes(newGuess)) {
             return false;
-        }else {
-            this._prevGuesses.push(newGuess);
+        } else {
+            this._prevGuesses = [newGuess, ...this._prevGuesses];
             this._curGuess = newGuess;
             this._nbGuesses++;
-            if(this._curGuess == this._name){
+            if (this._curGuess == this._name) {
                 this._end = true;
                 this._win = true;
             }
             return true;
         }
+    }
+
+    public isReady() : boolean {
+        return this.introPromiseState.data !== null && this.imagePromiseState.data !== null && this.infoPromiseState.data !== null;
     }
 
 
