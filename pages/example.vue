@@ -9,6 +9,8 @@ import InfoboxView
 import {
   GameModel
 } from "~/model/GameModel";
+import {celebrities} from "~/model/CelebrityList";
+import {Utils} from "~/utilities/Utils";
 
 const Welcome = () =>
     <span>Welcome </span>
@@ -28,6 +30,9 @@ const InlineComponent = () => (
     <Whokipedia/>
     </div>
 )
+
+const model = reactive(new GameModel());
+model.init(Utils.getRandom(celebrities));
 
 </script>
 
@@ -49,7 +54,7 @@ const InlineComponent = () => (
     </div>
     <div class="w-60 ">
       <InfoboxView
-          :model="new GameModel('Albert Einstein')"
+          :model="model"
       />
     </div>
   </div>

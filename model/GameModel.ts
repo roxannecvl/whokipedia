@@ -12,8 +12,8 @@ import { Utils } from "~/utilities/Utils"
 export class GameModel {
 
     // Celebrity information
-    private _name: string;
-    private _imageUrl: string  = "";
+    private _name: string = "";
+    private _imageUrl: string = "";
     private _intro : string[] = [""];
     private _hints : HintList | undefined = undefined;
 
@@ -32,20 +32,20 @@ export class GameModel {
     /**
      * Model for the game
      */
-    constructor(name: string) {
-        console.log("creating")
+
+    public init(name: string){
+        this._reset();
         this._name = name;
-        resolvePromise(fetchIntro(name).then(intro => this._intro = intro), this.introPromiseState);
-        resolvePromise(fetchImageUrl(name, 100).then(url => this._imageUrl = url), this.imagePromiseState);
-        resolvePromise(fetchInfoBox(name).then(info => this._setHintListACB(info)), this.infoPromiseState);
-        console.log("done")
+        resolvePromise(fetchIntro(this._name).then(intro => this._intro = intro), this.introPromiseState);
+        resolvePromise(fetchImageUrl(this._name, 100).then(url => this._imageUrl = url), this.imagePromiseState);
+        resolvePromise(fetchInfoBox(this._name).then(info => this._setHintListACB(info)), this.infoPromiseState);
     }
 
     /**
      * This method reveals a new hint pseudo-randomly by taking into account the current hint-level
      * that should be revealed
      */
-    getNewHint() : void {
+    public getNewHint() : void {
         if(this._hints != undefined && this._imageUrl != ""  && this._intro[0] !== ""){
             const levelHintsLeft = this._hints.toList().filter(
                 hint => !hint.revealed && hint.level == this._curHintLevel);
@@ -73,7 +73,7 @@ export class GameModel {
      * @return boolean, true if the guess was correctly set, false either if the guess has already been played
      * or the celebrity entered isn't in our database.
      */
-    makeAGuess(newGuess : string) : boolean {
+    public makeAGuess(newGuess : string) : boolean {
         if(this._prevGuesses.includes(newGuess) || false){ //TODO: replace false by "!(ourCelebList.includes(newGuess)"
             return false;
         }else {
@@ -168,8 +168,25 @@ export class GameModel {
             Utils.getInitials(this._name), arbitraryHints);
 
         return this._hints;
-        console.log("done initiating hints")
+    }
 
+    private _reset() {
+        this._name= "";
+        this._imageUrl = "";
+        this._intro = [""];
+        this._hints = undefined;
+
+        //game information
+        this._blur = 4;
+        this._curHintLevel = 1;
+        this._nbGuesses = 0;
+        this._curGuess = '';
+        this._prevGuesses = [];
+        this.introPromiseState = { data: null, promise: null, error: null };
+        this.imagePromiseState = { data: null, promise: null, error: null };
+        this.infoPromiseState = { data: null, promise: null, error: null };
+        this._end = false;
+        this._win = false;
     }
 }
 
