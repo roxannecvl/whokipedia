@@ -1,50 +1,55 @@
+const compulsoryLabels: {[key: string]: number} = {
+    'birthDate': 1,
+    'deathDate': 1,
+    'occupation': 1,
+    'citizenship': 1,
+    'initials': 2,
+}
+
+const arbitraryLabels: {[key: string]: number} = {
+    'spouses': 2,
+    'genres': 2,
+    'politicalParty': 2,
+    'instruments': 2,
+    'education': 2,
+    'awards': 2,
+    'honours': 2,
+    'television': 2,
+    'partners': 2,
+    'title': 2,
+    'children': 2,
+    'yearsActive': 2
+}
+
 /**
  * This class represents a list of hints necessary for one game. It contains 6 hints, each of them being of type `Hint`.
  * The hints are the birthdate, the death date, the occupation, the citizenship, the initials and the first paragraph
  * of the Wikipedia page of the celebrity.
  */
 export class HintList {
-    birth: Hint<Date> ;
-    alive : boolean
-    death : Hint<Date | undefined> ;
-    occupation : Hint<string> ;
-    citizenship : Hint<string> ;
-    initials : Hint<string> ;
-    others: Hint<any>[] = [];
 
-    constructor(
-        birth: Date,
-        death: Date | undefined,
-        occupation: string,
-        citizenship: string,
-        initials: string,
-        others: Hint<any>[]
-    ){
-        this.birth = new Hint<Date>("Birth", 1, birth, true);
-        this.alive = (death === undefined);
-        this.death = new Hint<Date>("Death", 1, death);
-        this.occupation = new Hint<string>("Occupation", 1, occupation);
-        this.citizenship = new Hint<string>("Citizenship", 1, citizenship);
-        this.initials = new Hint<string>("Initials", 2, initials);
-        this.others = others;
+    static fromObject(obj: {[key: string]:  string}): HintList {
+        let compulsoryHints: Hint<any>[] = [];
+        let arbitraryHints: Hint<any>[] = [];
+        Object.entries(obj).forEach(([key, value]) => {
+            if(arbitraryLabels.hasOwnProperty(key)) {
+                arbitraryHints.push(new Hint(key, arbitraryLabels[key], value, ))
+            } else if (compulsoryLabels.hasOwnProperty(key)) {
+                compulsoryHints.push(new Hint(key, compulsoryLabels[key], value))
+            }
+        })
+        return new HintList([...compulsoryHints, ...arbitraryHints.slice(0, 2)]);
     }
 
-    toList() : Hint<any>[]{
-        return [this.birth, this.death, this.occupation, this.citizenship, this.initials, ...this.others];
+    hints: Hint<any>[] = [];
+
+    constructor(hints: Hint<any>[]) {
+        this.hints = hints;
     }
 
-
-    //For testing purposes, will be removed
-    toString() : string {
-        let retVal : string = "";
-        let list : Hint<any>[] = this.toList()
-        for(let i = 0; i < list.length ; i++){
-            let h = list[i];
-            if(h.value != undefined) retVal += h.label + " : "  + h.value + "\n"
-        }
-        return retVal;
+    toList() : Hint<any>[] {
+        return [...this.hints];
     }
-
 }
 
 /**
@@ -54,10 +59,10 @@ export class HintList {
  * @param T - the type of the value of the hint
  */
 export class Hint <T> {
-    private _level : number;
-    private _value : T | undefined;
+    private readonly _level : number;
+    private readonly _value : T | undefined;
     private _revealed : boolean;
-    private _label : string;
+    private readonly _label : string;
 
     constructor(label : string, level: number, value : T | undefined, revealed : boolean = false) {
         this._label = label;
