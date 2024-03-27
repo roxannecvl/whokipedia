@@ -9,8 +9,8 @@ import InfoboxView
 import {
   GameModel
 } from "~/model/GameModel";
-import {celebrities} from "~/model/CelebrityList";
-import {Utils} from "~/utilities/Utils";
+import { celebrities } from "~/model/CelebrityList";
+import { Utils } from "~/utilities/Utils";
 
 const Welcome = () =>
     <span>Welcome </span>

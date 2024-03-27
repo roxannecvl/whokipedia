@@ -94,7 +94,9 @@ export class Utils {
         const regexStr = `${opening}[^]*?${closing}`;
         const regex = new RegExp(regexStr, 'g');
         return text.replace(regex, '');
-
+    }
+    
+    /**
      * Get random user model
      * @returns a random user model
      */

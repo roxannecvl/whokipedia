@@ -1,7 +1,7 @@
 import { resolvePromise} from "~/model/resolvePromise"
-import type {PromiseState } from "~/model/resolvePromise"
-import {Hint, HintList} from "~/model/HintList"
-import {fetchIntro, fetchImageUrl, fetchInfoBox} from "~/api/wikipediaSource"
+import type { PromiseState } from "~/model/resolvePromise"
+import { Hint, HintList } from "~/model/HintList"
+import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/wikipediaSource"
 import { Utils } from "~/utilities/Utils"
 
 /**
@@ -12,20 +12,20 @@ import { Utils } from "~/utilities/Utils"
 export class GameModel {
 
     // Celebrity information
-    private _name: string = "";
-    private _imageUrl: string = "";
-    private _intro : string[] = [""];
-    private _hints : HintList | undefined = undefined;
+    private _name: string;
+    private _imageUrl: string;
+    private _intro : string[];
+    private _hints : HintList | undefined;
 
     //game information
-    private _blur: number = 4;
-    private _curHintLevel: number = 1;
-    private _nbGuesses = 0;
-    private _curGuess : string = '';
-    private _prevGuesses : string[] = [];
-    public introPromiseState: PromiseState = { data: null, promise: null, error: null };
-    public imagePromiseState: PromiseState = { data: null, promise: null, error: null };
-    public infoPromiseState: PromiseState = { data: null, promise: null, error: null };
+    private _blur: number;
+    private _curHintLevel: number;
+    private _nbGuesses: number;
+    private _curGuess : string;
+    private _prevGuesses : string[];
+    public introPromiseState: PromiseState;
+    public imagePromiseState: PromiseState;
+    public infoPromiseState: PromiseState;
     private _end: boolean = false;
     private _win: boolean = false;
 
@@ -33,6 +33,24 @@ export class GameModel {
      * Model for the game
      */
 
+    public constructor() {
+        this._name= "";
+        this._imageUrl = "";
+        this._intro = [""];
+        this._hints = undefined;
+
+        //game information
+        this._blur = 4;
+        this._curHintLevel = 1;
+        this._nbGuesses = 0;
+        this._curGuess = '';
+        this._prevGuesses = [];
+        this.introPromiseState = { data: null, promise: null, error: null };
+        this.imagePromiseState = { data: null, promise: null, error: null };
+        this.infoPromiseState = { data: null, promise: null, error: null };
+        this._end = false;
+        this._win = false;
+    }
     public init(name: string){
         this._reset();
         this._name = name;
@@ -131,11 +149,6 @@ export class GameModel {
         }
         this._blur = value;
     }
-
-    setIntroPromiseState(prmState : PromiseState){
-        this.introPromiseState = prmState;
-    }
-
 
 
     /**
