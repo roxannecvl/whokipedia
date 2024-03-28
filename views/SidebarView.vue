@@ -6,8 +6,8 @@ defineProps({
   //TODO : add the time
 })
 
-const logoFilledPath = '_nuxt/assets/logo-filled.svg';
-const logoTransparentPath = '_nuxt/assets/logo-transparent.svg';
+const logoFilledPath = '/img/logo-filled.svg';
+const logoTransparentPath = '/img/logo-transparent.svg';
 
 const mode = useColorMode();
 const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTransparentPath);
