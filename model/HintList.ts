@@ -1,65 +1,73 @@
+export const compulsoryLabels: {[key: string]: number} = {
+    'Born': 1,
+    'Died': 1,
+    'Status': 1,
+    'Occupation': 1,
+    'Citizenship': 1,
+    'Initials': 3,
+}
+
+const arbitraryLabels: {[key: string]: number} = {
+    'Spouses': 2,
+    'Genres': 2,
+    'Political party': 2,
+    'Instruments': 2,
+    'Education': 2,
+    'Awards': 2,
+    'Honours': 2,
+    'Television': 2,
+    'Partners': 2,
+    'Title': 2,
+    'Children': 2,
+    'Years active': 2,
+    'Known for': 3,
+    'Notable work': 3,
+    'Other names': 3
+}
+
 /**
  * This class represents a list of hints necessary for one game. It contains 6 hints, each of them being of type `Hint`.
  * The hints are the birthdate, the death date, the occupation, the citizenship, the initials and the first paragraph
  * of the Wikipedia page of the celebrity.
  */
 export class HintList {
-    birth: Hint<Date> ;
-    alive : boolean
-    death : Hint<Date | undefined> ;
-    occupation : Hint<string> ;
-    citizenship : Hint<string> ;
-    initials : Hint<string> ;
-    others: Hint<any>[] = [];
 
-    constructor(
-        birth: Date,
-        death: Date | undefined,
-        occupation: string,
-        citizenship: string,
-        initials: string,
-        others: Hint<any>[]
-    ){
-        this.birth = new Hint<Date>("Birth", 1, birth, true);
-        this.alive = (death === undefined);
-        this.death = new Hint<Date>("Death", 1, death);
-        this.occupation = new Hint<string>("Occupation", 1, occupation);
-        this.citizenship = new Hint<string>("Citizenship", 1, citizenship);
-        this.initials = new Hint<string>("Initials", 2, initials);
-        this.others = others;
+    static fromObject(obj: {[key: string]:  string}): HintList {
+        let compulsoryHints: Hint[] = [];
+        let arbitraryHints: Hint[] = [];
+        Object.entries(obj).forEach(([key, value]) => {
+            if(arbitraryLabels.hasOwnProperty(key)) {
+                arbitraryHints.push(new Hint(key, arbitraryLabels[key], value, ))
+            } else if (compulsoryLabels.hasOwnProperty(key)) {
+                compulsoryHints.push(new Hint(key, compulsoryLabels[key], value, key === 'Born'),)
+            }
+        })
+        return new HintList([...compulsoryHints, ...arbitraryHints.slice(0, 2)]);
     }
 
-    toList() : Hint<any>[]{
-        return [this.birth, this.death, this.occupation, this.citizenship, this.initials, ...this.others];
+    private _hints: Hint[] = [];
+
+    constructor(hints: Hint[]) {
+        this._hints = hints;
     }
 
-
-    //For testing purposes, will be removed
-    toString() : string {
-        let retVal : string = "";
-        let list : Hint<any>[] = this.toList()
-        for(let i = 0; i < list.length ; i++){
-            let h = list[i];
-            if(h.value != undefined) retVal += h.label + " : "  + h.value + "\n"
-        }
-        return retVal;
+    toList() : Hint[] {
+        return this._hints;
     }
-
 }
 
 /**
  * This class represents a hint, with its value and additional information. Attributes are the following :
  * `revealed` tells us if the hint has been revealed yet, `level` gives us the level corresponding to the
  * hint (from 1 to 3) and `value` is the value of the hint (can be of any type).
- * @param T - the type of the value of the hint
  */
-export class Hint <T> {
-    private _level : number;
-    private _value : T | undefined;
+export class Hint {
+    private readonly _level : number;
+    private readonly _value : string;
     private _revealed : boolean;
-    private _label : string;
+    private readonly _label : string;
 
-    constructor(label : string, level: number, value : T | undefined, revealed : boolean = false) {
+    constructor(label : string, level: number, value: string, revealed : boolean = false) {
         this._label = label;
         this._level = level;
         this._revealed = revealed;
@@ -69,14 +77,8 @@ export class Hint <T> {
     get level() : number {
         return this._level;
     }
-    get value(): T | string | undefined {
-        if(this._value instanceof Date){
-            let date = this._value as Date;
-            let day = date.getDate();
-            let month = date.toLocaleString('en-US', { month: 'long' });
-            let year = date.getFullYear();
-            return day + " " + month + " " + year;
-        }
+
+    get value(): string {
         return this._value;
     }
 

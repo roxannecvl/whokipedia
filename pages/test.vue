@@ -18,10 +18,7 @@ const getData = async () => {
   infoBox.value = await fetchInfoBox(selectedName.value);
 }
 
-
 watch(selectedName, getData)
-
-
 
 </script>
 
