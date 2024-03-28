@@ -18,7 +18,10 @@ const emit = defineEmits(['new-name-set'])
 const selectedName = ref("");
 
 function newName() {
-  emit("new-name-set", selectedName.value)
+  emit("new-name-set", selectedName.value);
+  setTimeout(() => {
+    selectedName.value = "";
+  }, 200);
 }
 
 watch(selectedName, newName)
@@ -29,7 +32,7 @@ watch(selectedName, newName)
   <UInputMenu
       v-model="selectedName"
       :search="getAutocompleteSuggestions"
-      placeholder="Enter a name..."
+      placeholder="Take a guess..."
       option-attribute="name"
       trailing
       by="id"

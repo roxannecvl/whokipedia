@@ -16,7 +16,6 @@ const isDark = computed({
 })
 
 const userModel: any = reactive(new UserModel())
-console.log(userModel)
 
 initialiseFirebase()
 
@@ -31,7 +30,6 @@ const isUserLoggedIn = ref(false)
 // we don't need this watcher on server
 onMounted(() => {
   watch(user, (user, prevUser) => {
-    console.log('User changed: ', user, prevUser)
     if (prevUser && !user) {
         // user logged out
         console.log('Successfully logged out')
