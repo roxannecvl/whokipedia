@@ -1,16 +1,6 @@
 import { UserModel } from "~/model/UserModel";
 
 export class Utils {
-    /**
-     * Example of a utils function.
-     * @param x - first number
-     * @param y - second number
-     * @returns the average of the two numbers
-     */
-    public static getAverage(x: number, y: number): number {
-        return (x + y) / 2.0;
-    }
-
 
     /**
      * Given a string, this function returns the same string with the first letter capitalized.
@@ -103,8 +93,10 @@ export class Utils {
      * @param text - text from which to remove the name
      */
     public static removeNameOccurrences(text: string, name: string): string {
-        // Get lists of all first names and names, without name particle (i.e. von, de, ...)
-        const names: string[] = name.split(" ").map(n => n.trim()).filter(n => n[0] !== n[0].toLowerCase())
+        // Get lists of all first names and names, without name particle (i.e. von, de, of...)
+        const names: string[] = [
+            ...name.split(" ").map(n => n.trim()).filter(n => n === Utils.capitalize(n)), name
+        ]
         names.forEach(n => {
             const regex = new RegExp(n, 'gi');
             text = text.replace(regex, "???");

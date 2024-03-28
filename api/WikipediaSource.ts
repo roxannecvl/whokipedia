@@ -32,10 +32,9 @@ export async function fetchIntro(celebrityName: string): Promise<any> {
                 const pageIds: string[] = Object.keys(pages)
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
-                    let text = pages[pageId].extract
-                    text = text.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
-                    text = Utils.removeNameOccurrences(text, celebrityName) // Remove name occurrences
-                    return Utils.splitIntoEqualSentenceParts(text, 3)
+                    let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
+                    let texts: string[] = Utils.splitIntoEqualSentenceParts(text, 3)
+                    return texts.map(text => Utils.removeNameOccurrences(text, celebrityName)) // Remove name occurrences
                 }
             }
             throw new Error(`Page with title ${celebrityName} was not found.`)
