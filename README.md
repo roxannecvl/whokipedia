@@ -40,7 +40,7 @@ whokipedia/                          #
 ├── LICENSE                          #
 ├── README.md                        #
 ├── api/                             # Contains all files for talking to the api and parsing the responses
-│   └── wikipediaSource.ts           #
+│   └── WikipediaSource.ts           #
 ├── app.config.ts                    #
 ├── app.vue                          # Contains signupLoginPresenter.vue, logo (title version), black mode button and git button
 ├── model/                           #
@@ -48,36 +48,36 @@ whokipedia/                          #
 │   ├── GameModel.ts                 # Contains all the logic for the current game played 
 │   ├── HintList.ts                  # Declaration of HintList type (a list of Hints) and Hint type
 │   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
-│   ├── firebaseModel.ts             # Contains all logic for talking to our database
-│   └── resolvePromise.ts            # Contains the logic for promise resolution
+│   ├── FirebaseModel.ts             # Contains all logic for talking to our database
+│   └── ResolvePromise.ts            # Contains the logic for promise resolution
 ├── nuxt.config.ts                   #
 ├── package.json                     # All our dependencies 
 ├── pages/                           #
-│   ├── dailychallenge.vue           # with gamePresenter and sidebarPresenter together
+│   ├── daily-challenge.vue           # with gamePresenter and sidebarPresenter together
 │   ├── index.vue                    # with welcomePagePresenter.vue
 │   ├── leaderboard.vue              # with leaderboardPresenter.vue
 │   ├── statistics.vue               # with statisticsPresenter.vue
 │   └── training.vue                 # with gamePresenter and sidebarPresenter together
 ├── presenters/                      #
-│   ├── gamePresenter.vue            # with gameCenterView.vue and infoboxView.vue
-│   ├── leaderboardPresenter.vue     # with leaderboardView.vue
-│   ├── loginSignupPresenter.vue     # with loginView.view and signupView.vue
-│   ├── sidebarPresenter.vue         # with sidebarView.vue
-│   ├── statisticsPresenter.vue      # with statisticsView.vue
-│   └── welcomePagePresenter.vue     # with welcomePageView.vue
+│   ├── GamePresenter.vue            # with gameCenterView.vue and infoboxView.vue
+│   ├── LeaderboardPresenter.vue     # with leaderboardView.vue
+│   ├── LoginSignupPresenter.vue     # with loginView.view and signupView.vue
+│   ├── SidebarPresenter.vue         # with sidebarView.vue
+│   ├── StatisticsPresenter.vue      # with statisticsView.vue
+│   └── WelcomePagePresenter.vue     # with welcomePageView.vue
 ├── tailwind.config.ts               #
 ├── tsconfig.json                    #
 ├── utilities/                       #
 │   └── Utils.ts                     # utilities function, like getAverage(), getRandom(),  ...
 └── views/                           #
-    ├── gameCenterView.vue           # contains the search bar and the intro paragraph of the celebrity 
-    ├── infoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
-    ├── leaderboardView.vue          # contains the leadedboard (if  logged in) 
-    ├── loginView.vue                # log in form 
-    ├── sidebarView.vue              # rules, login button, logo (train and leaderboard button if done) 
-    ├── signupView.vue               # sign up form 
-    ├── statisticsView.vue           # statistics of the user (if loged in) 
-    └── welcomePageView.vue          # One play button, the rules and the logo
+    ├── GameCenterView.vue           # contains the search bar and the intro paragraph of the celebrity 
+    ├── InfoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
+    ├── LeaderboardView.vue          # contains the leadedboard (if  logged in) 
+    ├── LoginView.vue                # log in form 
+    ├── SidebarView.vue              # rules, login button, logo (train and leaderboard button if done) 
+    ├── SignupView.vue               # sign up form 
+    ├── StatisticsView.vue           # statistics of the user (if loged in) 
+    └── WelcomePageView.vue          # One play button, the rules and the logo
 ```
 
 ### Tools used 

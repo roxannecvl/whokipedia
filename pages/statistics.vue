@@ -3,8 +3,8 @@
     lang="tsx">
 
 import StatisticsView
-  from "~/views/statisticsView.vue";
-import { updateUserToFirebase } from '~/model/firebaseModel'
+  from "~/views/StatisticsView.vue";
+import { updateUserToFirebase } from '~/model/FirebaseModel'
 import { Utils } from "~/utilities/Utils";
 
 const userModel: any = useAttrs().userModel
