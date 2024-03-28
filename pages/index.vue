@@ -9,7 +9,7 @@
       Home
     </div>
     <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-      <ULink to="/example">Go to example</ULink>
+      <ULink to="/daily-challenge">Go to game</ULink>
     </div>
     <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
       <ULink to="/test">Test the API</ULink>

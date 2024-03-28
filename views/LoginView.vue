@@ -1,19 +1,12 @@
-<script
-    lang="tsx">
-  
-  export default {
-    data() {
-      return {
-        username: '',
-        password: ''
-      }
-    },
-    methods: {
-      login() {
-        this.$emit('login-event', this.username, this.password);
-      }
-    }
+<script setup lang="ts">
+
+  const emit = defineEmits(['login-event'])
+  function login() {
+    emit("login-event", username.value, password.value)
   }
+
+  const username = ref('')
+  const password = ref('')
 
 </script>
 

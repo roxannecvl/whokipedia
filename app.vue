@@ -2,11 +2,11 @@
     lang="ts"
     setup>
 import { UserModel } from './model/UserModel';
-import { initialiseFirebase } from './model/firebaseModel';
+import { initialiseFirebase } from './model/FirebaseModel';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, type UserCredential } from 'firebase/auth'
-import { saveUserToFirebase, readUserFromFirebase } from '~/model/firebaseModel';
-import LoginView from "~/views/loginView.vue";
-import SignupView from "~/views/signupView.vue";
+import { saveUserToFirebase, readUserFromFirebase } from '~/model/FirebaseModel';
+import LoginView from "~/views/LoginView.vue";
+import SignupView from "~/views/SignupView.vue";
 
 const colorMode = useColorMode()
 const isErrorModalOpen = ref(false)

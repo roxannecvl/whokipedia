@@ -11,13 +11,23 @@ export class Utils {
         return (x + y) / 2.0;
     }
 
+
+    /**
+     * Given a string, this function returns the same string with the first letter capitalized.
+     * @param str - the string to capitalize
+     */
+    public static capitalize(str: string): string {
+        const s = str.trim()
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
     /**
      * Gives you a random element from the list
      * @param list - a nonempty list
      * @returns an element from the given list
      */
-    public static getRandom(list : any[]) :any {
-        if(list.length == 0) return null;
+    public static getRandom(list: any[]): any {
+        if (list.length == 0) return null;
         return list[Math.floor(Math.random() * list.length)];
     }
 
@@ -25,7 +35,7 @@ export class Utils {
      * Given a name (string) this function returns a string containing the initials of the name
      * @param name - name we want the initials of
      */
-    public static  getInitials(name: string): string {
+    public static getInitials(name: string): string {
         // Split the name into individual words
         const words: string[] = name.split(' ');
 

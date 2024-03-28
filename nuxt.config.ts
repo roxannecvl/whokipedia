@@ -4,7 +4,7 @@ export default defineNuxtConfig({
         'nuxt-vuefire',
     ],
     ui: {
-        icons: ['simple-icons']
+        icons: ['simple-icons', 'eos-icons']
     },
     vuefire: {
         auth: {

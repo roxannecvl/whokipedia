@@ -1,6 +1,7 @@
-const compulsoryLabels: {[key: string]: number} = {
+export const compulsoryLabels: {[key: string]: number} = {
     'Born': 1,
     'Died': 1,
+    'Status': 1,
     'Occupation': 1,
     'Citizenship': 1,
     'Initials': 3,
@@ -35,23 +36,23 @@ export class HintList {
         let compulsoryHints: Hint[] = [];
         let arbitraryHints: Hint[] = [];
         Object.entries(obj).forEach(([key, value]) => {
-            if(arbitraryLabels.hasOwnProperty(key)) {
+            if (arbitraryLabels.hasOwnProperty(key)) {
                 arbitraryHints.push(new Hint(key, arbitraryLabels[key], value))
             } else if (compulsoryLabels.hasOwnProperty(key)) {
-                compulsoryHints.push(new Hint(key, compulsoryLabels[key], value))
+                compulsoryHints.push(new Hint(key, compulsoryLabels[key], value, key === 'Born'))
             }
         })
         return new HintList([...compulsoryHints, ...arbitraryHints.slice(0, 2)]);
     }
 
-    hints: Hint[] = [];
+    private _hints: Hint[] = [];
 
     constructor(hints: Hint[]) {
-        this.hints = hints;
+        this._hints = hints;
     }
 
     toList() : Hint[] {
-        return [...this.hints];
+        return this._hints;
     }
 }
 
@@ -59,7 +60,6 @@ export class HintList {
  * This class represents a hint, with its value and additional information. Attributes are the following :
  * `revealed` tells us if the hint has been revealed yet, `level` gives us the level corresponding to the
  * hint (from 1 to 3) and `value` is the value of the hint (can be of any type).
- * @param T - the type of the value of the hint
  */
 export class Hint {
     private readonly _level : number;
@@ -77,6 +77,7 @@ export class Hint {
     get level() : number {
         return this._level;
     }
+
     get value(): string {
         return this._value;
     }
@@ -92,3 +93,5 @@ export class Hint {
         this._revealed = true;
     }
 }
+
+export const revealedLabels : string[] = ["Initials", "Birth", "Death", "Occupation", "Citizenship"]

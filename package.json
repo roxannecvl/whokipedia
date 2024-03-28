@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@firebase/app-types": "^0.9.0",
+    "@iconify-json/eos-icons": "^1.1.10",
     "@iconify-json/simple-icons": "^1.1.95",
     "@nuxt/ui": "^2.14.2",
     "@types/infobox-parser": "^3.3.4",

@@ -113,7 +113,7 @@ export async function fetchInfoBox(celebrityName: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                return HintList.fromObject({...parseWikitext(wikitext), initials: Utils.getInitials(celebrityName)})
+                return HintList.fromObject({Initials: Utils.getInitials(celebrityName), ...parseWikitext(wikitext)})
             }
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
@@ -137,17 +137,8 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
 
     let hints: {[key: string]: string } = {}
 
-    // Description
-    let match = fieldMatchers.description.exec(wikitext);
-    let description: string | undefined = match ? match[1] : undefined;
-    if (description) {
-        const {citizenship, occupation} = parseDescription(description)
-        if (citizenship !== undefined) hints["Citizenship"] = citizenship
-        if (occupation !== undefined) hints["Occupation"] = occupation
-    }
-
     // Birthdate
-    match = fieldMatchers.birthDate.exec(wikitext)
+    let match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
         const [, birthYear, birthMonth, birthDay] = match;
         hints["Born"] = `${birthDay} ${Utils.months[parseInt(birthMonth)]} ${birthYear}`;
@@ -158,13 +149,24 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
     if (match) {
         const [, deathYear, deathMonth, deathDay] = match;
         hints["Died"] = `${deathDay} ${Utils.months[parseInt(deathMonth)]} ${deathYear}`;
+    }else {
+        hints["Status"] = "Alive";
+    }
+
+    // Description
+    match = fieldMatchers.description.exec(wikitext);
+    let description: string | undefined = match ? match[1] : undefined;
+    if (description) {
+        const {citizenship, occupation} = parseDescription(description)
+        if (citizenship !== undefined) hints["Citizenship"] = citizenship
+        if (occupation !== undefined) hints["Occupation"] = occupation;
     }
 
     // Spouses
     let spouses: string[] | undefined = undefined
     while ((match = fieldMatchers.spouses.exec(wikitext)) !== null) {
         spouses = spouses ? [...spouses, match[1]] : [match[1]];
-        hints["Spouses"] = spouses.join('\n')
+        hints["Spouses"] = spouses.join(', ')
     }
 
     // Genres
@@ -176,7 +178,7 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
             genres = genres ?
                 [...genres, match[1].split('|')[0].trim()] :
                 [match[1].split('|')[0].trim()]
-            hints["Genres"] = genres.join('\n')
+            hints["Genres"] = genres.join(', ')
         }
     }
 
@@ -237,8 +239,8 @@ const fieldMatchers: {[key: string]: RegExp} = {
 }
 
 const occupationMatchers: {[key: string]: RegExp} = {
-    "member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
-    "politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
-    "activist": /\bactivist\b/i,
-    "musician": /\bmusician\b/i
+    "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
+    "Politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
+    "Activist": /\bactivist\b/i,
+    "Musician": /\bmusician\b/i
 }
