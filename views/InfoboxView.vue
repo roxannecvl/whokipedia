@@ -1,86 +1,67 @@
 <script
+    setup
     lang="ts">
-import { GameModel } from "~/model/GameModel";
-import { reactive } from "vue";
-
-export default {
-  props: {
-    model: {
-      type: reactive<GameModel>,
+import { HintList, revealedLabels } from "~/model/HintList";
+defineProps( {
+    hints: {
+      type: HintList,
+      required: true,
+    },
+    image : {
+      type: String,
+      required: true,
+    },
+    blur : {
+      type : Number,
+      required: true,
+    },
+    over : {
+      type : Boolean,
       required: true,
     }
-  },
-}
+})
 </script>
 
 <template>
-  <div v-if="(model.infoPromiseState.data == null || model.imagePromiseState.data == null || model.introPromiseState.data == null)">
-    <img src="https://brfenergi.se/iprog/loading.gif" alt="loading"/>
-  </div>
-  <div v-else>
-<!--    <UCard class="m-4">{{ model.intro}}</UCard>-->
-    <img alt="profile picture" :src="model.imageUrl" class="m-4"/>
-    <UCard class="m-4">{{ model.hints?.toString() }}</UCard>
-  </div>
   <UCard class="flex flex-col items-center justify-center">
     <template #header>
       <div class="flex flex-col items-center justify-center">
         <img
-            :src="model.imageUrl"
+            :src="image"
             alt="image"
             class="w-40 object-cover pb-2"
             :class="{
-            'blur-sm': model.blur === 1,
-            'blur': model.blur === 2,
-            'blur-md': model.blur === 3,
-            'blur-lg': model.blur === 4,
-            'blur-xl': model.blur === 5,
-            'blur-2xl': model.blur === 6,
-            'blur-3xl': model.blur === 7
+            'blur-none': blur === 0 || over,
+            'blur-sm': blur === 1,
+            'blur': blur === 2,
+            'blur-md': blur === 3,
+            'blur-lg': blur === 4,
+            'blur-xl': blur === 5,
+            'blur-2xl': blur === 6,
+            'blur-3xl': blur === 7
           }"
         />
-        <UButtonGroup>
-          <UButton
-              @click="model.blur--"
-              :disabled="model.blur === 0"
-              icon="i-heroicons-minus-solid"
-              color="primary"/>
-          <UButton
-              @click="model.blur++"
-              :disabled="model.blur === 7"
-              icon="i-heroicons-plus-solid"
-              color="primary"/>
-        </UButtonGroup>
-        <UButtonGroup>
-          <UButton
-              @click="model.getNewHint()"
-              icon="i-heroicons-plus-solid"
-              color="primary"/>
-        </UButtonGroup>
+
       </div>
     </template>
     <div class="flex flex-col items-center justify-center">
-      <!-- <div class="text-2xl font-bold">
-        {{ model.name }}
-      </div>
-      <div class="text-lg">
-        {{model.hints.birth.value.getDate()}} {{model.hints.birth.value.toLocaleString('en-US', { month: 'long' })}} {{model.hints.birth.value.getFullYear()}}
-      </div>
-      <div class="text-lg">
-        {{model.hints.death.revealed ? " " + model.hints.death.value.getDate()  + " "  + model.hints.death.value.toLocaleString('en-US', { month: 'long' }) + " " + model.hints.death.value.getFullYear(): "-"}}
-      </div>
-      <div class="text-lg">
-        {{model.hints.occupation.revealed ? model.hints.occupation.value: "-"}}
-      </div>
-      <div class="text-lg">
-        {{model.hints.citizenship.revealed ? model.hints.citizenship.value: "-"}}
-      </div>
-      <div class="text-lg">
-        {{model.hints.initials.revealed ? model.hints.initials.value: "-"}}
-      </div>
-      <div class="text-lg">
-        {{model.hints.paragraph.revealed ? model.hints.paragraph.value: "-"}}
-      </div>-->
+      <table>
+        <tr v-for="hint in hints.toList()"
+            :key="hint">
+            <td class="text-left">
+              <p v-if="hint.label === 'Death' && (!hint.revealed || hints.alive)"
+                 class="text-blue-500 font-semibold"> Status </p>
+              <p v-else-if=" hint.revealed || revealedLabels.includes(hint.label) || over"
+                   class="text-blue-500 font-semibold">{{ hint.label }}  </p>
+              <p v-else class="text-blue-500 font-semibold blur-sm">Unknown  </p>
+            </td>
+            <td class="text-right">
+                <p v-if="hint.label === 'Death' &&  hints.alive && (hint.revealed|| over)"> Alive </p>
+                <p v-else-if="hint.revealed || over">{{ hint.value }}</p>
+                <p v-else class="blur-sm"> cheater </p>
+            </td>
+        </tr>
+      </table>
     </div>
   </UCard>
 </template>

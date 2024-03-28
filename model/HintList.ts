@@ -29,13 +29,13 @@ export class HintList {
         this.others = others;
     }
 
-    toList() : Hint<any>[]{
-        return [this.birth, this.death, this.occupation, this.citizenship, this.initials, ...this.others];
+    public toList() : Hint<any>[]{
+        return [this.initials, this.birth, this.death, this.occupation, this.citizenship, ...this.others];
     }
 
 
     //For testing purposes, will be removed
-    toString() : string {
+    public toString() : string {
         let retVal : string = "";
         let list : Hint<any>[] = this.toList()
         for(let i = 0; i < list.length ; i++){
@@ -91,3 +91,5 @@ export class Hint <T> {
         this._revealed = true;
     }
 }
+
+export const revealedLabels : string[] = ["Initials", "Birth", "Death", "Occupation", "Citizenship"]

@@ -22,6 +22,7 @@ export class GameModel {
 
     //game information
     private _blur: number;
+    private _sentencesRevealed : number[];
     private _curHintLevel: number;
     private _nbGuesses: number;
     private _curGuess : string;
@@ -41,7 +42,7 @@ export class GameModel {
         this._imageUrl = "";
         this._intro = [""];
         this._hints = undefined;
-
+        this._sentencesRevealed = [];
         //game information
         this._blur = 4;
         this._curHintLevel = 1;
@@ -57,7 +58,7 @@ export class GameModel {
     public init(name: string){
         this._reset();
         this._name = name;
-        resolvePromise(fetchIntro(this._name).then(intro => this._intro = intro), this.introPromiseState);
+        resolvePromise(fetchIntro(this._name).then(intro => this._intro = [intro]), this.introPromiseState);
         resolvePromise(fetchImageUrl(this._name, 100).then(url => this._imageUrl = url), this.imagePromiseState);
         resolvePromise(fetchInfoBox(this._name).then(info => this._setHintListACB(info)), this.infoPromiseState);
     }
@@ -104,6 +105,8 @@ export class GameModel {
             if (this._curGuess == this._name) {
                 this._end = true;
                 this._win = true;
+            } else {
+                this.getNewHint();
             }
             return true;
         }
@@ -148,6 +151,10 @@ export class GameModel {
 
     get intro() : string[]{
         return this._intro;
+    }
+
+    get sentencesRevealed() : number[]{
+        return this._sentencesRevealed;
     }
 
     set blur(value: number) {
@@ -195,6 +202,7 @@ export class GameModel {
         this._imageUrl = "";
         this._intro = [""];
         this._hints = undefined;
+        this._sentencesRevealed = [];
 
         //game information
         this._blur = 4;

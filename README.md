@@ -59,25 +59,25 @@ whokipedia/                          #
 │   ├── statistics.vue               # with statisticsPresenter.vue
 │   └── training.vue                 # with gamePresenter and sidebarPresenter together
 ├── presenters/                      #
-│   ├── gamePresenter.vue            # with gameCenterView.vue and infoboxView.vue
-│   ├── leaderboardPresenter.vue     # with leaderboardView.vue
-│   ├── loginSignupPresenter.vue     # with loginView.view and signupView.vue
-│   ├── sidebarPresenter.vue         # with sidebarView.vue
-│   ├── statisticsPresenter.vue      # with statisticsView.vue
-│   └── welcomePagePresenter.vue     # with welcomePageView.vue
+│   ├── GamePresenter.vue            # with gameCenterView.vue and infoboxView.vue
+│   ├── LeaderboardPresenter.vue     # with leaderboardView.vue
+│   ├── LoginSignupPresenter.vue     # with loginView.view and signupView.vue
+│   ├── SidebarPresenter.vue         # with sidebarView.vue
+│   ├── StatisticsPresenter.vue      # with statisticsView.vue
+│   └── WelcomePagePresenter.vue     # with welcomePageView.vue
 ├── tailwind.config.ts               #
 ├── tsconfig.json                    #
 ├── utilities/                       #
 │   └── Utils.ts                     # utilities function, like getAverage(), getRandom(),  ...
 └── views/                           #
-    ├── gameCenterView.vue           # contains the search bar and the intro paragraph of the celebrity 
-    ├── infoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
-    ├── leaderboardView.vue          # contains the leadedboard (if  logged in) 
-    ├── loginView.vue                # log in form 
-    ├── sidebarView.vue              # rules, login button, logo (train and leaderboard button if done) 
-    ├── signupView.vue               # sign up form 
-    ├── statisticsView.vue           # statistics of the user (if loged in) 
-    └── welcomePageView.vue          # One play button, the rules and the logo
+    ├── GameCenterView.vue           # contains the search bar and the intro paragraph of the celebrity 
+    ├── InfoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
+    ├── LeaderboardView.vue          # contains the leadedboard (if  logged in) 
+    ├── LoginView.vue                # log in form 
+    ├── SidebarView.vue              # rules, login button, logo (train and leaderboard button if done) 
+    ├── SignupView.vue               # sign up form 
+    ├── StatisticsView.vue           # statistics of the user (if loged in) 
+    └── WelcomePageView.vue          # One play button, the rules and the logo
 ```
 
 ### Tools used 
