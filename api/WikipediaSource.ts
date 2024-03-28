@@ -5,17 +5,15 @@ const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
 
 /**
- * Fetch and return the introduction as plain text of the given Wikipedia page.
+ * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
  * Uses the MediaWiki Action API.
- * @param pageTitle the title of the Wikipedia page, must be first-capitalized
- * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
+ * @param celebrityName the name of the celebrity, must be first-capitalized
  * @return Promise<string> - the introduction of the Wikipedia page as plain text
  */
-export async function fetchIntro(pageTitle: string): Promise<any> {
-    console.log("start fetchIntro")
+export async function fetchIntro(celebrityName: string): Promise<any> {
     const searchParams: Record<string, string> = {
         action: "query",
-        titles: pageTitle,
+        titles: celebrityName,
         format: "json",
         prop: "extracts",
         exintro: "true",
@@ -34,28 +32,27 @@ export async function fetchIntro(pageTitle: string): Promise<any> {
                 const pageIds: string[] = Object.keys(pages)
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
-                    console.log("done fetchIntro")
-                    return pages[pageId].extract
+                    let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
+                    let texts: string[] = Utils.splitIntoEqualSentenceParts(text, 3)
+                    return texts.map(text => Utils.removeNameOccurrences(text, celebrityName)) // Remove name occurrences
                 }
             }
-            throw new Error(`Page with title ${pageTitle} was not found.`)
+            throw new Error(`Page with title ${celebrityName} was not found.`)
         })
         .catch(error => console.error('Error fetching introduction of Wikipedia page : ', error))
 }
 
 /**
- * Fetch and return the source URL of the main picture of the given Wikipedia page.
+ * Fetch and return the source URL of the main picture of the Wikipedia page of the given celebrity;
  * Uses the MediaWiki Action API.
- * @param pageTitle the title of the Wikipedia page, must be first-capitalized
- * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
+ * @param celebrityName the name of the celebrity, must be first-capitalized
  * @param thumbSize the width in pixels of the wanted thumbnail
  * @return Promise<string> - the URL of the main image of the Wikipedia page
  */
-export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promise<any> {
-    console.log("start fetchImage")
+export async function fetchImageUrl(celebrityName: string, thumbSize: number): Promise<any> {
     const searchParams: Record<string, string> = {
         action: "query",
-        titles: pageTitle,
+        titles: celebrityName,
         format: "json",
         prop: "pageimages",
         piprop: "thumbnail",
@@ -75,28 +72,25 @@ export async function fetchImageUrl(pageTitle: string, thumbSize: number): Promi
                if (pageIds.length === 1 && pageIds[0] !== '-1') {
                    const pageId: number = Number.parseInt(pageIds[0])
                    if ('thumbnail' in pages[pageId]) {
-                       console.log("done fetchImage")
                        return pages[pageId].thumbnail.source
                    }
                }
            }
-           throw new Error(`Image for epage with title ${pageTitle} was not found.`)
+           throw new Error(`Image for epage with title ${celebrityName} was not found.`)
         })
        .catch(error => console.error('Error fetching image URL of Wikipedia page : ', error))
 }
 
 /**
- * Fetch and return the infobox of the given Wikipedia page as an object.
- * Uses the MediaWiki Action API and the external library 'infobox-parser'.
- * @param pageTitle the title of the Wikipedia page, must be first-capitalized
- * words (except for name particles) separated by '_', for instance "Leonardo_da_Vinci"
+ * Fetch and return the infobox of the Wikipedia page of the given celebrity as an object.
+ * Uses the MediaWiki Action API.
+ * @param celebrityName the name of the celebrity, must be first-capitalized
  * @return Promise<Object> - the infobox as a JSON object
  */
-export async function fetchInfoBox(pageTitle: string): Promise<any> {
-    console.log("start fetchInfoBox")
+export async function fetchInfoBox(celebrityName: string): Promise<any> {
     const searchParams: Record<string, string> = {
         action: "query",
-        titles: pageTitle,
+        titles: celebrityName,
         format: "json",
         prop: "revisions",
         rvprop: "content",
@@ -118,9 +112,9 @@ export async function fetchInfoBox(pageTitle: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                return HintList.fromObject({Initials: Utils.getInitials(pageTitle), ...parseWikitext(wikitext)})
+                return HintList.fromObject({Initials: Utils.getInitials(celebrityName), ...parseWikitext(wikitext)})
             }
-            throw new Error(`Infobox for page ${pageTitle} was not found.`)
+            throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
         .catch(error => console.error(`Error fetching infobox of Wikipedia page : `, error))
 }

@@ -1,16 +1,6 @@
 import { UserModel } from "~/model/UserModel";
 
 export class Utils {
-    /**
-     * Example of a utils function.
-     * @param x - first number
-     * @param y - second number
-     * @returns the average of the two numbers
-     */
-    public static getAverage(x: number, y: number): number {
-        return (x + y) / 2.0;
-    }
-
 
     /**
      * Given a string, this function returns the same string with the first letter capitalized.
@@ -19,16 +9,6 @@ export class Utils {
     public static capitalize(str: string): string {
         const s = str.trim()
         return s.charAt(0).toUpperCase() + s.slice(1);
-    }
-
-    /**
-     * Gives you a random element from the list.
-     * Get mean function
-     * @param tab - the table of numbers to get the mean from
-     * @returns the mean of the numbers in the table
-     */
-    public static getMean(tab: number[]): number {
-        return tab.reduce((a, b) => a + b, 0) / tab.length;
     }
 
     /**
@@ -42,8 +22,8 @@ export class Utils {
     }
 
     /**
-     * Given a name (string) this function returns a string containing the intials of the name
-     *
+     * Given a name (string) this function returns a string containing the initials of the name
+     * @param name - name we want the initials of
      */
     public static getInitials(name: string): string {
         // Split the name into individual words
@@ -107,6 +87,52 @@ export class Utils {
     }
 
     /**
+     * Remove all occurrences of the given name in the given text, including
+     * first name and last name, excluding name particles (e.g. "von", "de", ...).
+     * @param name - celebrity first name(s) and last name(s)
+     * @param text - text from which to remove the name
+     */
+    public static removeNameOccurrences(text: string, name: string): string {
+        // Get lists of all first names and names, without name particle (i.e. von, de, of...)
+        const names: string[] = [
+            ...name.split(" ").map(n => n.trim()).filter(n => n === Utils.capitalize(n)), name
+        ]
+        names.forEach(n => {
+            const regex = new RegExp(n, 'gi');
+            text = text.replace(regex, "???");
+        })
+        return text
+    }
+
+    /**
+     * Split the given text into parts containing equal number of sentences.
+     * @param text - the text to split
+     * @param num - the number of parts to split the text into
+     */
+    public static splitIntoEqualSentenceParts(text: string, num: number): string[] {
+        // Split the text into sentences
+        const sentences = text.match(/[^.!?]+[.!?]+/g);
+        if (!sentences) return [text];
+
+        const totalSentences = sentences.length;
+        const sentencesPerPart = Math.floor(totalSentences / num); // Number of sentences per part
+        const parts: string[] = [];
+
+        // Distribute sentences evenly across the three parts
+        let start = 0;
+        for (let i = 0; i < num - 1; i++) {
+            const end = start + sentencesPerPart;
+            parts.push(sentences.slice(start, end).join(''));
+            start = end;
+        }
+
+        // Add the remaining sentences to the last part
+        parts.push(sentences.slice(start).join(''));
+
+        return parts;
+    }
+
+    /**
      * Get random user model
      * @returns a random user model
      */
@@ -117,7 +143,6 @@ export class Utils {
         userModel.updateStats(Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value))
         return userModel;
     }
-
 
     static months: {[key: number]: string} = {
         1: "January",
@@ -330,4 +355,3 @@ export class Utils {
         "Zimbabwe": "Zimbabwean"
     };
 }
-

@@ -34,7 +34,7 @@ export class GameModel {
     public init(name: string){
         this._reset();
         this._name = name;
-        resolvePromise(fetchIntro(this._name).then(intro => this._intro = [intro]), this.introPromiseState);
+        resolvePromise(fetchIntro(this._name).then(intro => this._intro = intro), this.introPromiseState);
         resolvePromise(fetchImageUrl(this._name, 100).then(url => this._imageUrl = url), this.imagePromiseState);
         resolvePromise(fetchInfoBox(this._name).then(hints => this._hints = hints), this.infoPromiseState);
     }

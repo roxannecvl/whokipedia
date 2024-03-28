@@ -107,6 +107,7 @@ export const celebrities : string[] = [
    "Charles Aznavour",
    "Joe Biden",
    "Greta Thunberg",
+    "John von Neumann"
 ];
 
 /**
