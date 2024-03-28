@@ -18,6 +18,7 @@ const emit = defineEmits(['new-name-set'])
 const selectedName = ref("");
 
 function newName() {
+  if (selectedName.value === "") return;
   emit("new-name-set", selectedName.value);
   setTimeout(() => {
     selectedName.value = "";
