@@ -13,6 +13,16 @@ export class Utils {
         return (x + y) / 2.0;
     }
 
+
+    /**
+     * Given a string, this function returns the same string with the first letter capitalized.
+     * @param str - the string to capitalize
+     */
+    public static capitalize(str: string): string {
+        const s = str.trim()
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
     /**
      * Gives you a random element from the list.
      * Get mean function
