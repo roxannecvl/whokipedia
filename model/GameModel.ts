@@ -2,8 +2,7 @@ import { resolvePromise } from "~/model/ResolvePromise"
 import type { PromiseState } from "~/model/ResolvePromise"
 import { HintList } from "~/model/HintList"
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource"
-import { Utils } from "~/utilities/Utils"
-import { celebrities } from "~/model/CelebrityList";
+import { getRandom } from "~/utilities/Utils"
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -46,24 +45,21 @@ export class GameModel {
      * or the celebrity entered isn't in our database.
      */
     public makeAGuess(newGuess : string) : boolean {
-        if (this._prevGuesses.includes(newGuess)) {
-            return false;
-        } else {
-            this._prevGuesses = [newGuess, ...this._prevGuesses];
-            this._curGuess = newGuess;
-            this._nbGuesses++;
-            if (this._curGuess == this._name) {
-                this._end = true;
-                this._win = true;
-            } else {
-                this._getNewHint();
-            }
-            return true;
-        }
+        if (this._prevGuesses.includes(newGuess)) return false;
+        this._prevGuesses = [newGuess, ...this._prevGuesses];
+        this._curGuess = newGuess;
+        this._nbGuesses++;
+        if (this._curGuess == this._name) {
+            this._end = true;
+            this._win = true;
+        } else this._getNewHint();
+        return true;
     }
 
     public isReady() : boolean {
-        return this.introPromiseState.data !== null && this.imagePromiseState.data !== null && this.infoPromiseState.data !== null;
+        return this.introPromiseState.data !== null
+            && this.imagePromiseState.data !== null
+            && this.infoPromiseState.data !== null;
     }
 
     get name(): string {
@@ -107,9 +103,7 @@ export class GameModel {
     }
 
     set blur(value: number) {
-        if (value < 0 || value > 7) {
-            throw new Error("Blur must be between 0 and 7");
-        }
+        if (value < 0 || value > 7) throw new Error("Blur must be between 0 and 7");
         this._blur = value;
     }
 
@@ -134,7 +128,7 @@ export class GameModel {
                     this._end = true;
                 }
             } else {
-                const rdmHint = Utils.getRandom(levelHintsLeft);
+                const rdmHint = getRandom(levelHintsLeft);
                 rdmHint.reveal()
             }
         }

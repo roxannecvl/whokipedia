@@ -1,4 +1,12 @@
-import { Utils } from "~/utilities/Utils";
+import {
+    removeNameOccurrences,
+    splitIntoEqualSentenceParts,
+    getInitials,
+    getAndPermutations,
+    removeTag,
+    months,
+    countries
+} from "~/utilities/Utils";
 import { HintList } from "~/model/HintList";
 
 const BASE_URL: string = "https://en.wikipedia.org"
@@ -33,8 +41,8 @@ export async function fetchIntro(celebrityName: string): Promise<any> {
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
                     let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
-                    let texts: string[] = Utils.splitIntoEqualSentenceParts(text, 3)
-                    return texts.map(text => Utils.removeNameOccurrences(text, celebrityName)) // Remove name occurrences
+                    let texts: string[] = splitIntoEqualSentenceParts(text, 3)
+                    return texts.map(text => removeNameOccurrences(text, celebrityName)) // Remove name occurrences
                 }
             }
             throw new Error(`Page with title ${celebrityName} was not found.`)
@@ -112,7 +120,7 @@ export async function fetchInfoBox(celebrityName: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                return HintList.fromObject({Initials: Utils.getInitials(celebrityName), ...parseWikitext(wikitext)})
+                return HintList.fromObject({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)})
             }
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
@@ -130,9 +138,9 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
     wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
 
     // Remove comments and remaining tags
-    wikitext = Utils.removeTag(wikitext, "<!--", "-->");
-    wikitext = Utils.removeTag(wikitext, "<ref", "/>");
-    wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
+    wikitext = removeTag(wikitext, "<!--", "-->");
+    wikitext = removeTag(wikitext, "<ref", "/>");
+    wikitext = removeTag(wikitext, "<ref", "</ref>");
 
     let hints: {[key: string]: string } = {}
 
@@ -140,14 +148,14 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
     let match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
         const [, birthYear, birthMonth, birthDay] = match;
-        hints["Born"] = `${birthDay} ${Utils.months[parseInt(birthMonth)]} ${birthYear}`;
+        hints["Born"] = `${birthDay} ${months[parseInt(birthMonth)]} ${birthYear}`;
     }
 
     // Death date
     match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
         const [, deathYear, deathMonth, deathDay] = match;
-        hints["Died"] = `${deathDay} ${Utils.months[parseInt(deathMonth)]} ${deathYear}`;
+        hints["Died"] = `${deathDay} ${months[parseInt(deathMonth)]} ${deathYear}`;
     }else {
         hints["Status"] = "Alive";
     }
@@ -192,8 +200,8 @@ function parseDescription(description : string): {citizenship: string | undefine
     }
 
     // Check if nationality or country is contained in the description
-    for (const country in Utils.countries) {
-        const nationality: string = Utils.countries[country];
+    for (const country in countries) {
+        const nationality: string = countries[country];
         let copy: string = description
         while (copy.includes(nationality) || copy.includes(country)) {
             res.citizenship = res.citizenship !== undefined ? res.citizenship + " and " + nationality : nationality
@@ -212,7 +220,7 @@ function parseDescription(description : string): {citizenship: string | undefine
 
     // If no occupation was found, occupation is description without citizenship
     res.occupation = description
-    for (const permutation of Utils.getAndPermutations(res.citizenship || "")){
+    for (const permutation of getAndPermutations(res.citizenship || "")){
         res.occupation = res.occupation.replace(permutation, "").trim()
     }
 
