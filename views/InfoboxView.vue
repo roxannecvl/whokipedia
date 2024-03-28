@@ -2,7 +2,7 @@
     setup
     lang="ts">
 import { HintList, compulsoryLabels } from "~/model/HintList";
-import { Utils } from "~/utilities/Utils";
+import { capitalize } from "~/utilities/Utils";
 
 defineProps( {
     hints: {
@@ -60,7 +60,7 @@ defineProps( {
             <td class="text-left pt-2">
                 <div v-if="hint.revealed || over">
                   <p v-for="value in hint.value.split(/(?:,?\s*and|,|and)(?=\s|$)/g)" :key="value">
-                    {{ Utils.capitalize(value) }}
+                    {{ capitalize(value) }}
                   </p>
                 </div>
                 <p v-else class="blur-sm"> cheater </p>

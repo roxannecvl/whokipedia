@@ -5,14 +5,14 @@
 import StatisticsView
   from "~/views/StatisticsView.vue";
 import { updateUserToFirebase } from '~/model/FirebaseModel'
-import { Utils } from "~/utilities/Utils";
+import { getRandomUserModel } from "~/utilities/Utils";
 
 const userModel: any = useAttrs().userModel
 const user = useCurrentUser()
 
 const populateStats = () => {
   if(user.value){
-    const randomUserModel = Utils.getRandomUserModel()
+    const randomUserModel = getRandomUserModel()
     userModel.updateStats(randomUserModel.currentStreak, randomUserModel.maxStreak, randomUserModel.averageRank, randomUserModel.averageGuesses, randomUserModel.averageTime, randomUserModel.timesPlayed, randomUserModel.times, randomUserModel.ranks, randomUserModel.guesses)
     updateUserToFirebase(userModel, user.value.uid)
   }

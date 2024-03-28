@@ -2,8 +2,7 @@ import { resolvePromise } from "~/model/ResolvePromise"
 import type { PromiseState } from "~/model/ResolvePromise"
 import { HintList } from "~/model/HintList"
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource"
-import { Utils } from "~/utilities/Utils"
-import { celebrities } from "~/model/CelebrityList";
+import { getRandom } from "~/utilities/Utils"
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -134,7 +133,7 @@ export class GameModel {
                     this._end = true;
                 }
             } else {
-                const rdmHint = Utils.getRandom(levelHintsLeft);
+                const rdmHint = getRandom(levelHintsLeft);
                 rdmHint.reveal()
             }
         }
