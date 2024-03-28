@@ -2,6 +2,7 @@
     setup
     lang="ts">
 import { HintList, compulsoryLabels } from "~/model/HintList";
+
 defineProps( {
     hints: {
       type: HintList,
@@ -48,15 +49,19 @@ defineProps( {
       <table>
         <tr v-for="hint in hints.toList()"
             :key="hint">
-            <td class="text-left">
+            <td class="text-left align-top pr-3 pt-2">
               <p v-if="hint.label === 'Death' && !hint.revealed"
                  class="text-blue-500 font-semibold"> Status </p>
               <p v-else-if=" hint.revealed || compulsoryLabels.hasOwnProperty(hint.label) || over"
-                   class="text-blue-500 font-semibold">{{ hint.label }}  </p>
-              <p v-else class="text-blue-500 font-semibold blur-sm">Unknown  </p>
+                   class="text-blue-500 font-semibold"> {{ hint.label }} </p>
+              <p v-else class="text-blue-500 font-semibold blur-sm"> Unknown </p>
             </td>
-            <td class="text-right">
-                <p v-if="hint.revealed || over">{{ hint.value }}</p>
+            <td class="text-right pt-2">
+                <div v-if="hint.revealed || over">
+                  <p v-for="value in hint.value.split(/(?:,?\s*and|,|and)(?=\s|$)/g)" :key="value">
+                    {{ value.slice(0,1).toUpperCase().concat(value.slice(1)) }}
+                  </p>
+                </div>
                 <p v-else class="blur-sm"> cheater </p>
             </td>
         </tr>

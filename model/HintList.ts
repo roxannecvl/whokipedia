@@ -93,3 +93,5 @@ export class Hint {
         this._revealed = true;
     }
 }
+
+export const revealedLabels : string[] = ["Initials", "Birth", "Death", "Occupation", "Citizenship"]
