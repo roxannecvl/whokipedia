@@ -1,6 +1,4 @@
-<script
-    setup
-    lang="ts">
+<script setup lang="ts">
 
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 

@@ -1,19 +1,13 @@
-<script
-    lang="tsx">
+<script setup lang="ts">
 
-  export default {
-    data() {
-      return {
-        username: '',
-        password: ''
-      }
-    },
-    methods: {
-      signup() {
-        this.$emit('signup-event', this.username, this.password);
-      }
-    }
+  const emit = defineEmits(['signup-event'])
+  function signup() {
+    emit("signup-event", username.value, password.value)
   }
+
+  const username = ref('')
+  const password = ref('')
+
 </script>
 
 <template>

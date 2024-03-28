@@ -1,22 +1,14 @@
-<script
-    lang="ts">
-import {
-  GameModel
-} from "~/model/GameModel";
-import SidebarView
-  from "~/views/SidebarView.vue";
+<script setup lang="ts">
 
-export default {
-  props: {
-    model: {
-      type: GameModel,
-      required: true,
-    },
+import { GameModel } from "~/model/GameModel";
+import SidebarView from "~/views/SidebarView.vue";
+
+defineProps({
+  model: {
+    type: GameModel,
+    required: true,
   },
-  components: {
-    SidebarView,
-  }
-}
+})
 
 </script>
 

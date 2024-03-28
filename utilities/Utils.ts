@@ -1,6 +1,4 @@
-import {
-    UserModel
-} from "~/model/UserModel";
+import { UserModel } from "~/model/UserModel";
 
 export class Utils {
     /**

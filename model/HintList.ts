@@ -36,10 +36,10 @@ export class HintList {
         let compulsoryHints: Hint[] = [];
         let arbitraryHints: Hint[] = [];
         Object.entries(obj).forEach(([key, value]) => {
-            if(arbitraryLabels.hasOwnProperty(key)) {
-                arbitraryHints.push(new Hint(key, arbitraryLabels[key], value, ))
+            if (arbitraryLabels.hasOwnProperty(key)) {
+                arbitraryHints.push(new Hint(key, arbitraryLabels[key], value))
             } else if (compulsoryLabels.hasOwnProperty(key)) {
-                compulsoryHints.push(new Hint(key, compulsoryLabels[key], value, key === 'Born'),)
+                compulsoryHints.push(new Hint(key, compulsoryLabels[key], value, key === 'Born'))
             }
         })
         return new HintList([...compulsoryHints, ...arbitraryHints.slice(0, 2)]);

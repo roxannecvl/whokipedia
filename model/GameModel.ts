@@ -55,7 +55,7 @@ export class GameModel {
             if (this._curGuess == this._name) {
                 this._end = true;
                 this._win = true;
-            } else{
+            } else {
                 this._getNewHint();
             }
             return true;
@@ -98,11 +98,11 @@ export class GameModel {
         return this._win;
     }
 
-    get intro() : string[]{
+    get intro() : string[] {
         return this._intro;
     }
 
-    get introPartsRevealed(): number[]{
+    get introPartsRevealed(): number[] {
         return this._introPartsRevealed
     }
 

@@ -1,27 +1,15 @@
-<script lang="ts">
+<script setup lang="ts">
 
-import InfoboxView
-  from "~/views/InfoboxView.vue";
-import {
-  GameModel
-} from "~/model/GameModel";
-import SidebarPresenter
-  from "~/presenters/SidebarPresenter.vue";
-import GameCenterView
-  from "~/views/GameCenterView.vue";
+import InfoboxView from "~/views/InfoboxView.vue";
+import { GameModel } from "~/model/GameModel";
+import GameCenterView from "~/views/GameCenterView.vue";
 
-export default {
-  props: {
-    model: {
+defineProps({
+  model: {
       type: GameModel,
       required: true,
-    },
   },
-  components: {
-    GameCenterView,
-    InfoboxView,
-  }
-}
+})
 
 </script>
 

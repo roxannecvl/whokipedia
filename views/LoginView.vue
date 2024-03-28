@@ -1,6 +1,4 @@
-<script
-    setup
-    lang="tsx">
+<script setup lang="ts">
 
   const emit = defineEmits(['login-event'])
   function login() {
@@ -9,8 +7,6 @@
 
   const username = ref('')
   const password = ref('')
-  
-
 
 </script>
 
