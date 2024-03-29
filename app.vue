@@ -11,8 +11,8 @@ import SignupView from "~/views/SignupView.vue";
 const colorMode = useColorMode()
 const isErrorModalOpen = ref(false)
 const isDark = computed({
-    get: () => colorMode.value === 'dark',
-    set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  get: () => colorMode.value === 'dark',
+  set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 })
 
 const userModel: any = reactive(new UserModel())
@@ -31,15 +31,15 @@ const isUserLoggedIn = ref(false)
 onMounted(() => {
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
-        // user logged out
-        console.log('Successfully logged out')
-        userModel.resetStats()
-                isUserLoggedIn.value = false
+      // user logged out
+      console.log('Successfully logged out')
+      userModel.resetStats()
+      isUserLoggedIn.value = false
     } else if (user) {
-        // user logged in
-        console.log('Successfully logged in')
-                readUserFromFirebase(userModel)
-        isUserLoggedIn.value = true
+      // user logged in
+      console.log('Successfully logged in')
+      readUserFromFirebase(userModel)
+      isUserLoggedIn.value = true
     }
   })
 })
@@ -51,13 +51,13 @@ onMounted(() => {
  * @param password - The password used to log in
  */
 function login(username: string, password: string) {
-    isLogInOpen.value = false
-    signInWithEmailAndPassword(auth, username, password)
-    .catch((reason) => {
+  isLogInOpen.value = false
+  signInWithEmailAndPassword(auth, username, password)
+      .catch((reason) => {
         console.error('Failed log in: ', reason)
         errorMessage.value = 'Failed log in: '+ reason
         isErrorModalOpen.value = true
-    })
+      })
 }
 
 /**
@@ -67,38 +67,40 @@ function login(username: string, password: string) {
  * @param password - The password used to sign up
  */
 function signup(username: string, password: string) {
-    isLogInOpen.value = false
-    createUserWithEmailAndPassword(auth, username, password)
-    .then((userCredentials: UserCredential) => {
+  isLogInOpen.value = false
+  createUserWithEmailAndPassword(auth, username, password)
+      .then((userCredentials: UserCredential) => {
         saveUserToFirebase(userModel, userCredentials.user?.uid);
-    })
-    .catch((reason) => {
+      })
+      .catch((reason) => {
         console.error('Failed sign up: ', reason)
         errorMessage.value = 'Failed sign up: '+reason
         isErrorModalOpen.value = true
-    })
+      })
 }
 
 /**
  * Logs out the user
  */
 function logout() {
-    signOut(auth)
-    .catch((reason) => {
+  signOut(auth)
+      .catch((reason) => {
         console.error('Failed log out: ', reason)
         errorMessage.value = 'Failed log out: '+reason
         isErrorModalOpen.value = true
-    })
+      })
 }
 
 </script>
 
 <template>
   <Body
-      class="bg-gray-50 dark:bg-gray-950">
+      class="bg-gray-50 dark:bg-gray-950 h-full">
   <UContainer
-      class="p-10 min-h-screen">
-    <UCard>
+      class="p-0 sm:py-5">
+    <UCard :ui="{
+      rounded: 'rounded-none sm:rounded-lg',
+    }">
       <template #header>
         <div class="flex justify-between items-center">
           <div>
@@ -112,14 +114,16 @@ function logout() {
               </UTooltip>
             </ClientOnly>
           </div>
-          <div class="flex">
-            <UIcon
-                name="i-heroicons-magnifying-glass-16-solid"
-                class="text-primary w-10 h-10"/>
-            <p class="font-black text-3xl hidden md:block">
-              Whokipedia
-            </p>
-          </div>
+          <a href="/">
+            <div class="flex">
+              <UIcon
+                  name="i-heroicons-magnifying-glass-16-solid"
+                  class="text-primary w-10 h-10"/>
+              <p class="font-black text-3xl hidden sm:block select-none">
+                Whokipedia
+              </p>
+            </div>
+          </a>
           <div class="flex justify-between items-center">
             <div class="p-3">
               <UButton v-if="isUserLoggedIn" label="Log out" @click="logout"/>
@@ -147,23 +151,23 @@ function logout() {
               </UModal>
             </div>
             <div class="p-3">
-            <ClientOnly>
+              <ClientOnly>
                 <UTooltip
                     text="Open on Github">
-                <UButton
-                    :to="`https://github.com/roxannecvl/whokipedia`"
-                    icon="i-simple-icons-github"
-                    color="white"
-                    target="_blank"/>
+                  <UButton
+                      :to="`https://github.com/roxannecvl/whokipedia`"
+                      icon="i-simple-icons-github"
+                      color="white"
+                      target="_blank"/>
                 </UTooltip>
-            </ClientOnly>
+              </ClientOnly>
             </div>
           </div>
         </div>
         <UModal v-model="isErrorModalOpen">
-                  <div class="p-4">
-                    <p>{{errorMessage}}</p>
-                  </div>
+          <div class="p-4">
+            <p>{{errorMessage}}</p>
+          </div>
         </UModal>
       </template>
 
