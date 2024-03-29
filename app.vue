@@ -116,7 +116,7 @@ function logout() {
             <UIcon
                 name="i-heroicons-magnifying-glass-16-solid"
                 class="text-primary w-10 h-10"/>
-            <p class="font-black text-3xl">
+            <p class="font-black text-3xl hidden md:block">
               Whokipedia
             </p>
           </div>
