@@ -31,7 +31,7 @@ defineProps( {
         <img
             :src="image"
             alt="image"
-            class="w-40 object-cover pb-2"
+            class="w-40 object-cover pb-2 pointer-events-none"
             :class="{
             'blur-none': blur === 0 || over,
             'blur-sm': blur === 1,
