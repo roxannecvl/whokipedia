@@ -7,7 +7,7 @@ import {
     months,
     countries
 } from "~/utilities/Utils";
-import { type Hint, hintListFromObject } from "~/model/Hint";
+import { type Hint, hintListFromObject } from "~/model/Hint"
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.

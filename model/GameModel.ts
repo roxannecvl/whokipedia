@@ -46,24 +46,21 @@ export class GameModel {
      * or the celebrity entered isn't in our database.
      */
     public makeAGuess(newGuess : string) : boolean {
-        if (this._prevGuesses.includes(newGuess)) {
-            return false;
-        } else {
-            this._prevGuesses = [newGuess, ...this._prevGuesses];
-            this._curGuess = newGuess;
-            this._nbGuesses++;
-            if (this._curGuess == this._name) {
-                this._end = true;
-                this._win = true;
-            } else {
-                this._getNewHint();
-            }
-            return true;
-        }
+        if (this._prevGuesses.includes(newGuess)) return false;
+        this._prevGuesses = [newGuess, ...this._prevGuesses];
+        this._curGuess = newGuess;
+        this._nbGuesses++;
+        if (this._curGuess == this._name) {
+            this._end = true;
+            this._win = true;
+        } else this._getNewHint();
+        return true;
     }
 
     public isReady() : boolean {
-        return this.introPromiseState.data !== null && this.imagePromiseState.data !== null && this.infoPromiseState.data !== null;
+        return this.introPromiseState.data !== null
+            && this.imagePromiseState.data !== null
+            && this.infoPromiseState.data !== null;
     }
 
     get name(): string {
@@ -107,9 +104,7 @@ export class GameModel {
     }
 
     set blur(value: number) {
-        if (value < 0 || value > 7) {
-            throw new Error("Blur must be between 0 and 7");
-        }
+        if (value < 0 || value > 7) throw new Error("Blur must be between 0 and 7");
         this._blur = value;
     }
 

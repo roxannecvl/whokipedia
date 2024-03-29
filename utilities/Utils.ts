@@ -134,7 +134,7 @@ export function splitIntoEqualSentenceParts(text: string, num: number): string[]
  * Get random user model
  * @returns a random user model
  */
-//TODO : remove after testing 
+//TODO : remove after testing
 export function getRandomUserModel(): UserModel {
     const max_value = 100;
     const userModel = new UserModel();
@@ -352,4 +352,3 @@ export const countries: {[key: string]: string} = {
     "Zambia": "Zambian",
     "Zimbabwe": "Zimbabwean"
 }
-
