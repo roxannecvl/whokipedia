@@ -1,12 +1,12 @@
 <script
     setup
     lang="ts">
-import { HintList, compulsoryLabels } from "~/model/HintList";
+import { type Hint, compulsoryLabels } from "~/model/Hint";
 import { capitalize } from "~/utilities/Utils";
 
 defineProps( {
     hints: {
-      type: HintList,
+      type: Array<Hint>,
       required: true,
     },
     image : {
@@ -48,7 +48,7 @@ defineProps( {
     </template>
     <div class="flex flex-col items-center justify-center">
       <table>
-        <tr v-for="hint in hints.toList()"
+        <tr v-for="hint in hints"
             :key="hint">
             <td class="text-left align-top pr-6 pt-2">
               <p v-if="hint.label === 'Death' && !hint.revealed"

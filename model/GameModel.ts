@@ -1,8 +1,9 @@
 import { resolvePromise } from "~/model/ResolvePromise"
-import type { PromiseState } from "~/model/ResolvePromise"
-import { HintList } from "~/model/HintList"
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource"
 import { getRandom } from "~/utilities/Utils"
+
+import type { PromiseState } from "~/model/ResolvePromise"
+import type { Hint } from "~/model/Hint"
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -15,7 +16,7 @@ export class GameModel {
     private _name: string = ""
     private _imageUrl: string = ""
     private _intro : string[] = []
-    private _hints : HintList | undefined
+    private _hints : Hint[] | undefined
 
     // Game information
     private _blur: number = 4
@@ -73,7 +74,7 @@ export class GameModel {
         return this._imageUrl;
     }
 
-    get hints(): HintList | undefined{
+    get hints(): Hint[] | undefined{
         return this._hints;
     }
 
@@ -119,7 +120,7 @@ export class GameModel {
      */
     private _getNewHint() : void {
         if (this._hints != undefined && this._imageUrl != ""  && this._intro[0] !== "") {
-            const levelHintsLeft = this._hints.toList().filter(
+            const levelHintsLeft = this._hints.filter(
                 hint => !hint.revealed && hint.level == this._curHintLevel
             );
             const listLength = levelHintsLeft.length;
@@ -133,8 +134,8 @@ export class GameModel {
                     this._end = true;
                 }
             } else {
-                const rdmHint = getRandom(levelHintsLeft);
-                rdmHint.reveal()
+                const rdmHint: Hint = getRandom(levelHintsLeft);
+                rdmHint.revealed = true
             }
         }
     }

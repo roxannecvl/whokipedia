@@ -7,18 +7,15 @@ import {
     months,
     countries
 } from "~/utilities/Utils";
-import { HintList } from "~/model/HintList";
-
-const BASE_URL: string = "https://en.wikipedia.org"
-const ENDPOINT: string = "/w/api.php?"
+import { type Hint, hintListFromObject } from "~/model/Hint";
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<string> - the introduction of the Wikipedia page as plain text
+ * @return Promise<string[]> - the introduction of the Wikipedia page as plain text, split in three equal parts
  */
-export async function fetchIntro(celebrityName: string): Promise<any> {
+export async function fetchIntro(celebrityName: string): Promise<string[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -47,7 +44,10 @@ export async function fetchIntro(celebrityName: string): Promise<any> {
             }
             throw new Error(`Page with title ${celebrityName} was not found.`)
         })
-        .catch(error => console.error('Error fetching introduction of Wikipedia page : ', error))
+        .catch(error => {
+            console.error('Error fetching introduction of Wikipedia page : ', error)
+            throw error
+        })
 }
 
 /**
@@ -57,7 +57,7 @@ export async function fetchIntro(celebrityName: string): Promise<any> {
  * @param thumbSize the width in pixels of the wanted thumbnail
  * @return Promise<string> - the URL of the main image of the Wikipedia page
  */
-export async function fetchImageUrl(celebrityName: string, thumbSize: number): Promise<any> {
+export async function fetchImageUrl(celebrityName: string, thumbSize: number): Promise<string> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -86,16 +86,19 @@ export async function fetchImageUrl(celebrityName: string, thumbSize: number): P
            }
            throw new Error(`Image for epage with title ${celebrityName} was not found.`)
         })
-       .catch(error => console.error('Error fetching image URL of Wikipedia page : ', error))
+       .catch(error => {
+           console.error('Error fetching image URL of Wikipedia page : ', error)
+           throw error
+       })
 }
 
 /**
- * Fetch and return the infobox of the Wikipedia page of the given celebrity as an object.
+ * Fetch and return the infobox of the Wikipedia page of the given celebrity as list of Hint.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<Object> - the infobox as a JSON object
+ * @return Promise<Hint[]> - the infobox as a list of Hint
  */
-export async function fetchInfoBox(celebrityName: string): Promise<any> {
+export async function fetchInfoBox(celebrityName: string): Promise<Hint[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -120,11 +123,14 @@ export async function fetchInfoBox(celebrityName: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                return HintList.fromObject({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)})
+                return hintListFromObject({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)})
             }
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
-        .catch(error => console.error(`Error fetching infobox of Wikipedia page : `, error))
+        .catch(error => {
+            console.error(`Error fetching infobox of Wikipedia page : `, error)
+            throw error
+        })
 }
 
 /**
@@ -236,6 +242,8 @@ function parseDescription(description : string): {citizenship: string | undefine
 }
 
 
+const BASE_URL: string = "https://en.wikipedia.org"
+const ENDPOINT: string = "/w/api.php?"
 const fieldMatchers: {[key: string]: RegExp} = {
     description: /{{short description\|([^(){}]*)(?=[(){}])/i,
     birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
@@ -244,7 +252,6 @@ const fieldMatchers: {[key: string]: RegExp} = {
     genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
     lists: /\[\[([^\]]+)]]/gi
 }
-
 const occupationMatchers: {[key: string]: RegExp} = {
     "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
     "Politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
