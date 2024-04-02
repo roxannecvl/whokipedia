@@ -5,12 +5,12 @@ let database: Database;
 let userRef: DatabaseReference;
 
 // Initialise firebase app, database, ref
-function initialiseFirebase() {
+export function initialiseFirebase() {
     database = useDatabase();
     userRef = dbRef(database, 'users');
 }
 
-function userModelToPersistence(model: UserModel): any {
+export function userModelToPersistence(model: UserModel): any {
     return {
         currentStreak: model.currentStreak,
         maxStreak: model.maxStreak,
@@ -21,30 +21,25 @@ function userModelToPersistence(model: UserModel): any {
     }
 }
 
-function persistenceToUserModel(persistence: any, model: UserModel) {
+export function persistenceToUserModel(persistence: any, model: UserModel) {
     model.updateStats(persistence.currentStreak, persistence.maxStreak, persistence.averageRank, persistence.averageGuesses, persistence.averageTime, persistence.timesPlayed);
 }
 
-function saveUserToFirebase(model: UserModel, uid: string) {
+export function saveUserToFirebase(model: UserModel, uid: string) {
         const persistence = userModelToPersistence(model);
     persistence.uid = uid;
     push(userRef, persistence);
 }
 
-function updateUserToFirebase(model: UserModel, uid: string) {
+export function updateUserToFirebase(model: UserModel, uid: string) {
     const persistence = userModelToPersistence(model);
     persistence.uid = uid;
     update(userRef, persistence);
 }
 
-function readUserFromFirebase(model: UserModel) {
+export function readUserFromFirebase(model: UserModel) {
     return get(userRef).then(snapshot => {
                 persistenceToUserModel(snapshot.val(), model);
         return model;
     });
 }
-
-
-
-// Remember to uncomment the following line:
-export { initialiseFirebase, userModelToPersistence, saveUserToFirebase, updateUserToFirebase, readUserFromFirebase }

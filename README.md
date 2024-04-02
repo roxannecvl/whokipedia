@@ -46,7 +46,7 @@ whokipedia/                          #
 ├── model/                           #
 │   ├── CelebrityList.ts             # Contains the list of playable celebrity and function to get suggestions for seach field
 │   ├── GameModel.ts                 # Contains all the logic for the current game played 
-│   ├── HintList.ts                  # Declaration of HintList type (a list of Hints) and Hint type
+│   ├── Hint.ts                      # Declaration of Hint type (and method to create a list of hints from an object)
 │   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
 │   ├── FirebaseModel.ts             # Contains all logic for talking to our database
 │   └── ResolvePromise.ts            # Contains the logic for promise resolution

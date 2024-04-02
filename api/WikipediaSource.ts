@@ -1,16 +1,21 @@
-import { Utils } from "~/utilities/Utils";
-import { HintList } from "~/model/HintList";
-
-const BASE_URL: string = "https://en.wikipedia.org"
-const ENDPOINT: string = "/w/api.php?"
+import {
+    splitIntoEqualSentenceParts,
+    removeNameOccurrences,
+    getInitials,
+    getAndPermutations,
+    removeTag,
+    months,
+    countries
+} from "~/utilities/Utils";
+import { type Hint, hintListFromObject } from "~/model/Hint"
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<string> - the introduction of the Wikipedia page as plain text
+ * @return Promise<string[]> - the introduction of the Wikipedia page as plain text, split in three equal parts
  */
-export async function fetchIntro(celebrityName: string): Promise<any> {
+export async function fetchIntro(celebrityName: string): Promise<string[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -33,13 +38,16 @@ export async function fetchIntro(celebrityName: string): Promise<any> {
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
                     let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
-                    let texts: string[] = Utils.splitIntoEqualSentenceParts(text, 3)
-                    return texts.map(text => Utils.removeNameOccurrences(text, celebrityName)) // Remove name occurrences
+                    let texts: string[] = splitIntoEqualSentenceParts(text, 3)
+                    return texts.map(text => removeNameOccurrences(text, celebrityName)) // Remove name occurrences
                 }
             }
             throw new Error(`Page with title ${celebrityName} was not found.`)
         })
-        .catch(error => console.error('Error fetching introduction of Wikipedia page : ', error))
+        .catch(error => {
+            console.error('Error fetching introduction of Wikipedia page : ', error)
+            throw error
+        })
 }
 
 /**
@@ -49,7 +57,7 @@ export async function fetchIntro(celebrityName: string): Promise<any> {
  * @param thumbSize the width in pixels of the wanted thumbnail
  * @return Promise<string> - the URL of the main image of the Wikipedia page
  */
-export async function fetchImageUrl(celebrityName: string, thumbSize: number): Promise<any> {
+export async function fetchImageUrl(celebrityName: string, thumbSize: number): Promise<string> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -78,16 +86,19 @@ export async function fetchImageUrl(celebrityName: string, thumbSize: number): P
            }
            throw new Error(`Image for epage with title ${celebrityName} was not found.`)
         })
-       .catch(error => console.error('Error fetching image URL of Wikipedia page : ', error))
+       .catch(error => {
+           console.error('Error fetching image URL of Wikipedia page : ', error)
+           throw error
+       })
 }
 
 /**
- * Fetch and return the infobox of the Wikipedia page of the given celebrity as an object.
+ * Fetch and return the infobox of the Wikipedia page of the given celebrity as list of Hint.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<Object> - the infobox as a JSON object
+ * @return Promise<Hint[]> - the infobox as a list of Hint
  */
-export async function fetchInfoBox(celebrityName: string): Promise<any> {
+export async function fetchInfoBox(celebrityName: string): Promise<Hint[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -112,11 +123,14 @@ export async function fetchInfoBox(celebrityName: string): Promise<any> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                return HintList.fromObject({Initials: Utils.getInitials(celebrityName), ...parseWikitext(wikitext)})
+                return hintListFromObject({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)})
             }
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
-        .catch(error => console.error(`Error fetching infobox of Wikipedia page : `, error))
+        .catch(error => {
+            console.error(`Error fetching infobox of Wikipedia page : `, error)
+            throw error
+        })
 }
 
 /**
@@ -130,9 +144,9 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
     wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
 
     // Remove comments and remaining tags
-    wikitext = Utils.removeTag(wikitext, "<!--", "-->");
-    wikitext = Utils.removeTag(wikitext, "<ref", "/>");
-    wikitext = Utils.removeTag(wikitext, "<ref", "</ref>");
+    wikitext = removeTag(wikitext, "<!--", "-->");
+    wikitext = removeTag(wikitext, "<ref", "/>");
+    wikitext = removeTag(wikitext, "<ref", "</ref>");
 
     let hints: {[key: string]: string } = {}
 
@@ -140,14 +154,14 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
     let match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
         const [, birthYear, birthMonth, birthDay] = match;
-        hints["Born"] = `${birthDay} ${Utils.months[parseInt(birthMonth)]} ${birthYear}`;
+        hints["Born"] = `${birthDay} ${months[parseInt(birthMonth)]} ${birthYear}`;
     }
 
     // Death date
     match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
         const [, deathYear, deathMonth, deathDay] = match;
-        hints["Died"] = `${deathDay} ${Utils.months[parseInt(deathMonth)]} ${deathYear}`;
+        hints["Died"] = `${deathDay} ${months[parseInt(deathMonth)]} ${deathYear}`;
     }else {
         hints["Status"] = "Alive";
     }
@@ -192,8 +206,8 @@ function parseDescription(description : string): {citizenship: string | undefine
     }
 
     // Check if nationality or country is contained in the description
-    for (const country in Utils.countries) {
-        const nationality: string = Utils.countries[country];
+    for (const country in countries) {
+        const nationality: string = countries[country];
         let copy: string = description
         while (copy.includes(nationality) || copy.includes(country)) {
             res.citizenship = res.citizenship !== undefined ? res.citizenship + " and " + nationality : nationality
@@ -212,7 +226,7 @@ function parseDescription(description : string): {citizenship: string | undefine
 
     // If no occupation was found, occupation is description without citizenship
     res.occupation = description
-    for (const permutation of Utils.getAndPermutations(res.citizenship || "")){
+    for (const permutation of getAndPermutations(res.citizenship || "")){
         res.occupation = res.occupation.replace(permutation, "").trim()
     }
 
@@ -228,6 +242,8 @@ function parseDescription(description : string): {citizenship: string | undefine
 }
 
 
+const BASE_URL: string = "https://en.wikipedia.org"
+const ENDPOINT: string = "/w/api.php?"
 const fieldMatchers: {[key: string]: RegExp} = {
     description: /{{short description\|([^(){}]*)(?=[(){}])/i,
     birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
@@ -236,7 +252,6 @@ const fieldMatchers: {[key: string]: RegExp} = {
     genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
     lists: /\[\[([^\]]+)]]/gi
 }
-
 const occupationMatchers: {[key: string]: RegExp} = {
     "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
     "Politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,

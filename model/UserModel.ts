@@ -1,5 +1,3 @@
-import { Utils } from '~/utilities/Utils';
-
 export class UserModel {
     //private fields for the user's statistics
 

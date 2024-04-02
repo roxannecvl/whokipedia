@@ -4,13 +4,13 @@
 
 import { GameModel } from "~/model/GameModel";
 import { celebrities } from "~/model/CelebrityList";
-import { Utils } from "~/utilities/Utils"
+import { getRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 
 const model = reactive(new GameModel());
 //TODO :take the name of the celebrity from firebase in a way
-model.init(Utils.getRandom(celebrities))
+model.init(getRandom(celebrities))
 
 const isRulesOpen = ref(false)
 
