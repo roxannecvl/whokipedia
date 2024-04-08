@@ -38,7 +38,7 @@ export async function fetchIntro(celebrityName: string): Promise<IntroParagraph[
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
                     let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
-                    let paragraphs: string[] = splitIntoEqualSentenceParts(text, 3)
+                    let paragraphs: string[] = splitIntoEqualSentenceParts(text, NUM_PARAGRAPHS)
                     return paragraphsOf(paragraphs.map(text => removeNameOccurrences(text, celebrityName)) )
                 }
             }
@@ -244,6 +244,7 @@ function parseDescription(description : string): {citizenship: string | undefine
 
 const BASE_URL: string = "https://en.wikipedia.org"
 const ENDPOINT: string = "/w/api.php?"
+const NUM_PARAGRAPHS: number = 3
 const fieldMatchers: {[key: string]: RegExp} = {
     description: /{{short description\|([^(){}]*)(?=[(){}])/i,
     birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
