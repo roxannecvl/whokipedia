@@ -7,15 +7,15 @@ import {
     months,
     countries
 } from "~/utilities/Utils";
-import { type Hint, hintListFromObject } from "~/model/Hint"
+import { type InfoboxField, type IntroParagraph, type BlurredImage, fieldsOf, paragraphsOf, imagesOf } from "~/model/Hint"
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<string[]> - the introduction of the Wikipedia page as plain text, split in three equal parts
+ * @return Promise<IntroParagraph[]> - the introduction of the Wikipedia page split in three equal parts as hints
  */
-export async function fetchIntro(celebrityName: string): Promise<string[]> {
+export async function fetchIntro(celebrityName: string): Promise<IntroParagraph[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -38,8 +38,8 @@ export async function fetchIntro(celebrityName: string): Promise<string[]> {
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
                     let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
-                    let texts: string[] = splitIntoEqualSentenceParts(text, 3)
-                    return texts.map(text => removeNameOccurrences(text, celebrityName)) // Remove name occurrences
+                    let paragraphs: string[] = splitIntoEqualSentenceParts(text, 3)
+                    return paragraphsOf(paragraphs.map(text => removeNameOccurrences(text, celebrityName)) )
                 }
             }
             throw new Error(`Page with title ${celebrityName} was not found.`)
@@ -51,13 +51,13 @@ export async function fetchIntro(celebrityName: string): Promise<string[]> {
 }
 
 /**
- * Fetch and return the source URL of the main picture of the Wikipedia page of the given celebrity;
+ * Fetch and return the main picture of the Wikipedia page of the given celebrity, with different blur levels.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
  * @param thumbSize the width in pixels of the wanted thumbnail
- * @return Promise<string> - the URL of the main image of the Wikipedia page
+ * @return Promise<BlurredImage> - an array of the main picture with different blur levels as hints
  */
-export async function fetchImageUrl(celebrityName: string, thumbSize: number): Promise<string> {
+export async function fetchImage(celebrityName: string, thumbSize: number): Promise<BlurredImage[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -80,11 +80,11 @@ export async function fetchImageUrl(celebrityName: string, thumbSize: number): P
                if (pageIds.length === 1 && pageIds[0] !== '-1') {
                    const pageId: number = Number.parseInt(pageIds[0])
                    if ('thumbnail' in pages[pageId]) {
-                       return pages[pageId].thumbnail.source
+                       return imagesOf(pages[pageId].thumbnail.source)
                    }
                }
            }
-           throw new Error(`Image for epage with title ${celebrityName} was not found.`)
+           throw new Error(`Image for page with title ${celebrityName} was not found.`)
         })
        .catch(error => {
            console.error('Error fetching image URL of Wikipedia page : ', error)
@@ -96,9 +96,9 @@ export async function fetchImageUrl(celebrityName: string, thumbSize: number): P
  * Fetch and return the infobox of the Wikipedia page of the given celebrity as list of Hint.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<Hint[]> - the infobox as a list of Hint
+ * @return Promise<InfoboxField[]> - the infobox as an array of hints
  */
-export async function fetchInfoBox(celebrityName: string): Promise<Hint[]> {
+export async function fetchInfoBox(celebrityName: string): Promise<InfoboxField[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -123,7 +123,7 @@ export async function fetchInfoBox(celebrityName: string): Promise<Hint[]> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
-                return hintListFromObject({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)})
+                return fieldsOf({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)})
             }
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })

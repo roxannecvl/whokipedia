@@ -1,14 +1,11 @@
 <script setup lang="ts">
 
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import type { IntroParagraph } from "~/model/Hint";
 
 defineProps( {
     intro : {
-      type: Array<string>,
-      required: true,
-    },
-    revealed : {
-      type: Array<number>,
+      type: Array<IntroParagraph>,
       required: true,
     },
 })
@@ -38,5 +35,9 @@ watch(selectedName, newName)
       trailing
       by="id"
   />
-
+  <UCard>
+    <p v-for="paragraph in intro" :key="paragraph">
+      <p v-if="paragraph.revealed">{{ paragraph.value }}</p>
+    </p>
+  </UCard>
 </template>

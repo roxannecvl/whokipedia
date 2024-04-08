@@ -21,10 +21,10 @@ defineProps({
   <div class="flex flex-col">
     <GameCenterView
         @new-name-set="selectedName => model.makeAGuess.bind(model)(selectedName)"
-        :intro="model.intro" :revealed="model.introPartsRevealed"
+        :intro="model.intro"
     />
     <InfoboxView
-        :hints = "model.hints" :image="model.imageUrl" :blur="model.blur" :over="model.end"
+        :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur" :over="model.end"
     />
   </div>
 

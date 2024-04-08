@@ -1,9 +1,9 @@
 import { resolvePromise } from "~/model/ResolvePromise"
-import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource"
+import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import { getRandom } from "~/utilities/Utils"
 
 import type { PromiseState } from "~/model/ResolvePromise"
-import type { Hint } from "~/model/Hint"
+import {type InfoboxField, type IntroParagraph, type BlurredImage, imagesOf,} from "~/model/Hint"
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -12,42 +12,47 @@ import type { Hint } from "~/model/Hint"
  */
 export class GameModel {
 
-    // Celebrity information
     private _name: string = ""
-    private _imageUrl: string = ""
-    private _intro : string[] = []
-    private _hints : Hint[] | undefined
-
-    // Game information
-    private _blur: number = 4
-    private _introPartsRevealed : number[] = [];
-    private _curHintLevel: number = 1
+    private _images: BlurredImage[] | undefined
+    private _intro : IntroParagraph[] | undefined
+    private _infobox : InfoboxField[] | undefined
+    private _hintLevel: number = 1
     private _nbGuesses: number = 0
     private _curGuess : string = ""
     private _prevGuesses : string[] = []
+    private _end: boolean = false;
+    private _win: boolean = false;
+
     public introPromiseState: PromiseState = { data: null, promise: null, error: null }
     public imagePromiseState: PromiseState = { data: null, promise: null, error: null }
     public infoPromiseState: PromiseState = { data: null, promise: null, error: null }
-    private _end: boolean = false;
-    private _win: boolean = false;
 
     public init(name: string){
         this._reset();
         this._name = name;
-        resolvePromise(fetchIntro(this._name).then(intro => this._intro = intro), this.introPromiseState);
-        resolvePromise(fetchImageUrl(this._name, 100).then(url => this._imageUrl = url), this.imagePromiseState);
-        resolvePromise(fetchInfoBox(this._name).then(hints => this._hints = hints), this.infoPromiseState);
+        resolvePromise(
+            fetchImage(this._name, 100).then((images: BlurredImage[]) => this._images = images),
+            this.imagePromiseState
+        );
+        resolvePromise(
+            fetchIntro(this._name).then((intro: IntroParagraph[]) => this._intro = intro),
+            this.introPromiseState
+        );
+        resolvePromise(
+            fetchInfoBox(this._name).then((hints: InfoboxField[]) => this._infobox = hints),
+            this.infoPromiseState
+        );
     }
 
     /**
      * This method is used to set a new guess for the user and to increment the number of guesses counter
-     * @param newGuess (the new guess the user wants to enter)
-     * @return boolean, true if the guess was correctly set, false either if the guess has already been played
+     * @param newGuess - the new guess the user wants to enter
+     * @return boolean - true if the guess was correctly set, false either if the guess has already been played
      * or the celebrity entered isn't in our database.
      */
     public makeAGuess(newGuess : string) : boolean {
         if (this._prevGuesses.includes(newGuess)) return false;
-        this._prevGuesses = [newGuess, ...this._prevGuesses];
+        this._prevGuesses.push(newGuess);
         this._curGuess = newGuess;
         this._nbGuesses++;
         if (this._curGuess == this._name) {
@@ -67,20 +72,24 @@ export class GameModel {
         return this._name;
     }
 
-    get imageUrl(): string {
-        return this._imageUrl;
-    }
-
-    get hints(): Hint[] | undefined{
-        return this._hints;
+    get imageUrl(): string | undefined {
+        return this._images !== undefined ? this._images[0].url : "";
     }
 
     get blur(): number {
-        return this._blur;
+        return this._images !== undefined ? this._images
+                .filter((image: BlurredImage) => image.revealed)
+                .reduce((max, curr) => {
+                    return max.blur > curr.blur ? max : curr
+                }).blur : 4
     }
 
-    get curGuess() : string {
-        return this._curGuess;
+    get intro() : IntroParagraph[] | undefined {
+        return this._intro;
+    }
+
+    get infobox() : InfoboxField[] | undefined {
+        return this._infobox
     }
 
     get nbGuesses() : number {
@@ -95,42 +104,28 @@ export class GameModel {
         return this._win;
     }
 
-    get intro() : string[] {
-        return this._intro;
-    }
-
-    get introPartsRevealed(): number[] {
-        return this._introPartsRevealed
-    }
-
-    set blur(value: number) {
-        if (value < 0 || value > 7) throw new Error("Blur must be between 0 and 7");
-        this._blur = value;
-    }
-
     /**
      * This method reveals a new hint pseudo-randomly by taking
-     * into account the current hint-level that should be revealed.
+     * into account the current hint level that should be revealed.
      * @private
      */
     private _getNewHint() : void {
-        if (this._hints != undefined && this._imageUrl != ""  && this._intro[0] !== "") {
-            const levelHintsLeft = this._hints.filter(
-                hint => !hint.revealed && hint.level == this._curHintLevel
-            );
-            const listLength = levelHintsLeft.length;
-            if (listLength == 0) {
-                this._curHintLevel ++;
-                if (this._curHintLevel == 2) {
-                    this._blur = 2;
-                } else if (this._curHintLevel == 3) {
-                    this._blur = 0;
-                } else { //no more hints available
+        if (this._infobox !== undefined && this._images !== undefined  && this._intro !== undefined) {
+            const levelHintsLeft: (InfoboxField | IntroParagraph | BlurredImage)[] = [
+                ...this._images,
+                ...this._infobox,
+                ...this._intro
+            ].filter((hint: InfoboxField | IntroParagraph | BlurredImage) => !hint.revealed && hint.level == this._hintLevel)
+
+            if (levelHintsLeft.length == 0) {
+                if (this._hintLevel >= 3) {
                     this._end = true;
+                    return;
                 }
+                this._hintLevel ++;
+                this._getNewHint()
             } else {
-                const rdmHint: Hint = getRandom(levelHintsLeft);
-                rdmHint.revealed = true
+                getRandom(levelHintsLeft).revealed = true;
             }
         }
     }
@@ -141,12 +136,10 @@ export class GameModel {
      */
     private _reset() {
         this._name= "";
-        this._imageUrl = "";
-        this._intro = [""];
-        this._hints = undefined;
-        this._blur = 4;
-        this._introPartsRevealed = [];
-        this._curHintLevel = 1;
+        this._images = undefined;
+        this._intro = undefined;
+        this._infobox = undefined;
+        this._hintLevel = 1;
         this._nbGuesses = 0;
         this._curGuess = '';
         this._prevGuesses = [];
