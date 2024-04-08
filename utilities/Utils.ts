@@ -76,10 +76,10 @@ export function getAndPermutations(input: string): string[] {
  * Remove all text  between the opening and closing tags in the given string.
  * @param text - a string that may contain tags to remove
  * @param opening - the opening tag
- * @param closing - the closing tag
+ * @param closings - the closing tag
  */
-export function removeTag(text: string, opening: string, closing: string): string {
-    const regexStr = `${opening}[^]*?${closing}`;
+export function removeTag(text: string, opening: string, ...closings: string): string {
+    const regexStr = `${opening}[^]*?(${closings.join('|')})`;
     const regex = new RegExp(regexStr, 'g');
     return text.replace(regex, '');
 }
