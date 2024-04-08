@@ -125,22 +125,5 @@ export async function fetchInfoBox(celebrityName: string): Promise<Hint[]> {
         })
 }
 
-
-
-
 const BASE_URL: string = "https://en.wikipedia.org";
 const ENDPOINT: string = "/w/api.php?";
-const fieldMatchers: {[key: string]: RegExp} = {
-    description: /{{short description\|([^(){}]*)(?=[(){}])/i,
-    birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
-    deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
-    spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
-    genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
-    lists: /\[\[([^\]]+)]]/gi
-};
-const occupationMatchers: {[key: string]: RegExp} = {
-    "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
-    "Politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
-    "Activist": /\bactivist\b/i,
-    "Musician": /\bmusician\b/i
-};

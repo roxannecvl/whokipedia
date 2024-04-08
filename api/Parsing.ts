@@ -1,4 +1,20 @@
-import { months, countries } from "~/utilities/Utils";
+import { capitalize, months, countries } from "~/utilities/Utils";
+
+const fieldMatchers: {[key: string]: RegExp} = {
+    description: /{{short description\|([^(){}]*)(?=[(){}])/i,
+    birthDate: /\{\{Birth date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
+    deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
+    spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
+    genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
+    lists: /\[\[([^\]]+)]]/gi
+};
+const occupationMatchers: {[key: string]: RegExp} = {
+    "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
+    "Politician": /^\w+\sof\s\w+(?:\s\w+)*\s(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
+    "Activist": /\bactivist\b/i,
+    "Musician": /\bmusician\b/i
+};
+
 
 /**
  * Function to parse the wikitext of the first section of a Wikipedia page.
@@ -6,8 +22,6 @@ import { months, countries } from "~/utilities/Utils";
  * @param wikitext the wikitext of the first section of a Wikipedia page
  */
 export function parseWikitext(wikitext: string): {[key: string]: string} {
-    console.log("---------- BEFORE -------------");
-    console.log(wikitext);
     // Remove introduction after infobox
     wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
 
@@ -64,7 +78,6 @@ export function parseWikitext(wikitext: string): {[key: string]: string} {
 
     return hints;
 }
-
 
 /**
  * Split the given text into parts containing equal number of sentences.
