@@ -6,7 +6,8 @@ const fieldMatchers: {[key: string]: RegExp} = {
     deathDate: /\{\{Death date(?: and age)?(?:\|df=yes|\|mf=yes|\|df=y|\|mf=y)?\|(\d{4})\|(\d{1,2})\|(\d{1,2})/i,
     spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
     genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
-    lists: /\[\[([^\]]+)]]/gi
+    instruments: /\|\s*instruments\s*=\s*\{\{\s*(?:flat|h)list\s*\|\s*(?:\n?\*?\s*\[\[([^\]]*)]]\|?|\n?\*\s*([^\n]*)\n*)*\s*/gi,
+    lists: /\[\[([^[\]]+)]]|\*\s*([^\n]+)/gi,
 };
 const occupationMatchers: {[key: string]: RegExp} = {
     "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
@@ -65,16 +66,15 @@ export function parseWikitext(wikitext: string): {[key: string]: string} {
 
     // Genres
     match = fieldMatchers.genres.exec(wikitext);
-    if (match){
-        let genre: string = match[0];
-        let genres: string[] | undefined = undefined;
-        while ((match = fieldMatchers.lists.exec(genre)) !== null) {
-            genres = genres ?
-                [...genres, match[1].split('|')[0].trim()] :
-                [match[1].split('|')[0].trim()];
-            hints["Genres"] = genres.join(', ');
-        }
-    }
+    console.log(match)
+    let allValues: string = getMultipleHints(match);
+    if(allValues !== "") hints["Genres"] = allValues;
+
+    // Instruments
+    match = fieldMatchers.instruments.exec(wikitext);
+    console.log(match)
+    allValues = getMultipleHints(match);
+    if(allValues !== "") hints["Instruments"] = allValues;
 
     return hints;
 }
@@ -224,10 +224,30 @@ function getAndPermutations(input: string): string[] {
  * Remove all text  between the opening and closing tags in the given string.
  * @param text - a string that may contain tags to remove
  * @param opening - the opening tag
- * @param closings - the closing tag
+ * @param closings - all the possible closing tag
  */
-function removeTag(text: string, opening: string, ...closings: string): string {
+function removeTag(text: string, opening: string, ...closings: string[]): string {
     const regexStr = `${opening}[^]*?(${closings.join('|')})`;
     const regex = new RegExp(regexStr, 'g');
     return text.replace(regex, '');
+}
+
+function getMultipleHints(match : RegExpExecArray | null ): string {
+    if(match){
+        let type: string = match[0];
+        console.log(match[0])
+        let array: string[] = [];
+        while ((match = fieldMatchers.lists.exec(type)) !== null) {
+            console.log(match[1] || match[2] )
+            // Extract the content from the matched item
+            const content = match[1] || match[2];
+            const cleanContent = content.split('|')[0]
+                                               .replace("[[", "")
+                                               .replace("]]", "")
+                                               .trim()
+            array.push(cleanContent);
+        }
+        if(array.length !== 0) return array.join(", ");
+    }
+    return "";
 }
