@@ -67,13 +67,13 @@ export function parseWikitext(wikitext: string): {[key: string]: string} {
     // Genres
     match = fieldMatchers.genres.exec(wikitext);
     console.log(match)
-    let allValues: string = getMultipleHints(match);
+    let allValues: string = getMultipleValues(match);
     if(allValues !== "") hints["Genres"] = allValues;
 
     // Instruments
     match = fieldMatchers.instruments.exec(wikitext);
     console.log(match)
-    allValues = getMultipleHints(match);
+    allValues = getMultipleValues(match);
     if(allValues !== "") hints["Instruments"] = allValues;
 
     return hints;
@@ -232,7 +232,7 @@ function removeTag(text: string, opening: string, ...closings: string[]): string
     return text.replace(regex, '');
 }
 
-function getMultipleHints(match : RegExpExecArray | null ): string {
+function getMultipleValues(match : RegExpExecArray | null ): string {
     if(match){
         let type: string = match[0];
         console.log(match[0])
