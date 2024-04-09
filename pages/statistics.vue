@@ -39,7 +39,7 @@ const populateStats = () => {
         </ULink>
       </div>
     </div>
-      <StatisticsView :store />
+      <StatisticsView :model="store" />
     <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
       <UButton @click="populateStats">Populate stats</UButton>
     </div>

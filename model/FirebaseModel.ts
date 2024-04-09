@@ -40,7 +40,7 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
  */
 export async function readUserFromFirebase(store: UserStore): Promise<UserStore> {
     return get(userRef).then(snapshot => {
-        persistenceToUserModel(snapshot.val(), store);
+        persistenceToUserModel(store, snapshot.val());
         return store;
     });
 }

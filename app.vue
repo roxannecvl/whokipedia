@@ -9,6 +9,9 @@ import SignupView from "~/views/SignupView.vue";
 // Initialize Firebase
 initializeFirebase()
 
+// Set up user model
+const store: UserStore = useUserStore()
+
 // Initialize authentication
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
@@ -20,9 +23,6 @@ const isDark = computed({
   get: () => colorMode.value === 'dark',
   set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 })
-
-// Set up user model
-const store: UserStore = useUserStore()
 
 const isLogInOpen = ref(false)
 const errorMessage = ref('')
