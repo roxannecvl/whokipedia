@@ -1,3 +1,5 @@
+import { getRandom } from "~/utilities/Utils.ts"
+
 /**
  * This interface represents a Hint for the game, and all its possible attributes.
  * Its purpose is to be extended with types that omit certain attributes.
@@ -37,6 +39,8 @@ export type BlurHint = Omit<Hint, 'label' | 'value' | 'number'>
 export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
     let compulsoryFields: InfoboxHint[] = [];
     let arbitraryFields: InfoboxHint[] = [];
+    const filteredLabels : string[] = Object.keys(compulsoryLabels).filter(label => compulsoryLabels[label] === 1);
+    let randomFirst : string = getRandom(filteredLabels)
     Object.entries(obj).forEach(([key, value]) => {
         if (arbitraryLabels.hasOwnProperty(key)) {
             arbitraryFields.push({
@@ -50,7 +54,7 @@ export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
                 label: key,
                 level: compulsoryLabels[key],
                 value: value,
-                revealed: key === 'Born'
+                revealed: key === randomFirst
             })
         }
     })
