@@ -54,7 +54,7 @@ export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
             })
         }
     })
-    return [...compulsoryFields, ...arbitraryFields.slice(0, 2)]
+    return [...compulsoryHints, ...arbitraryHints.slice(0, 3)]
 }
 
 /**
@@ -108,14 +108,13 @@ export function imagesOf(url: string): BlurHint[] {
 
 export const compulsoryLabels: {[key: string]: number} = {
     'Born': 1,
-    'Died': 1,
-    'Status': 1,
     'Occupation': 1,
     'Citizenship': 1,
     'Initials': 3,
 }
 
 const arbitraryLabels: {[key: string]: number} = {
+    'Died': 1,
     'Spouses': 2,
     'Genres': 2,
     'Political party': 2,
