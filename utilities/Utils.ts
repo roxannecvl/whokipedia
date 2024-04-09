@@ -19,6 +19,22 @@ export function getRandom(list: any[]): any {
     return list[Math.floor(Math.random() * list.length)];
 }
 
+
+export function getCryptedString(clearText : string) : string {
+    let crypted : string = "";
+    for(let i = 0 ; i < clearText.length; ++i){
+        //checks if the char is a letter or number
+        if(/^[a-zA-Z]$/.test(clearText[i]) || /^[0-9]$/.test(clearText[i])){
+            const randomChar = Math.floor(Math.random() * (122 - 65 + 1)) + 65;
+            crypted = crypted +  String.fromCharCode(randomChar)
+        }else{
+            //keep spaces or new lines
+            crypted = crypted + clearText[i];
+        }
+    }
+    return crypted;
+}
+
 /**
  * Given a name (string) this function returns a string containing the initials of the name
  * @param name - name we want the initials of

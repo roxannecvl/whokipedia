@@ -18,7 +18,11 @@ defineProps( {
     over : {
       type : Boolean,
       required: true,
-    }
+    },
+    buttonLink : {
+      type : String,
+      required: true,
+    },
 })
 </script>
 
@@ -44,7 +48,7 @@ defineProps( {
 
       </div>
     </template>
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center py-5">
       <table>
         <tr v-for="field in fields"
             :key="field">
@@ -65,6 +69,14 @@ defineProps( {
             </td>
         </tr>
       </table>
+    </div>
+    <div v-if="over" style="display: flex; justify-content: center;">
+      <UButton
+          :to="buttonLink"
+          size="lg"
+      >
+        Learn more
+      </UButton>
     </div>
   </UCard>
 </template>
