@@ -44,7 +44,7 @@ export const useGameStore = defineStore('game', {
                 this.infobox = infobox
                 this.intro = intro
             } catch (error) {
-
+                console.error("'Error initializing new game : ', error")
             } finally {
                 this.loading = false
             }

@@ -25,8 +25,8 @@ const isRulesOpen = ref(false)
     </div>
     <div v-else>
       <div class="hidden md:flex">
-        <div class="w-1/4 p-2"><SidebarPresenter :model="store as useGameStore" /></div>
-        <div class="w-3/4 p-2"><GamePresenter :model="store as useGameStore" /></div>
+        <div class="w-1/4 p-2"><SidebarPresenter :model="store" /></div>
+        <div class="w-3/4 p-2"><GamePresenter :model="store" /></div>
       </div>
       <div class="flex md:hidden flex-col ">
         <div class="p-2 items-center">
@@ -47,11 +47,11 @@ const isRulesOpen = ref(false)
               </div>
 
             </template>
-            <div class="p-5 w-full box-border"><SidebarPresenter :model="store as useGameStore" /></div>
+            <div class="p-5 w-full box-border"><SidebarPresenter :model="store" /></div>
           </UCard>
 
         </USlideover>
-        <div class="p-2"><GamePresenter :model="store as useGameStore" /></div>
+        <div class="p-2"><GamePresenter :model="store" /></div>
       </div>
     </div>
   </div>
