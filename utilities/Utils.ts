@@ -1,13 +1,4 @@
-import { UserModel } from "~/model/UserModel";
-
-/**
- * Given a string, this function returns the same string with the first letter capitalized.
- * @param str - the string to capitalize
- */
-export function capitalize(str: string): string {
-    const s = str.trim()
-    return s.charAt(0).toUpperCase() + s.slice(1);
-}
+import {UserModel} from "~/model/UserModel";
 
 /**
  * Gives you a random element from the list
@@ -36,26 +27,77 @@ export function getCryptedString(clearText : string) : string {
 }
 
 /**
+ * Get random user model
+ * @returns a random user model
+ */
+//TODO : remove after testing
+export function getRandomUserModel(): UserModel {
+    const max_value = 100;
+    const userModel = new UserModel();
+    userModel.updateStats(Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value))
+    return userModel;
+}
+
+// --------------------------------- String utilities  --------------------------------- //
+
+/**
+ * Given a string, this function returns the same string with the first letter capitalized.
+ * @param str - the string to capitalize
+ */
+export function capitalize(str: string): string {
+    const s = str.trim()
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/**
  * Given a name (string) this function returns a string containing the initials of the name
  * @param name - name we want the initials of
  */
 export function getInitials(name: string): string {
-    // Split the name into individual words
     const words: string[] = name.split(' ');
-
-    // Initialize an empty string to store the initials
     let initials: string = '';
-
-    // Iterate through each word and add its first letter to the initials
     for (const word of words) {
-        // If the word is not empty, add its first letter to the initials
         if (word.length > 0) {
             initials += word[0].toUpperCase() + ". ";
         }
     }
-
     return initials;
 }
+
+// --------------------------------- String cleaning utilities --------------------------------- //
+
+/**
+ * Remove all text  between the opening and closing tags in the given string.
+ * @param text - a string that may contain tags to remove
+ * @param opening - the opening tag
+ * @param closings - all the possible closing tag
+ */
+export function removeTag(text: string, opening: string, ...closings: string[]): string {
+    const regexStr = `${opening}[^]*?(${closings.join('|')})`;
+    const regex = new RegExp(regexStr, 'g');
+    return text.replace(regex, '');
+}
+
+/**
+ * Remove all occurrences of the given name in the given text, including
+ * first name and last name, excluding name particles (e.g. "von", "de", ...).
+ * @param name - celebrity first name(s) and last name(s)
+ * @param text - text from which to remove the name
+ */
+export function removeNameOccurrences(text: string, name: string): string {
+    // Get lists of all first names and names, without name particle (i.e. von, de, of...)
+    const names: string[] = [
+        ...name.split(" ").map(n => n.trim()).filter(n => n === capitalize(n)), name
+    ]
+    names.forEach(n => {
+        const regex = new RegExp(n, 'gi');
+        text = text.replace(regex, "???");
+    })
+    return text
+}
+
+// --------------------------------- Miscellaneous --------------------------------- //
+
 
 /**
  * Given a sentence of words separated by "and", returns all
@@ -89,36 +131,6 @@ export function getAndPermutations(input: string): string[] {
 }
 
 /**
- * Remove all text  between the opening and closing tags in the given string.
- * @param text - a string that may contain tags to remove
- * @param opening - the opening tag
- * @param closing - the closing tag
- */
-export function removeTag(text: string, opening: string, closing: string): string {
-    const regexStr = `${opening}[^]*?${closing}`;
-    const regex = new RegExp(regexStr, 'g');
-    return text.replace(regex, '');
-}
-
-/**
- * Remove all occurrences of the given name in the given text, including
- * first name and last name, excluding name particles (e.g. "von", "de", ...).
- * @param name - celebrity first name(s) and last name(s)
- * @param text - text from which to remove the name
- */
-export function removeNameOccurrences(text: string, name: string): string {
-    // Get lists of all first names and names, without name particle (i.e. von, de, of...)
-    const names: string[] = [
-        ...name.split(" ").map(n => n.trim()).filter(n => n === capitalize(n)), name
-    ]
-    names.forEach(n => {
-        const regex = new RegExp(n, 'gi');
-        text = text.replace(regex, "???");
-    })
-    return text
-}
-
-/**
  * Split the given text into parts containing equal number of sentences.
  * @param text - the text to split
  * @param num - the number of parts to split the text into
@@ -146,17 +158,7 @@ export function splitIntoEqualSentenceParts(text: string, num: number): string[]
     return parts;
 }
 
-/**
- * Get random user model
- * @returns a random user model
- */
-//TODO : remove after testing
-export function getRandomUserModel(): UserModel {
-    const max_value = 100;
-    const userModel = new UserModel();
-    userModel.updateStats(Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value))
-    return userModel;
-}
+// --------------------------------- Data --------------------------------- //
 
 export const months: {[key: number]: string} = {
     1: "January",
@@ -368,3 +370,4 @@ export const countries: {[key: string]: string} = {
     "Zambia": "Zambian",
     "Zimbabwe": "Zimbabwean"
 }
+
