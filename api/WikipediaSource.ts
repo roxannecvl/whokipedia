@@ -7,15 +7,15 @@ import {
     months,
     countries
 } from "~/utilities/Utils";
-import { type InfoboxField, type IntroParagraph, type BlurredImage, fieldsOf, paragraphsOf, imagesOf } from "~/model/Hint"
+import { type InfoboxHint, type ParagraphHint, type BlurHint, fieldsOf, paragraphsOf, imagesOf } from "~/model/Hint"
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<IntroParagraph[]> - the introduction of the Wikipedia page split in three equal parts as hints
+ * @return Promise<ParagraphHint[]> - the introduction of the Wikipedia page split in three equal parts as hints
  */
-export async function fetchIntro(celebrityName: string): Promise<IntroParagraph[]> {
+export async function fetchIntro(celebrityName: string): Promise<ParagraphHint[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -55,9 +55,9 @@ export async function fetchIntro(celebrityName: string): Promise<IntroParagraph[
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
  * @param thumbSize the width in pixels of the wanted thumbnail
- * @return Promise<BlurredImage> - an array of the main picture with different blur levels as hints
+ * @return Promise<BlurHint> - an array of the main picture with different blur levels as hints
  */
-export async function fetchImage(celebrityName: string, thumbSize: number): Promise<BlurredImage[]> {
+export async function fetchImage(celebrityName: string, thumbSize: number): Promise<BlurHint[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,
@@ -96,9 +96,9 @@ export async function fetchImage(celebrityName: string, thumbSize: number): Prom
  * Fetch and return the infobox of the Wikipedia page of the given celebrity as list of Hint.
  * Uses the MediaWiki Action API.
  * @param celebrityName the name of the celebrity, must be first-capitalized
- * @return Promise<InfoboxField[]> - the infobox as an array of hints
+ * @return Promise<InfoboxHint[]> - the infobox as an array of hints
  */
-export async function fetchInfoBox(celebrityName: string): Promise<InfoboxField[]> {
+export async function fetchInfoBox(celebrityName: string): Promise<InfoboxHint[]> {
     const searchParams: Record<string, string> = {
         action: "query",
         titles: celebrityName,

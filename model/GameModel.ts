@@ -3,7 +3,7 @@ import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import { getRandom } from "~/utilities/Utils"
 
 import type { PromiseState } from "~/model/ResolvePromise"
-import {type InfoboxField, type IntroParagraph, type BlurredImage, imagesOf,} from "~/model/Hint"
+import { type InfoboxHint, type ParagraphHint, type BlurHint } from "~/model/Hint"
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
@@ -13,9 +13,9 @@ import {type InfoboxField, type IntroParagraph, type BlurredImage, imagesOf,} fr
 export class GameModel {
 
     private _name: string = ""
-    private _images: BlurredImage[] | undefined
-    private _intro : IntroParagraph[] | undefined
-    private _infobox : InfoboxField[] | undefined
+    private _images: BlurHint[] | undefined
+    private _intro : ParagraphHint[] | undefined
+    private _infobox : InfoboxHint[] | undefined
     private _hintLevel: number = 1
     private _nbGuesses: number = 0
     private _curGuess : string = ""
@@ -31,24 +31,23 @@ export class GameModel {
         this._reset();
         this._name = name;
         resolvePromise(
-            fetchImage(this._name, 100).then((images: BlurredImage[]) => this._images = images),
+            fetchImage(this._name, 100).then((images: BlurHint[]) => this._images = images),
             this.imagePromiseState
         );
         resolvePromise(
-            fetchIntro(this._name).then((intro: IntroParagraph[]) => this._intro = intro),
+            fetchIntro(this._name).then((intro: ParagraphHint[]) => this._intro = intro),
             this.introPromiseState
         );
         resolvePromise(
-            fetchInfoBox(this._name).then((hints: InfoboxField[]) => this._infobox = hints),
+            fetchInfoBox(this._name).then((hints: InfoboxHint[]) => this._infobox = hints),
             this.infoPromiseState
         );
     }
 
     /**
-     * This method is used to set a new guess for the user and to increment the number of guesses counter
+     * This method is used to register a new guess.
      * @param newGuess - the new guess the user wants to enter
-     * @return boolean - true if the guess was correctly set, false either if the guess has already been played
-     * or the celebrity entered isn't in our database.
+     * @return boolean - true if the guess was correctly set, false otherwise
      */
     public makeAGuess(newGuess : string) : boolean {
         if (this._prevGuesses.includes(newGuess)) return false;
@@ -62,6 +61,10 @@ export class GameModel {
         return true;
     }
 
+    /**
+     * This method is used to check if the model is ready for a game.
+     * @return boolean - true if all needed data has been fetched, false otherwise
+     */
     public isReady() : boolean {
         return this.introPromiseState.data !== null
             && this.imagePromiseState.data !== null
@@ -73,22 +76,22 @@ export class GameModel {
     }
 
     get imageUrl(): string | undefined {
-        return this._images !== undefined ? this._images[0].url : "";
+        return this._images ? this._images[0].url : undefined
     }
 
-    get blur(): number {
-        return this._images !== undefined ? this._images
-                .filter((image: BlurredImage) => image.revealed)
+    get blur(): number | undefined {
+        return this._images ? this._images
+                .filter((image: BlurHint) => image.revealed)
                 .reduce((max, curr) => {
                     return max.blur > curr.blur ? max : curr
-                }).blur : 4
+                }).blur : undefined
     }
 
-    get intro() : IntroParagraph[] | undefined {
+    get intro() : ParagraphHint[] | undefined {
         return this._intro;
     }
 
-    get infobox() : InfoboxField[] | undefined {
+    get infobox() : InfoboxHint[] | undefined {
         return this._infobox
     }
 
@@ -105,17 +108,16 @@ export class GameModel {
     }
 
     /**
-     * This method reveals a new hint pseudo-randomly by taking
-     * into account the current hint level that should be revealed.
+     * This method reveals a new hint pseudo-randomly, taking into account the current hint level.
      * @private
      */
     private _getNewHint() : void {
         if (this._infobox !== undefined && this._images !== undefined  && this._intro !== undefined) {
-            const levelHintsLeft: (InfoboxField | IntroParagraph | BlurredImage)[] = [
+            const levelHintsLeft: (InfoboxHint | ParagraphHint | BlurHint)[] = [
                 ...this._images,
                 ...this._infobox,
                 ...this._intro
-            ].filter((hint: InfoboxField | IntroParagraph | BlurredImage) => !hint.revealed && hint.level == this._hintLevel)
+            ].filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == this._hintLevel)
 
             if (levelHintsLeft.length == 0) {
                 if (this._hintLevel >= 3) {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
-import type { IntroParagraph } from "~/model/Hint";
+import type { ParagraphHint } from "~/model/Hint";
 
 defineProps( {
     intro : {
-      type: Array<IntroParagraph>,
+      type: Array<ParagraphHint>,
       required: true,
     },
 })
