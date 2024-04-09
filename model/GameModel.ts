@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia';
-
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import { getRandom } from "~/utilities/Utils"
-
-import { type InfoboxHint, type ParagraphHint, type BlurHint } from "~/model/Hint"
+import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
 
 export const useGameStore = defineStore('game', {
     state: () => ({
@@ -11,13 +9,13 @@ export const useGameStore = defineStore('game', {
         images: null as BlurHint[] | null,
         intro: null as ParagraphHint[] | null,
         infobox: null as InfoboxHint[] | null,
-        loading: false as boolean,
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
         curGuess: "" as string,
         prevGuesses: [] as string[],
         end: false as boolean,
         win: false as boolean,
+        loading: false as boolean,
     }),
     getters: {
         imageUrl: (state): string | undefined => {
@@ -32,7 +30,7 @@ export const useGameStore = defineStore('game', {
         },
     },
     actions: {
-        async init (name: string) {
+        async init (name: string): Promise<void> {
             this.$reset()
             this.name = name
             try {
@@ -84,5 +82,7 @@ export const useGameStore = defineStore('game', {
         }
     }
 })
+
+export type GameStore = ReturnType<typeof useGameStore>
 
 
