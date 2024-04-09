@@ -118,7 +118,7 @@ function logout() {
             <div class="flex">
               <UIcon
                   name="i-heroicons-magnifying-glass-16-solid"
-                  class="text-primary w-10 h-10"/>
+                  class="text-primary w-10 h-10 hidden sm:block"/>
               <p class="font-black text-3xl hidden sm:block select-none">
                 Whokipedia
               </p>
