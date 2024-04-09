@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
 import InfoboxView from "~/views/InfoboxView.vue";
-import { GameModel } from "~/model/GameModel";
+import { type GameStore } from "~/model/GameModel";
 import GameCenterView from "~/views/GameCenterView.vue";
 
 defineProps({
   model: {
-      type: GameModel,
+      type: Object as () => GameStore,
       required: true,
   },
 })

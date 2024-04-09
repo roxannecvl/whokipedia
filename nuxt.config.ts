@@ -2,6 +2,7 @@ export default defineNuxtConfig({
     modules: [
         '@nuxt/ui',
         'nuxt-vuefire',
+        '@pinia/nuxt',
     ],
     ui: {
         icons: ['simple-icons', 'eos-icons']

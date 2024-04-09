@@ -2,15 +2,15 @@
     setup
     lang="ts">
 
-import { GameModel } from "~/model/GameModel";
+import { useGameStore } from "~/model/GameModel";
 import { celebrities } from "~/model/CelebrityList";
 import { getRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 
-const model = reactive(new GameModel());
 //TODO :take the name of the celebrity from firebase in a way
-model.init(getRandom(celebrities))
+const store = useGameStore()
+store.init(getRandom(celebrities))
 
 const isRulesOpen = ref(false)
 
@@ -18,15 +18,15 @@ const isRulesOpen = ref(false)
 
 <template>
   <div>
-    <div class="w-full flex justify-center items-center" v-if="!model.isReady()">
+    <div class="w-full flex justify-center items-center" v-if="store.loading">
       <UIcon
           name="i-eos-icons-loading"
       />
     </div>
     <div v-else>
       <div class="hidden md:flex">
-        <div class="w-1/4 p-2"><SidebarPresenter :model=model /></div>
-        <div class="w-3/4 p-2"><GamePresenter :model=model /></div>
+        <div class="w-1/4 p-2"><SidebarPresenter :model="store" /></div>
+        <div class="w-3/4 p-2"><GamePresenter :model="store" /></div>
       </div>
       <div class="flex md:hidden flex-col ">
         <div class="p-2 items-center">
@@ -47,11 +47,11 @@ const isRulesOpen = ref(false)
               </div>
 
             </template>
-            <div class="p-5 w-full box-border"><SidebarPresenter :model=model /></div>
+            <div class="p-5 w-full box-border"><SidebarPresenter :model="store" /></div>
           </UCard>
 
         </USlideover>
-        <div class="p-2"><GamePresenter :model=model /></div>
+        <div class="p-2"><GamePresenter :model="store" /></div>
       </div>
     </div>
   </div>
