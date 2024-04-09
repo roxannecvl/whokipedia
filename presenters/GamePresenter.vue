@@ -11,20 +11,19 @@ defineProps({
   },
 })
 
+const baseString = "https://en.wikipedia.org/wiki/";
+
 </script>
 
 <template>
-  <div v-if="model.end" class="text-5xl text-primary font-black">
-    <p v-if="model.win"> YOU WON ! </p>
-    <p v-else> You lost... </p>
-  </div>
-  <div class="flex flex-col">
+  <div class="flex flex-row">
     <GameCenterView
         @new-name-set="selectedName => model.makeAGuess.bind(model)(selectedName)"
-        :intro="model.intro" :revealed="model.introPartsRevealed"
+        :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
     />
     <InfoboxView
-        :hints = "model.hints" :image="model.imageUrl" :blur="model.blur" :over="model.end"
+        :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
+        :over="model.end" :buttonLink="baseString + model.name"
     />
   </div>
 
