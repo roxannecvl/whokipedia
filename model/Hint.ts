@@ -54,7 +54,7 @@ export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
             })
         }
     })
-    return [...compulsoryHints, ...arbitraryHints.slice(0, 3)]
+    return [...compulsoryFields, ...arbitraryFields.slice(0, 3)]
 }
 
 /**
