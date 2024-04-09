@@ -1,9 +1,95 @@
+import { defineStore } from 'pinia';
+
 import { resolvePromise } from "~/model/ResolvePromise"
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import { getRandom } from "~/utilities/Utils"
 
 import type { PromiseState } from "~/model/ResolvePromise"
 import { type InfoboxHint, type ParagraphHint, type BlurHint } from "~/model/Hint"
+
+export const useGameStore = defineStore('game', {
+    state: () => ({
+        name: "" as string,
+        images: [] as BlurHint[],
+        intro: [] as ParagraphHint[],
+        infobox: [] as InfoboxHint[],
+        hintLevel: 1 as number,
+        nbGuesses: 0 as number,
+        curGuess: "" as string,
+        prevGuesses: [] as string[],
+        end: false as boolean,
+        win: false as boolean,
+        introPromiseState: {} as PromiseState,
+        imagePromiseState: {} as PromiseState,
+        infoPromiseState: {} as PromiseState,
+    }),
+    getters: {
+        imageUrl: (state): string | undefined => {
+            return state.images ? state.images[0].url : undefined
+        },
+        blur: (state): number | undefined => {
+            return state.images.length > 0 ? state.images
+                .filter((image: BlurHint) => image.revealed)
+                .reduce((max, curr) => {
+                    return max.blur > curr.blur ? max : curr
+                }).blur : undefined
+        },
+        ready: (state): boolean => {
+            return state.introPromiseState.data !== null
+                && state.imagePromiseState.data !== null
+                && state.infoPromiseState.data !== null;
+        }
+    },
+    actions: {
+        init (name: string): void {
+            this.$reset()
+            this.name = name
+            resolvePromise(
+                fetchImage(this.name, 100).then((images: BlurHint[]) => this.images = images),
+                this.imagePromiseState
+            );
+            resolvePromise(
+                fetchIntro(this.name).then((intro: ParagraphHint[]) => this.intro = intro),
+                this.introPromiseState
+            );
+            resolvePromise(
+                fetchInfoBox(this.name).then((hints: InfoboxHint[]) => this.infobox = hints),
+                this.infoPromiseState
+            );
+        },
+        makeAGuess(newGuess: string): boolean {
+            if (this.prevGuesses.includes(newGuess)) return false;
+            this.prevGuesses.push(newGuess);
+            this.curGuess = newGuess;
+            this.nbGuesses++;
+            if (this.curGuess == this.name) {
+                this.end = true;
+                this.win = true;
+            } else this.getNewHint();
+            return true;
+        },
+        getNewHint(): void {
+            if (this.infobox.length > 0 && this.images.length > 0 && this.intro.length > 0) {
+                const levelHintsLeft: (InfoboxHint | ParagraphHint | BlurHint)[] = [
+                    ...this.images,
+                    ...this.infobox,
+                    ...this.intro
+                ].filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == this.hintLevel)
+
+                if (levelHintsLeft.length == 0) {
+                    if (this.hintLevel >= 3) {
+                        this.end = true;
+                        return;
+                    }
+                    this.hintLevel ++;
+                    this.getNewHint()
+                } else {
+                    getRandom(levelHintsLeft).revealed = true;
+                }
+            }
+        }
+    }
+})
 
 /**
  * This class represents the model of the game. It contains all the information needed to play the game.
