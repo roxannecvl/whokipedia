@@ -64,7 +64,6 @@ export function extractInfoboxFromWikitext(wikitext: string): {[key: string]: st
     match = fieldMatchers.known_for.exec(wikitext);
     if (match) {
         hints["Known for"] = extractFromList(match);
-        console.log(hints["Known for"])
     }
 
     return hints;
