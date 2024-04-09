@@ -39,7 +39,7 @@ const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTra
   />
 
   <p class="py-3 font-semibold">
-  Guess the celebrity <span class="text-primary">in as few hint as possible</span>
+  Guess the celebrity <span class="text-primary">in as few hints as possible</span>
   </p>
   <ul class="list-disc list-inside m-2">
     <li>Each guess must be one of our listed <span class="text-primary">celebrities</span>.</li>
