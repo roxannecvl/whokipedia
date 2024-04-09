@@ -14,10 +14,6 @@ export function extractInfoboxFromWikitext(wikitext: string): {[key: string]: st
     wikitext = removeTag(wikitext, "<!--", "-->");
     wikitext = removeTag(wikitext, "<ref", "</ref>", "/>");
 
-    if(wikitext.includes("known")){
-        console.log(wikitext)
-    }
-
     let hints: {[key: string]: string } = {};
 
     // Birthdate
@@ -62,6 +58,13 @@ export function extractInfoboxFromWikitext(wikitext: string): {[key: string]: st
     match = fieldMatchers.instruments.exec(wikitext);
     if (match) {
         hints["Instruments"] = extractFromList(match);
+    }
+
+    // Known for
+    match = fieldMatchers.known_for.exec(wikitext);
+    if (match) {
+        hints["Known for"] = extractFromList(match);
+        console.log(hints["Known for"])
     }
 
     return hints;
@@ -153,6 +156,7 @@ const fieldMatchers: {[key: string]: RegExp} = {
     spouses: /\{\{marriage\|\[\[([^|\]]+)]]/gi,
     genres: /\| genre\s*=\s*\{\{(?:flat|h)list\|(?:\n?\*?\s*\[\[([^\]]*)]]\|?)*/gi,
     instruments: /\|\s*instruments\s*=\s*\{\{\s*(?:flat|h)list\s*\|\s*(?:\n?\*?\s*\[\[([^\]]*)]]\|?|\n?\*\s*([^\n]*)\n*)*\s*/gi,
+    known_for: /\|\s*known_for\s*=\s*\{\{([^{}]+)}}/g,
     lists: /\[\[([^[\]]+)]]|\*\s*([^\n]+)/gi,
 };
 const occupationMatchers: {[key: string]: RegExp} = {
