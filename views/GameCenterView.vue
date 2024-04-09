@@ -2,11 +2,11 @@
 
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 import { getCryptedString } from "~/utilities/Utils";
-import type { IntroParagraph } from "~/model/Hint";
+import type { ParagraphHint } from "~/model/Hint";
 
 defineProps( {
     intro : {
-      type: Array<IntroParagraph>,
+      type: Array<ParagraphHint>,
       required: true,
     },
     over : {
@@ -41,27 +41,32 @@ watch(selectedName, newName)
 
 <template>
   <div class="flex flex-col">
-    <UInputMenu
-        v-if="!over"
-        v-model="selectedName"
-        :search="getAutocompleteSuggestions"
-        placeholder="Take a guess..."
-        option-attribute="name"
-        trailing
-        by="id"
-        style="font-size: 18px; padding: 10px; height: 40px;"
-    />
-    <UCard v-if="over">
-      <div class="text-3xl font-black">
-        {{name}}
+    <UCard>
+      <template #header>
+        <UInputMenu
+            v-if="!over"
+            v-model="selectedName"
+            :search="getAutocompleteSuggestions"
+            placeholder="Take a guess..."
+            option-attribute="name"
+            trailing
+            by="id"
+            style="font-size: 18px; padding: 10px; height: 40px;"
+        />
+          <div v-if="over" class="text-3xl font-black">
+            {{name}}
+          </div>
+      </template>
+      <div style="max-height: 75vh; overflow-y:auto;">
+        <p v-for="paragraph in intro" :key="paragraph">
+          <p v-if="paragraph.revealed || over">{{ paragraph.value }}</p>
+          <p v-else class="blur-sm">{{ getCryptedString(paragraph.value) }}</p>
+        </p>
       </div>
     </UCard>
-    <UCard style="max-height: 75vh; overflow-y:auto;">
-      <p v-for="paragraph in intro" :key="paragraph">
-        <p v-if="paragraph.revealed || over">{{ paragraph.value }}</p>
-        <p v-else class="blur-sm">{{ getCryptedString(paragraph.value) }}</p>
-      </p>
-    </UCard>
+
+
+
 
   </div>
 </template>

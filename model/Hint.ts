@@ -1,47 +1,42 @@
 /**
- * This interface represents an infobox field, with the following attributes.
- * `label` is the label of the field,
- * `level` is the level of this hint (from 1 to 3),
- * `value` is the value of the field,
- * `revealed` tells us if the hint has been revealed yet.
+ * This interface represents a Hint for the game, and all its possible attributes.
+ * Its purpose is to be extended with types that omit certain attributes.
  */
-export interface InfoboxField {
+interface Hint {
     readonly label: string,
     readonly level: number,
     readonly value: string,
-    revealed: boolean
-}
-
-/**
- * This interface represents a paragraph of the introduction, with the following attributes.
- * `number` is the position of the paragraph within intro,
- * `level` is the level of this hint (from 1 to 3),
- * `value` is the content of the paragraph,
- * `revealed` tells us if the hint has been revealed yet.
- */
-export interface IntroParagraph {
     readonly number: number,
-    readonly level: number,
-    readonly value: string,
+    readonly blur: number,
+    readonly url: string,
     revealed: boolean
 }
 
 /**
- * This interface represents a blurred image as a hint, with the following attributes.
- * `value` is the blur intensity,
- * `level` is the level of this hint (from 1 to 3),
- * `revealed` tells us if the hint has been revealed yet.
+ * This type represents an infobox field. It contains attributes
+ * `label`, `level`, `value` and `revealed`.
  */
-export interface BlurredImage {
-    readonly url: string
-    readonly level: number
-    readonly blur: number,
-    revealed: boolean
-}
+export type InfoboxHint = Omit<Hint, 'number' | 'blur' | 'url'>
 
-export function fieldsOf(obj: {[key: string]:  string}): InfoboxField[] {
-    let compulsoryFields: InfoboxField[] = [];
-    let arbitraryFields: InfoboxField[] = [];
+/**
+ * This type represents an intro paragraph. It contains attributes
+ * `level`, `value`, `number` and `revealed`.
+ */
+export type ParagraphHint = Omit<Hint, 'label' | 'blur' | 'url'>
+
+/**
+ * This type represents a level of blur for image. It contains attributes
+ * `level`, `blur`, `url` and `revealed`.
+ */
+export type BlurHint = Omit<Hint, 'label' | 'value' | 'number'>
+
+/**
+ * This method creates an array of infobox field hints with these fields passed as an object.
+ * @param obj - the infobox fields
+ */
+export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
+    let compulsoryFields: InfoboxHint[] = [];
+    let arbitraryFields: InfoboxHint[] = [];
     Object.entries(obj).forEach(([key, value]) => {
         if (arbitraryLabels.hasOwnProperty(key)) {
             arbitraryFields.push({
@@ -62,8 +57,13 @@ export function fieldsOf(obj: {[key: string]:  string}): InfoboxField[] {
     return [...compulsoryFields, ...arbitraryFields.slice(0, 2)]
 }
 
-export function paragraphsOf(arr: string[]): IntroParagraph[] {
-    let paragraphs: IntroParagraph[] = [];
+/**
+ * This method creates an array of intro paragraph hints with these paragraphs passed as an array.
+ * First paragraph has higher hint level than others.
+ * @param arr - the intro paragraphs in order
+ */
+export function paragraphsOf(arr: string[]): ParagraphHint[] {
+    let paragraphs: ParagraphHint[] = [];
     paragraphs.push({
         number: 1,
         level: 3,
@@ -81,9 +81,12 @@ export function paragraphsOf(arr: string[]): IntroParagraph[] {
     return paragraphs
 }
 
-export function imagesOf(url: string): BlurredImage[] {
-    return [
-        {
+/**
+ * This method creates an array of blur level hints with the image url passed as argument.
+ * @param url - the image to blur url
+ */
+export function imagesOf(url: string): BlurHint[] {
+    return [{
             url: url,
             level: 0,
             blur: 4,
@@ -100,8 +103,7 @@ export function imagesOf(url: string): BlurredImage[] {
             level: 3,
             blur: 0,
             revealed: false
-        },
-    ]
+        }]
 }
 
 export const compulsoryLabels: {[key: string]: number} = {

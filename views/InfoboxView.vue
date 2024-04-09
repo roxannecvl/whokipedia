@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { type InfoboxField, compulsoryLabels } from "~/model/Hint";
+import { type InfoboxHint, compulsoryLabels } from "~/model/Hint";
 import { capitalize } from "~/utilities/Utils";
 
 defineProps( {
     fields: {
-      type: Array<InfoboxField>,
+      type: Array<InfoboxHint>,
       required: true,
     },
     imageUrl : {
