@@ -4,19 +4,23 @@
 
 import { ref } from 'vue';
 import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource";
-import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import {celebrities, getAutocompleteSuggestions} from "~/model/CelebrityList";
 
 const isOpen = ref(false)
-const selectedName = ref("");
-const intro = ref("");
-const imageUrl = ref("");
-const infoBox = ref("");
+const selectedName = ref();
+const intro = ref();
+const imageUrl = ref();
+const infoBox = ref();
 
 const getData = async () => {
   intro.value = await fetchIntro(selectedName.value);
   imageUrl.value = await fetchImageUrl(selectedName.value, 100);
   infoBox.value = await fetchInfoBox(selectedName.value);
+  for (let i = 0; i < celebrities.length; i++) {
+     await fetchInfoBox(celebrities[i]);
+  }
 }
+
 
 watch(selectedName, getData)
 

@@ -1,5 +1,6 @@
-import { parseWikitext, splitIntoEqualSentenceParts, removeNameOccurrences, getInitials } from "~/api/Parsing";
+import { extractInfoboxFromWikitext } from "~/api/Parsing";
 import { type Hint, hintListFromObject } from "~/model/Hint"
+import { getInitials, removeNameOccurrences, splitIntoEqualSentenceParts } from "~/utilities/Utils";
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
@@ -115,7 +116,7 @@ export async function fetchInfoBox(celebrityName: string): Promise<Hint[]> {
                         wikitext = wikitext.concat(pages[key].revisions[0]["*"]);
                     }
                 }
-                return hintListFromObject({Initials: getInitials(celebrityName), ...parseWikitext(wikitext)});
+                return hintListFromObject({Initials: getInitials(celebrityName), ...extractInfoboxFromWikitext(wikitext)});
             }
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
