@@ -162,8 +162,6 @@ function parseWikitext(wikitext: string): {[key: string]: string} {
     if (match) {
         const [, deathYear, deathMonth, deathDay] = match;
         hints["Died"] = `${deathDay} ${months[parseInt(deathMonth)]} ${deathYear}`;
-    }else {
-        hints["Status"] = "Alive";
     }
 
     // Description
