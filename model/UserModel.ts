@@ -1,111 +1,39 @@
-export class UserModel {
-    //private fields for the user's statistics
+import { defineStore } from "pinia";
 
-    //current streak of the user
-    private _currentStreak: number = 0;
-    //max streak of the user
-    private _maxStreak: number = 0;
-
-    //average rank of the user
-    private _averageRank: number = 0;
-    //array of ranks of the user
-    private _ranks: number[] = [];
-
-    //average number of guesses of the user
-    private _averageGuesses: number = 0;
-    //array of number of guesses of the user
-    private _guesses: number[] = [];
-
-    //average time taken by the user
-    private _averageTime: number = 0;
-    //array of times taken by the user
-    private _times: number[] = [];
-
-    //number of times the user has played
-    private _timesPlayed: number = 0;
-
-    //getter for currentStreak
-    get currentStreak(): number {
-        return this._currentStreak;
-    }
-
-    //getter for maxStreak
-    get maxStreak(): number {
-        return this._maxStreak;
-    }
-
-    //getter for averageRank
-    get averageRank(): number {
-        return this._averageRank;
-    }
-
-    //getter for ranks
-    get ranks(): number[] {
-        return this._ranks;
-    }
-
-    //getter for averageGuesses
-    get averageGuesses(): number {
-        return this._averageGuesses;
-    }
-
-    //getter for guesses
-    get guesses(): number[] {
-        return this._guesses;
-    }
-
-    //getter for averageTime
-    get averageTime(): number {
-        return this._averageTime;
-    }
-
-    //getter for times
-    get times(): number[] {
-        return this._times;
-    }
-
-    //getter for timesPlayed
-    get timesPlayed(): number {
-        return this._timesPlayed;
-    }
-    
-    //method to update the user's statistics
-    updateStats(currentStreak: number, maxStreak: number, averageRank: number, averageGuesses: number, averageTime: number, timesPlayed: number) {
-        this._currentStreak = currentStreak;
-        this._maxStreak = maxStreak;
-        this._averageRank = averageRank;
-        this._averageGuesses = averageGuesses;
-        this._averageTime = averageTime;
-        this._timesPlayed = timesPlayed;
-    }
-
-    //method to update the user's streak
-    updateStreak() {
-        this._currentStreak++;
-        if (this._currentStreak > this._maxStreak) {
-            this._maxStreak = this._currentStreak;
+export const useUserStore = defineStore('user', {
+    state: () => ({
+        currentStreak: 0 as number,
+        maxStreak: 0 as number,
+        averageRank: 0 as number,
+        ranks: [] as number[],
+        averageGuesses: 0 as number,
+        guesses: [] as number[],
+        averageTime: 0 as number,
+        times: [] as number[],
+        timesPlayed: 0 as number,
+    }),
+    actions: {
+        updateStats(currentStreak: number,
+                    maxStreak: number,
+                    averageRank: number,
+                    averageGuesses: number,
+                    averageTime: number,
+                    timesPlayed: number): void {
+            this.currentStreak = currentStreak;
+            this.maxStreak = maxStreak;
+            this.averageRank = averageRank;
+            this.averageGuesses = averageGuesses;
+            this.averageTime = averageTime;
+            this.timesPlayed = timesPlayed;
+        },
+        updateStreak(): void {
+            this.currentStreak++;
+            if (this.currentStreak > this.maxStreak) this.maxStreak = this.currentStreak;
+        },
+        resetStreak(): void {
+            this.currentStreak = 0
         }
     }
+})
 
-    //method to reset the user's streak
-    resetStreak() {
-        this._currentStreak = 0;
-    }
-
-    //method to reset the user's statistics
-    resetStats() {
-        this._currentStreak = 0;
-        this._maxStreak = 0;
-
-        this._averageRank = 0;
-        this._ranks = [];
-
-        this._averageGuesses = 0;
-        this._guesses = [];
-
-        this._averageTime = 0;
-        this._times = [];
-
-        this._timesPlayed = 0;
-    }
-};
+export type UserStore = ReturnType<typeof useUserStore>

@@ -1,6 +1,4 @@
-<script
-  setup
-  lang="ts">
+<script setup lang="ts">
 import WelcomePagePresenter from "~/presenters/WelcomePagePresenter.vue";
 </script>
 

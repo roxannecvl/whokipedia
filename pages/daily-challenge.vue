@@ -1,15 +1,13 @@
-<script
-    setup
-    lang="ts">
+<script setup lang="ts">
 
-import { useGameStore } from "~/model/GameModel";
+import {type GameStore, useGameStore} from "~/model/GameModel";
 import { celebrities } from "~/model/CelebrityList";
-import { getRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
+import { getRandom } from "~/utilities/Utils"
 
-//TODO :take the name of the celebrity from firebase in a way
-const store = useGameStore()
+// TODO: retrieve celebrity name from persistence
+const store: GameStore = useGameStore()
 store.init(getRandom(celebrities))
 
 const isRulesOpen = ref(false)
