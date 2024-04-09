@@ -97,15 +97,15 @@ export function getEncryptedString(text : string) : string {
  */
 export function getRandomUserModel(): UserStore {
     const max_value: number = 100;
-    const userModel: UserStore = useUserStore();
-    userModel.updateStats(
+    const store: UserStore = useUserStore();
+    store.updateStats(
         Math.floor(Math.random() * max_value),
         Math.floor(Math.random() * max_value),
         Math.floor(Math.random() * max_value),
         Math.floor(Math.random() * max_value),
         Math.floor(Math.random() * max_value),
         Math.floor(Math.random() * max_value))
-    return userModel;
+    return store;
 }
 
 /**

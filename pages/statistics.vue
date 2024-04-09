@@ -1,20 +1,29 @@
-<script
-    setup
-    lang="tsx">
+<script setup lang="tsx">
 
-import StatisticsView
-  from "~/views/StatisticsView.vue";
 import { updateUserToFirebase } from '~/model/FirebaseModel'
 import { getRandomUserModel } from "~/utilities/Utils";
+import {type UserStore, useUserStore} from "~/model/UserModel";
+import StatisticsView from "~/views/StatisticsView.vue";
 
-const userModel: any = useAttrs().userModel
+const store: UserStore = useUserStore()
 const user = useCurrentUser()
 
+// TODO: remove after testing
+/**
+ * Method to populate stats to persistence, used for testing purposes.
+ */
 const populateStats = () => {
   if(user.value){
     const randomUserModel = getRandomUserModel()
-    userModel.updateStats(randomUserModel.currentStreak, randomUserModel.maxStreak, randomUserModel.averageRank, randomUserModel.averageGuesses, randomUserModel.averageTime, randomUserModel.timesPlayed, randomUserModel.times, randomUserModel.ranks, randomUserModel.guesses)
-    updateUserToFirebase(userModel, user.value.uid)
+    store.updateStats(
+        randomUserModel.currentStreak,
+        randomUserModel.maxStreak,
+        randomUserModel.averageRank,
+        randomUserModel.averageGuesses,
+        randomUserModel.averageTime,
+        randomUserModel.timesPlayed
+    )
+    updateUserToFirebase(store, user.value.uid)
   }
 }
 
@@ -30,8 +39,7 @@ const populateStats = () => {
         </ULink>
       </div>
     </div>
-      <StatisticsView
-        :userModel />
+      <StatisticsView :store />
     <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
       <UButton @click="populateStats">Populate stats</UButton>
     </div>
