@@ -22,19 +22,18 @@ export function hintListFromObject(obj: {[key: string]:  string}): Hint[] {
             compulsoryHints.push({label: key, level: compulsoryLabels[key], value: value, revealed: key === 'Born'})
         }
     })
-    return [...compulsoryHints, ...arbitraryHints.slice(0, 2)]
+    return [...compulsoryHints, ...arbitraryHints.slice(0, 3)]
 }
 
 export const compulsoryLabels: {[key: string]: number} = {
     'Born': 1,
-    'Died': 1,
-    'Status': 1,
     'Occupation': 1,
     'Citizenship': 1,
     'Initials': 3,
 }
 
 const arbitraryLabels: {[key: string]: number} = {
+    'Died': 1,
     'Spouses': 2,
     'Genres': 2,
     'Political party': 2,
