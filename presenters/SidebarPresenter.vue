@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
-import { GameModel } from "~/model/GameModel";
+import { useGameStore } from "~/model/GameModel";
 import SidebarView from "~/views/SidebarView.vue";
 
 defineProps({
   model: {
-    type: GameModel,
+    type: useGameStore,
     required: true,
   },
 })
