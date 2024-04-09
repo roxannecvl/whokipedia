@@ -1,28 +1,113 @@
+import { getRandom } from "~/utilities/Utils.ts"
+
 /**
- * This interface represents a hint, with the following attributes.
- * `label` is the label of the hint.
- * `level` is the level of the hint (from 1 to 3).
- * `value` is the value of the hint
- * `revealed` tells us if the hint has been revealed yet.
+ * This interface represents a Hint for the game, and all its possible attributes.
+ * Its purpose is to be extended with types that omit certain attributes.
  */
-export interface Hint {
+interface Hint {
     readonly label: string,
     readonly level: number,
     readonly value: string,
+    readonly number: number,
+    readonly blur: number,
+    readonly url: string,
     revealed: boolean
 }
 
-export function hintListFromObject(obj: {[key: string]:  string}): Hint[] {
-    let compulsoryHints: Hint[] = [];
-    let arbitraryHints: Hint[] = [];
+/**
+ * This type represents an infobox field. It contains attributes
+ * `label`, `level`, `value` and `revealed`.
+ */
+export type InfoboxHint = Omit<Hint, 'number' | 'blur' | 'url'>
+
+/**
+ * This type represents an intro paragraph. It contains attributes
+ * `level`, `value`, `number` and `revealed`.
+ */
+export type ParagraphHint = Omit<Hint, 'label' | 'blur' | 'url'>
+
+/**
+ * This type represents a level of blur for image. It contains attributes
+ * `level`, `blur`, `url` and `revealed`.
+ */
+export type BlurHint = Omit<Hint, 'label' | 'value' | 'number'>
+
+/**
+ * This method creates an array of infobox field hints with these fields passed as an object.
+ * @param obj - the infobox fields
+ */
+export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
+    let compulsoryFields: InfoboxHint[] = [];
+    let arbitraryFields: InfoboxHint[] = [];
+    const filteredLabels : string[] = Object.keys(compulsoryLabels).filter(label => compulsoryLabels[label] === 1);
+    let randomFirst : string = getRandom(filteredLabels)
     Object.entries(obj).forEach(([key, value]) => {
         if (arbitraryLabels.hasOwnProperty(key)) {
-            arbitraryHints.push({label: key, level: arbitraryLabels[key], value: value, revealed: false})
+            arbitraryFields.push({
+                label: key,
+                level: arbitraryLabels[key],
+                value: value,
+                revealed: false
+            })
         } else if (compulsoryLabels.hasOwnProperty(key)) {
-            compulsoryHints.push({label: key, level: compulsoryLabels[key], value: value, revealed: key === 'Born'})
+            compulsoryFields.push({
+                label: key,
+                level: compulsoryLabels[key],
+                value: value,
+                revealed: key === randomFirst
+            })
         }
     })
-    return [...compulsoryHints, ...arbitraryHints.slice(0, 3)]
+    return [...compulsoryFields, ...arbitraryFields.slice(0, 3)]
+}
+
+/**
+ * This method creates an array of intro paragraph hints with these paragraphs passed as an array.
+ * First paragraph has higher hint level than others.
+ * @param arr - the intro paragraphs in order
+ */
+export function paragraphsOf(arr: string[]): ParagraphHint[] {
+    let paragraphs: ParagraphHint[] = [];
+    paragraphs.push({
+        number: 1,
+        level: 3,
+        value: arr[0],
+        revealed: false
+    })
+    for (let [index, paragraph] of arr.slice(1).entries()) {
+        paragraphs.push({
+            number: index + 2,
+            level: 2,
+            value: paragraph,
+            revealed: false
+        })
+    }
+    return paragraphs
+}
+
+/**
+ * This method creates an array of blur level hints with the image url passed as argument.
+ * @param url - the image to blur url
+ */
+export function imagesOf(url: string): BlurHint[] {
+    return [{
+            url: url,
+            level: 0,
+            blur: 4,
+            revealed: true
+        },
+        {
+            url: url,
+            level: 2,
+            blur: 2,
+            revealed: false
+        },
+        {
+            url: url,
+            level: 3,
+            blur: 0,
+            revealed: false
+        }]
 }
 
 export const compulsoryLabels: {[key: string]: number} = {

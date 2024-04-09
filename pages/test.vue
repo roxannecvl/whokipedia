@@ -3,7 +3,7 @@
     lang="ts">
 
 import { ref } from 'vue';
-import { fetchIntro, fetchImageUrl, fetchInfoBox } from "~/api/WikipediaSource";
+import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource";
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 
 const isOpen = ref(false)
@@ -14,7 +14,7 @@ const infoBox = ref("");
 
 const getData = async () => {
   intro.value = await fetchIntro(selectedName.value);
-  imageUrl.value = await fetchImageUrl(selectedName.value, 100);
+  imageUrl.value = await fetchImage(selectedName.value, 100);
   infoBox.value = await fetchInfoBox(selectedName.value);
 }
 

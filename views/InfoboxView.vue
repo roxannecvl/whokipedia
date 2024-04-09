@@ -1,15 +1,13 @@
-<script
-    setup
-    lang="ts">
-import { type Hint, compulsoryLabels } from "~/model/Hint";
+<script setup lang="ts">
+import { type InfoboxHint, compulsoryLabels } from "~/model/Hint";
 import { capitalize } from "~/utilities/Utils";
 
 defineProps( {
-    hints: {
-      type: Array<Hint>,
+    fields: {
+      type: Array<InfoboxHint>,
       required: true,
     },
-    image : {
+    imageUrl : {
       type: String,
       required: true,
     },
@@ -20,7 +18,11 @@ defineProps( {
     over : {
       type : Boolean,
       required: true,
-    }
+    },
+    buttonLink : {
+      type : String,
+      required: true,
+    },
 })
 </script>
 
@@ -29,7 +31,7 @@ defineProps( {
     <template #header>
       <div class="flex flex-col items-center justify-center">
         <img
-            :src="image"
+            :src="imageUrl"
             alt="image"
             class="w-40 object-cover pb-2"
             :class="{
@@ -46,20 +48,20 @@ defineProps( {
 
       </div>
     </template>
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center py-5">
       <table>
-        <tr v-for="hint in hints"
-            :key="hint">
+        <tr v-for="field in fields"
+            :key="field">
             <td class="text-left align-top pr-6 pt-2">
-              <p v-if="hint.label === 'Death' && !hint.revealed"
+              <p v-if="field.label === 'Death' && !field.revealed"
                  class="text-blue-500 font-semibold"> Status </p>
-              <p v-else-if=" hint.revealed || compulsoryLabels.hasOwnProperty(hint.label) || over"
-                   class="text-blue-500 font-semibold"> {{ hint.label }} </p>
+              <p v-else-if=" field.revealed || compulsoryLabels.hasOwnProperty(field.label) || over"
+                   class="text-blue-500 font-semibold"> {{ field.label }} </p>
               <p v-else class="text-blue-500 font-semibold blur-sm"> Unknown </p>
             </td>
             <td class="text-left pt-2">
-                <div v-if="hint.revealed || over">
-                  <p v-for="value in hint.value.split(/(?:,?\s*and|,|and)(?=\s|$)/g)" :key="value">
+                <div v-if="field.revealed || over">
+                  <p v-for="value in field.value.split(/(?:,?\s*and|,|and)(?=\s|$)/g)" :key="value">
                     {{ capitalize(value) }}
                   </p>
                 </div>
@@ -67,6 +69,14 @@ defineProps( {
             </td>
         </tr>
       </table>
+    </div>
+    <div v-if="over" style="display: flex; justify-content: center;">
+      <UButton
+          :to="buttonLink"
+          size="lg"
+      >
+        Learn more
+      </UButton>
     </div>
   </UCard>
 </template>
