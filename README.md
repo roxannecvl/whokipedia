@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://github.com/roxannecvl/whokipedia/assets/125833841/7c6187cd-d6ec-4b97-8928-ae01c4b08cc6" alt="image" width="300">
+  <a href="https://whokipedia.com">
+    <img src="https://github.com/roxannecvl/whokipedia/assets/125833841/7c6187cd-d6ec-4b97-8928-ae01c4b08cc6" alt="image" width="300">
+  </a>
 </p>
 
 
