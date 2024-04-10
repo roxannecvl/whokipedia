@@ -176,6 +176,7 @@ function logout() {
       </main>
 
     </UCard>
+    <UNotifications />
   </UContainer>
   </Body>
 </template>
