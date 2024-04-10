@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import InfoboxView from "~/views/InfoboxView.vue";
 import { type GameStore } from "~/model/GameModel";
+import InfoboxView from "~/views/InfoboxView.vue";
 import GameCenterView from "~/views/GameCenterView.vue";
 
 defineProps({

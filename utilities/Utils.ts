@@ -1,42 +1,4 @@
-import {UserModel} from "~/model/UserModel";
-
-/**
- * Gives you a random element from the list
- * @param list - a nonempty list
- * @returns an element from the given list
- */
-export function getRandom(list: any[]): any {
-    if (list.length == 0) return null;
-    return list[Math.floor(Math.random() * list.length)];
-}
-
-
-export function getCryptedString(clearText : string) : string {
-    let crypted : string = "";
-    for(let i = 0 ; i < clearText.length; ++i){
-        //checks if the char is a letter or number
-        if(/^[a-zA-Z]$/.test(clearText[i]) || /^[0-9]$/.test(clearText[i])){
-            const randomChar = Math.floor(Math.random() * (122 - 65 + 1)) + 65;
-            crypted = crypted +  String.fromCharCode(randomChar)
-        }else{
-            //keep spaces or new lines
-            crypted = crypted + clearText[i];
-        }
-    }
-    return crypted;
-}
-
-/**
- * Get random user model
- * @returns a random user model
- */
-//TODO : remove after testing
-export function getRandomUserModel(): UserModel {
-    const max_value = 100;
-    const userModel = new UserModel();
-    userModel.updateStats(Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value), Math.floor(Math.random() * max_value))
-    return userModel;
-}
+import { type UserStore, useUserStore } from "~/model/UserModel";
 
 // --------------------------------- String utilities  --------------------------------- //
 
@@ -98,6 +60,52 @@ export function removeNameOccurrences(text: string, name: string): string {
 
 // --------------------------------- Miscellaneous --------------------------------- //
 
+/**
+ * Method to pick a random element from a list.
+ * @param list - a nonempty list
+ * @returns any - element from the given list
+ */
+export function getRandom(list: any[]): any {
+    if (list.length == 0) return null;
+    return list[Math.floor(Math.random() * list.length)];
+}
+
+/**
+ * Method to encrypt text.
+ * @param text - text to encrypt
+ */
+export function getEncryptedString(text : string) : string {
+    let encrypted : string = "";
+    for(let i = 0 ; i < text.length; ++i) {
+        // Checks whether char is letter or number
+        if(/^[a-zA-Z]$/.test(text[i]) || /^[0-9]$/.test(text[i])){
+            const randomChar: number = Math.floor(Math.random() * (122 - 65 + 1)) + 65;
+            encrypted = encrypted +  String.fromCharCode(randomChar)
+        } else {
+            // Keep spaces or new lines
+            encrypted = encrypted + text[i];
+        }
+    }
+    return encrypted;
+}
+
+//TODO : remove after testing
+/**
+ * Method to create a random user model, used for testing purposes.
+ * @returns UserStore - random user model
+ */
+export function getRandomUserModel(): UserStore {
+    const max_value: number = 100;
+    const store: UserStore = useUserStore();
+    store.updateStats(
+        Math.floor(Math.random() * max_value),
+        Math.floor(Math.random() * max_value),
+        Math.floor(Math.random() * max_value),
+        Math.floor(Math.random() * max_value),
+        Math.floor(Math.random() * max_value),
+        Math.floor(Math.random() * max_value))
+    return store;
+}
 
 /**
  * Given a sentence of words separated by "and", returns all
