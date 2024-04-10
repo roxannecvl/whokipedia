@@ -13,5 +13,5 @@ defineProps({
 </script>
 
 <template>
-  <SidebarView :hintCount="model.nbGuesses" :over="false"/>
+  <SidebarView :hintCount="model.nbGuesses" :over="model.end"/>
 </template>
