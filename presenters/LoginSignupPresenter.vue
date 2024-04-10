@@ -57,7 +57,6 @@ function displayErrorNotification(description: string) {
  * @param password - The password used to log in
  */
 function login(username: string, password: string) {
-  isLogInOpen.value = false
   signInWithEmailAndPassword(auth, username, password)
       .catch((reason) => {
         console.error('Failed log in: ', reason)
@@ -72,7 +71,6 @@ function login(username: string, password: string) {
  * @param password - The password used to sign up
  */
 function signup(username: string, password: string) {
-  isLogInOpen.value = false
   createUserWithEmailAndPassword(auth, username, password)
       .then((userCredentials: UserCredential) => {
         saveUserToFirebase(props.userModel, userCredentials.user?.uid);
