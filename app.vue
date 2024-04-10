@@ -73,6 +73,7 @@ const isDark = computed({
       <UNotifications />
 
     </UCard>
+    <UNotifications />
   </UContainer>
   </Body>
 </template>
