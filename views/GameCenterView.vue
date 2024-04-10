@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import {getEncryptedString} from "~/utilities/Utils";
 import type { ParagraphHint } from "~/model/Hint";
-import {getAutocompleteSuggestions} from "~/model/CelebrityList";
+import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import { getEncryptedString } from "~/utilities/Utils";
 
 defineProps( {
     intro : {

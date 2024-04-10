@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
 import { type GameStore, useGameStore } from "~/model/GameModel";
-import {getRandom} from "~/utilities/Utils"
+import { celebrities } from "~/model/CelebrityList";
+import { getRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
-import {celebrities} from "~/model/CelebrityList";
 
 // TODO: retrieve celebrity name from persistence
 const store: GameStore = useGameStore()
