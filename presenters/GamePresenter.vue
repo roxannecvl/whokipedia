@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import InfoboxView from "~/views/InfoboxView.vue";
 import { type GameStore } from "~/model/GameModel";
+import InfoboxView from "~/views/InfoboxView.vue";
 import GameCenterView from "~/views/GameCenterView.vue";
 
 defineProps({
@@ -39,8 +39,9 @@ function guessAndCheck(name : string, model : GameStore){
 <template>
   <div class="flex flex-row">
     <GameCenterView
-        @new-name-set="selectedName => guessAndCheck(selectedName, model)"
-        :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win" :redBackground="!validGuess"
+        @new-name-set="selectedName => model.makeAGuess.bind(model)(selectedName)"
+        :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
+        :first-sentence="model.firstSentence" :redBackground="!validGuess"
     />
     <InfoboxView
         :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
