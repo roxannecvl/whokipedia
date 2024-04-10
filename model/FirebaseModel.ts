@@ -1,4 +1,4 @@
-import { ref as dbRef, push, update, get, Database, type DatabaseReference } from "firebase/database";
+import { ref as dbRef, set, update, get, Database, type DatabaseReference } from "firebase/database";
 import type { UserStore } from "~/model/UserModel.js";
 
 let database: Database
@@ -9,7 +9,6 @@ let userRef: DatabaseReference
  */
 export function initializeFirebase(): void {
     database = useDatabase();
-    userRef = dbRef(database, 'users');
 }
 
 /**
@@ -19,8 +18,7 @@ export function initializeFirebase(): void {
  */
 export function saveUserToFirebase(store: UserStore, uid: string): void {
     const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
-    persistence.uid = uid;
-    push(userRef, persistence);
+    set(dbRef(database, 'users/'+uid), persistence);
 }
 
 /**
@@ -30,16 +28,15 @@ export function saveUserToFirebase(store: UserStore, uid: string): void {
  */
 export function updateUserToFirebase(store: UserStore, uid: string): void {
     const persistence = userStoreToPersistence(store);
-    persistence.uid = uid;
-    update(userRef, persistence).then(() => {});
+    update(dbRef(database, 'users/'+uid), persistence).then(() => {});
 }
 
 /**
  * This method fills local user model from persistence.
  * @param store - Local model to fill
  */
-export async function readUserFromFirebase(store: UserStore): Promise<UserStore> {
-    return get(userRef).then(snapshot => {
+export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
+    return get(dbRef(database, 'users/'+uid)).then(snapshot => {
         persistenceToUserModel(store, snapshot.val());
         return store;
     });

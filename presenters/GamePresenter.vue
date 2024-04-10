@@ -14,17 +14,38 @@ const props = defineProps({
 
 // Constants
 const baseString = "https://en.wikipedia.org/wiki/";
+const validGuess = ref(true);
+const toast = useToast();
+const errTitle = "Already guessed!"
+const errDescription = "This guess doesn't count as a new guess, try again :)"
+
+function guessAndCheck(name : string, model : GameStore){
+  validGuess.value = model.makeAGuess.bind(model)(name);
+  if(!validGuess.value) {
+    toast.add({
+      title: errTitle,
+      description: errDescription,
+      icon: 'i-heroicons-x-circle',
+      color:"red",
+      timeout: 2500
+    })
+
+    setTimeout(() => {
+      validGuess.value = true;
+    }, 2500);
+  }
+}
 
 </script>
 
 <template>
   <div class="flex flex-row">
-    <GameCenterView
-        @new-name-set="selectedName => model.makeAGuess.bind(model)(selectedName)"
+    <GameCenterView class="max-w-[70%]"
+        @new-name-set="selectedName => guessAndCheck(selectedName, model)"
         :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
-        :first-sentence="model.firstSentence"
+        :first-sentence="model.firstSentence" :redBackground="!validGuess"
     />
-    <InfoboxView
+    <InfoboxView class="max-w-[100%]"
         :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
         :over="model.end" :buttonLink="baseString + model.name"
     />
