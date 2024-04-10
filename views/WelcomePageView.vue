@@ -4,7 +4,16 @@ const logoFilledPath = '/img/logo-filled.svg';
 const logoTransparentPath = '/img/logo-transparent.svg';
 
 const mode = useColorMode();
-const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTransparentPath);
+const logoPath = ref('');
+
+//gives enough time to compute logoPath
+onMounted(() => {
+  logoPath.value = mode.value === 'dark' ? logoFilledPath : logoTransparentPath;
+});
+
+watch(mode, (newMode) => {
+  logoPath.value = newMode.value === 'dark' ? logoFilledPath : logoTransparentPath;
+});
 
 </script>
 
