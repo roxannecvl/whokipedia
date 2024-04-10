@@ -74,7 +74,7 @@ watch(selectedName, newName)
         <p v-if="over">{{ firstSentence }}</p>
         <div v-for="paragraph in intro" :key="paragraph">
           <p v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</p>
-          <p v-else-if="paragraph.revealed && over">{{ paragraph.value }}</p>
+          <p v-else-if="over">{{ paragraph.value }}</p>
           <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
         </div>
       </div>
