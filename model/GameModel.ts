@@ -11,6 +11,7 @@ export const useGameStore = defineStore('game', {
         infobox: undefined as InfoboxHint[] | undefined,
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
+        time: 0 as number,
         curGuess: "" as string,
         prevGuesses: [] as string[],
         end: false as boolean,

@@ -4,8 +4,13 @@
 const props = defineProps({
   hintCount: Number,
   over: Boolean,
-  //TODO : add the time
 })
+
+// Emits
+const emit = defineEmits(['new-time-set'])
+
+// Refs
+const elapsedTime = ref(0);
 
 // Constants
 const logoFilledPath = '/img/logo-filled.svg';
@@ -14,6 +19,31 @@ const mode = useColorMode();
 
 // Computed
 const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTransparentPath);
+let timerInterval: NodeJS.Timeout | null = null;
+
+// Functions
+onMounted(() => {
+  timerInterval = setInterval(() => {
+    elapsedTime.value++;
+  }, 1000);
+});
+
+function formatTime(seconds : number, over : boolean){
+  if(over && timerInterval !== null){
+    clearInterval(timerInterval);
+    emit("new-time-set", elapsedTime.value);
+    timerInterval = null;
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+  if(minutes >= 60){
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours} hr ${remainingMinutes} min ${formattedSeconds} sec`;
+  }
+  return `${minutes} min ${formattedSeconds} sec`;
+}
 
 </script>
 
@@ -32,7 +62,7 @@ const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTra
       :title="'Guess number ' + hintCount"
       color="primary"
       :variant="over ? 'subtle': 'outline'"
-      :description="'0 min 17 sec'"
+      :description="formatTime(elapsedTime, over)"
       class="my-4"
   />
 
