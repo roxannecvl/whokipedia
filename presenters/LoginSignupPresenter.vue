@@ -35,7 +35,7 @@ onMounted(() => {
       isLogInOpen.value = false
     } else if (user) {
       // User logged in
-      readUserFromFirebase(props.model)
+      readUserFromFirebase(props.model, user.uid)
       isUserLoggedIn.value = true
       isLogInOpen.value = false
     }
