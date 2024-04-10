@@ -6,9 +6,9 @@ import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
 export const useGameStore = defineStore('game', {
     state: () => ({
         name: "" as string,
-        images: null as BlurHint[] | null,
-        intro: null as ParagraphHint[] | null,
-        infobox: null as InfoboxHint[] | null,
+        images: undefined as BlurHint[] | undefined,
+        paragraphs: undefined as ParagraphHint[] | undefined,
+        infobox: undefined as InfoboxHint[] | undefined,
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
         curGuess: "" as string,
@@ -18,16 +18,28 @@ export const useGameStore = defineStore('game', {
         loading: false as boolean,
     }),
     getters: {
-        imageUrl: (state): string | undefined => {
+        imageUrl(state): string | undefined  {
             return state.images ? state.images[0].url : undefined
         },
-        blur: (state): number | undefined => {
+        blur(state): number | undefined {
             return state.images ? state.images
                 .filter((image: BlurHint) => image.revealed)
                 .reduce((max, curr) => {
                     return max.blur > curr.blur ? max : curr
                 }).blur : undefined
         },
+        intro(state): ParagraphHint[] | undefined {
+            if(!state.paragraphs) return undefined
+            if(!this.firstSentence) return state.paragraphs
+            let intro: ParagraphHint[] = state.paragraphs.slice()
+            intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
+            return intro
+        },
+        firstSentence(state): string | undefined {
+            if(!state.paragraphs) return undefined
+            const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/^.*?[.!?](?:\s|$)/)
+            return match ? match[0] : state.paragraphs[0].value
+        }
     },
     actions: {
         async init (name: string): Promise<void> {
@@ -35,14 +47,14 @@ export const useGameStore = defineStore('game', {
             this.name = name
             try {
                 this.loading = true
-                const [images, infobox, intro] = await Promise.all([
+                const [images, infobox, paragraphs] = await Promise.all([
                     fetchImage(this.name, 100),
                     fetchInfoBox(this.name),
                     fetchIntro(this.name),
                 ])
                 this.images = images
                 this.infobox = infobox
-                this.intro = intro
+                this.paragraphs = paragraphs
             } catch (error) {
                 console.error("'Error initializing new game : ', error")
             } finally {
@@ -61,11 +73,11 @@ export const useGameStore = defineStore('game', {
             return true;
         },
         getNewHint(): void {
-            if (this.infobox !== null && this.images !== null && this.intro !== null) {
+            if (this.infobox !== undefined && this.images !== undefined && this.paragraphs !== undefined) {
                 const levelHintsLeft: (InfoboxHint | ParagraphHint | BlurHint)[] = [
                     ...this.images,
                     ...this.infobox,
-                    ...this.intro
+                    ...this.paragraphs
                 ].filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == this.hintLevel)
 
                 if (levelHintsLeft.length == 0) {

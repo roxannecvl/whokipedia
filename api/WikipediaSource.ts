@@ -34,9 +34,8 @@ export async function fetchIntro(celebrityName: string): Promise<ParagraphHint[]
                 const pageIds: string[] = Object.keys(pages);
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
-                    let text: string = pages[pageId].extract.replace(/^[^.!?]+[.!?](?:\s|\n)?/, '') // Remove first sentence
-                    let paragraphs: string[] = splitIntoEqualSentenceParts(text, NUM_PARAGRAPHS)
-                    return paragraphsOf(paragraphs.map(text => removeNameOccurrences(text, celebrityName)) )
+                    let paragraphs: string[] = splitIntoEqualSentenceParts(pages[pageId].extract, NUM_PARAGRAPHS)
+                    return paragraphsOf(paragraphs)
                 }
             }
             throw new Error(`Page with title ${celebrityName} was not found.`);

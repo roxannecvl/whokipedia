@@ -20,6 +20,7 @@ const baseString = "https://en.wikipedia.org/wiki/";
     <GameCenterView
         @new-name-set="selectedName => model.makeAGuess.bind(model)(selectedName)"
         :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
+        :first-sentence="model.firstSentence"
     />
     <InfoboxView
         :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
