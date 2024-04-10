@@ -37,7 +37,7 @@ export const useGameStore = defineStore('game', {
         },
         firstSentence(state): string | undefined {
             if(!state.paragraphs) return undefined
-            const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/^.*?[.!?](?:\s|$)/)
+            const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/[^.!?]+[.!?]+/g)
             return match ? match[0] : state.paragraphs[0].value
         }
     },

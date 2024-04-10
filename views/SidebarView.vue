@@ -1,17 +1,24 @@
 <script setup lang="ts">
 
-defineProps({
+// Props
+const props = defineProps({
   hintCount: Number,
   over: Boolean,
 })
 
+// Refs
+const elapsedTime = ref(0);
+
+// Constants
 const logoFilledPath = '/img/logo-filled.svg';
 const logoTransparentPath = '/img/logo-transparent.svg';
-const elapsedTime = ref(0);
 const mode = useColorMode();
+
+// Computed
 const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTransparentPath);
 let timerInterval: NodeJS.Timeout | null = null;
 
+// Functions
 onMounted(() => {
   timerInterval = setInterval(() => {
     elapsedTime.value++;

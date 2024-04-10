@@ -41,24 +41,34 @@ export function removeTag(text: string, opening: string, ...closings: string[]):
 }
 
 /**
- * Remove all occurrences of the given name in the given text, including
- * first name and last name, excluding name particles (e.g. "von", "de", ...).
+ * Replaces all occurrences of the given name in the given text by "???", including
+ * first name and last name, name particles (e.g. von) and name suffixes (e.g. Jr.).
  * @param name - celebrity first name(s) and last name(s)
  * @param text - text from which to remove the name
  */
 export function removeNameOccurrences(text: string, name: string): string {
     // Get lists of all first names and names, without name particle (i.e. von, de, of...)
     const names: string[] = [
-        ...name.split(" ").map(n => n.trim()).filter(n => n === capitalize(n)), name
+        ...name.split(" ").map(n => n.trim()), name
     ]
     names.forEach(n => {
-        const regex = new RegExp(n, 'gi');
+        const regex = new RegExp(n + '(?![a-zA-Z])', 'gi');
         text = text.replace(regex, "???");
     })
     return text
 }
 
 // --------------------------------- Miscellaneous --------------------------------- //
+
+/**
+ * This method blurs all occurrences of "???" in the given text by HTML-formatting
+ * it and adding a blurred <span> tag.
+ * @param str - text which contains occurrences to blur
+ * @return string - text with blurred HTML tags instead of "???"
+ */
+export function blurHTML(str: string): string {
+    return str.replace(/\?\?\?/g, '<span class="blur-sm">cheater</span>')
+}
 
 /**
  * Method to pick a random element from a list.
@@ -182,6 +192,8 @@ export const months: {[key: number]: string} = {
     11: "November",
     12: "December"
 }
+
+export const passwordMinimalLength: number = 6;
 
 export const countries: {[key: string]: string} = {
     "Afghanistan": "Afghan",

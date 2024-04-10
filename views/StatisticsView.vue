@@ -22,7 +22,8 @@ ChartJS.register(
     Legend
 )
 
-defineProps({
+// Props
+const props = defineProps({
   currentStreak: {
     type: Number,
     required: true
@@ -61,9 +62,13 @@ defineProps({
   }
 })
 
+// Emits
 const emit = defineEmits(['populate-stats'])
+
+// Constants
 const user = useCurrentUser()
 
+// Functions
 function populateStats(){
   emit('populate-stats')
 }
@@ -73,7 +78,7 @@ function populateStats(){
 <template>
   <div v-if="user" class="flex flex-col items-center justify-center">
     <div>
-      <p>{{ 'User name: ' + user.email }}</p>
+      <p>{{ 'User name: ' + user.displayName }}</p>
       <p>{{ 'Current streak: ' + currentStreak }}</p>
       <p>{{ 'Max streak: ' + maxStreak }}</p>
       <p>{{ 'Average rank: ' + averageRank }}</p>
