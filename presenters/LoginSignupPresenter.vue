@@ -32,10 +32,9 @@ onMounted(() => {
       // User logged out
       props.model.$reset()
       isUserLoggedIn.value = false
-      isLogInOpen.value = false
     } else if (user) {
       // User logged in
-      readUserFromFirebase(props.model)
+      readUserFromFirebase(props.model, user.uid)
       isUserLoggedIn.value = true
       isLogInOpen.value = false
     }
@@ -58,7 +57,6 @@ function displayErrorNotification(description: string) {
  * @param password - Password used for login
  */
 function login(username: string, password: string): void {
-  isLogInOpen.value = false
   signInWithEmailAndPassword(auth, username, password)
       .catch((error) => {
         const message: string = "Failed to log in : " + error
@@ -73,7 +71,6 @@ function login(username: string, password: string): void {
  * @param password - Password used for signup
  */
 function signup(username: string, password: string): void {
-  isLogInOpen.value = false
   createUserWithEmailAndPassword(auth, username, password)
       .then((credentials: UserCredential) => {
         saveUserToFirebase(props.model, credentials.user?.uid);
