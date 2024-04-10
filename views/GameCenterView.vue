@@ -2,7 +2,7 @@
 
 import type { ParagraphHint } from "~/model/Hint";
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
-import { getEncryptedString } from "~/utilities/Utils";
+import { getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
 
 defineProps( {
     intro : {
@@ -20,6 +20,10 @@ defineProps( {
     win : {
       type : Boolean,
       required: true,
+    },
+    firstSentence : {
+      type: String,
+      required: true
     },
 })
 
@@ -58,15 +62,13 @@ watch(selectedName, newName)
           </div>
       </template>
       <div style="max-height: 75vh; overflow-y:auto;">
-        <p v-for="paragraph in intro" :key="paragraph">
-          <p v-if="paragraph.revealed || over">{{ paragraph.value }}</p>
+        <p v-if="over">{{ firstSentence }}</p>
+        <div v-for="paragraph in intro" :key="paragraph">
+          <p v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</p>
+          <p v-else-if="paragraph.revealed && over">{{ paragraph.value }}</p>
           <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
-        </p>
+        </div>
       </div>
     </UCard>
-
-
-
-
   </div>
 </template>
