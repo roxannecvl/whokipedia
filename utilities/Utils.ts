@@ -193,6 +193,8 @@ export const months: {[key: number]: string} = {
     12: "December"
 }
 
+export const passwordMinimalLength: number = 6;
+
 export const countries: {[key: string]: string} = {
     "Afghanistan": "Afghan",
     "Albania": "Albanian",

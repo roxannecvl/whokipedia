@@ -78,7 +78,7 @@ function populateStats(){
 <template>
   <div v-if="user" class="flex flex-col items-center justify-center">
     <div>
-      <p>{{ 'User name: ' + user.email }}</p>
+      <p>{{ 'User name: ' + user.displayName }}</p>
       <p>{{ 'Current streak: ' + currentStreak }}</p>
       <p>{{ 'Max streak: ' + maxStreak }}</p>
       <p>{{ 'Average rank: ' + averageRank }}</p>
