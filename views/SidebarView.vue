@@ -6,6 +6,9 @@ const props = defineProps({
   over: Boolean,
 })
 
+// Emits
+const emit = defineEmits(['new-time-set'])
+
 // Refs
 const elapsedTime = ref(0);
 
@@ -28,6 +31,7 @@ onMounted(() => {
 function formatTime(seconds : number, over : boolean){
   if(over && timerInterval !== null){
     clearInterval(timerInterval);
+    emit("new-time-set", elapsedTime.value);
     timerInterval = null;
   }
   const minutes = Math.floor(seconds / 60);

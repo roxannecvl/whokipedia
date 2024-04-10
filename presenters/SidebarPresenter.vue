@@ -2,6 +2,7 @@
 
 import { type GameStore } from "~/model/GameModel";
 import SidebarView from "~/views/SidebarView.vue";
+import GameCenterView from "~/views/GameCenterView.vue";
 
 // Props
 const props = defineProps({
@@ -14,5 +15,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <SidebarView :hintCount="model.nbGuesses" :over="model.end"/>
+  <SidebarView
+      @new-time-set="seconds => {model.time = seconds}"
+      :hintCount="model.nbGuesses" :over="model.end"/>
 </template>
