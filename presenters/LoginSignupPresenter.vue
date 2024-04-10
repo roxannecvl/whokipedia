@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth";
-import { useCurrentUser, useFirebaseAuth } from "vuefire";
+import { useCurrentUser, useFirebaseAuth, updateCurrentUserProfile } from "vuefire";
 import { initializeFirebase, readUserFromFirebase, saveUserToFirebase } from "~/model/FirebaseModel";
 import { type UserStore } from "~/model/UserModel";
 import LoginView from "~/views/LoginView.vue";
@@ -68,12 +68,14 @@ function login(username: string, password: string): void {
 /**
  * Method to sign up the user.
  * @param username - Username used for signup
+ * @param email - Email used for signup
  * @param password - Password used for signup
  */
-function signup(username: string, password: string): void {
-  createUserWithEmailAndPassword(auth, username, password)
+function signup(email: string, username: string, password: string): void {
+  createUserWithEmailAndPassword(auth, email, password)
       .then((credentials: UserCredential) => {
         saveUserToFirebase(props.model, credentials.user?.uid);
+        updateCurrentUserProfile({displayName: username})
       })
       .catch((error) => {
         const message: string = "Failed to sign up : " + error
