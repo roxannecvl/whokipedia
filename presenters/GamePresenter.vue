@@ -38,12 +38,12 @@ function guessAndCheck(name : string, model : GameStore){
 
 <template>
   <div class="flex flex-row">
-    <GameCenterView
+    <GameCenterView class="max-w-[70%]"
         @new-name-set="selectedName => guessAndCheck(selectedName, model)"
         :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
         :first-sentence="model.firstSentence" :redBackground="!validGuess"
     />
-    <InfoboxView
+    <InfoboxView class="max-w-[100%]"
         :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
         :over="model.end" :buttonLink="baseString + model.name"
     />
