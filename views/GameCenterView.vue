@@ -1,15 +1,29 @@
 <script setup lang="ts">
 
+import type { ParagraphHint } from "~/model/Hint";
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import { getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
 
 defineProps( {
     intro : {
-      type: Array<string>,
+      type: Array<ParagraphHint>,
       required: true,
     },
-    revealed : {
-      type: Array<number>,
+    over : {
+      type : Boolean,
       required: true,
+    },
+    name: {
+      type : String,
+      required: true,
+    },
+    win : {
+      type : Boolean,
+      required: true,
+    },
+    firstSentence : {
+      type: String,
+      required: true
     },
 })
 
@@ -30,13 +44,31 @@ watch(selectedName, newName)
 </script>
 
 <template>
-  <UInputMenu
-      v-model="selectedName"
-      :search="getAutocompleteSuggestions"
-      placeholder="Take a guess..."
-      option-attribute="name"
-      trailing
-      by="id"
-  />
-
+  <div class="flex flex-col">
+    <UCard>
+      <template #header>
+        <UInputMenu
+            v-if="!over"
+            v-model="selectedName"
+            :search="getAutocompleteSuggestions"
+            placeholder="Take a guess..."
+            option-attribute="name"
+            trailing
+            by="id"
+            style="font-size: 18px; padding: 10px; height: 40px;"
+        />
+          <div v-if="over" class="text-3xl font-black">
+            {{name}}
+          </div>
+      </template>
+      <div style="max-height: 75vh; overflow-y:auto;">
+        <p v-if="over">{{ firstSentence }}</p>
+        <div v-for="paragraph in intro" :key="paragraph">
+          <p v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</p>
+          <p v-else-if="paragraph.revealed && over">{{ paragraph.value }}</p>
+          <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
+        </div>
+      </div>
+    </UCard>
+  </div>
 </template>

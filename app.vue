@@ -1,16 +1,17 @@
-<script
-    lang="ts"
-    setup>
-import { UserModel } from './model/UserModel';
+<script lang="ts" setup>
+
+import { type UserStore, useUserStore } from "./model/UserModel";
 import LoginSignupPresenter from "~/presenters/LoginSignupPresenter.vue";
 
+// Set up user model
+const store: UserStore = useUserStore()
+
+// Set up color mode
 const colorMode = useColorMode()
 const isDark = computed({
   get: () => colorMode.value === 'dark',
   set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 })
-
-const userModel: any = reactive(new UserModel())
 
 </script>
 
@@ -39,7 +40,7 @@ const userModel: any = reactive(new UserModel())
             <div class="flex">
               <UIcon
                   name="i-heroicons-magnifying-glass-16-solid"
-                  class="text-primary w-10 h-10"/>
+                  class="text-primary w-10 h-10 hidden sm:block"/>
               <p class="font-black text-3xl hidden sm:block select-none">
                 Whokipedia
               </p>
@@ -47,7 +48,7 @@ const userModel: any = reactive(new UserModel())
           </a>
           <div class="flex justify-between items-center">
             <div class="p-3">
-              <LoginSignupPresenter :userModel/>
+              <LoginSignupPresenter :model="store"/>
             </div>
             <div class="p-3">
               <ClientOnly>
@@ -66,7 +67,7 @@ const userModel: any = reactive(new UserModel())
       </template>
 
       <main>
-        <NuxtPage :userModel/>
+        <NuxtPage/>
       </main>
 
       <UNotifications />

@@ -1,30 +1,30 @@
 <script setup lang="ts">
 
+import { type GameStore } from "~/model/GameModel";
 import InfoboxView from "~/views/InfoboxView.vue";
-import { GameModel } from "~/model/GameModel";
 import GameCenterView from "~/views/GameCenterView.vue";
 
 defineProps({
   model: {
-      type: GameModel,
+      type: Object as () => GameStore,
       required: true,
   },
 })
 
+const baseString = "https://en.wikipedia.org/wiki/";
+
 </script>
 
 <template>
-  <div v-if="model.end" class="text-5xl text-primary font-black">
-    <p v-if="model.win"> YOU WON ! </p>
-    <p v-else> You lost... </p>
-  </div>
-  <div class="flex flex-col">
+  <div class="flex flex-row">
     <GameCenterView
         @new-name-set="selectedName => model.makeAGuess.bind(model)(selectedName)"
-        :intro="model.intro" :revealed="model.introPartsRevealed"
+        :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
+        :first-sentence="model.firstSentence"
     />
     <InfoboxView
-        :hints = "model.hints" :image="model.imageUrl" :blur="model.blur" :over="model.end"
+        :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
+        :over="model.end" :buttonLink="baseString + model.name"
     />
   </div>
 

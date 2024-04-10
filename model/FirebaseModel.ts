@@ -1,50 +1,78 @@
 import { ref as dbRef, push, update, get, Database, type DatabaseReference } from "firebase/database";
-import type { UserModel } from "./UserModel.js";
+import type { UserStore } from "~/model/UserModel.js";
 
-let database: Database;
-let userRef: DatabaseReference;
+let database: Database
+let userRef: DatabaseReference
 
-// Initialise firebase app, database, ref
-function initialiseFirebase() {
+/**
+ * This method initializes Firebase database.
+ */
+export function initializeFirebase(): void {
     database = useDatabase();
     userRef = dbRef(database, 'users');
 }
 
-function userModelToPersistence(model: UserModel): any {
-    return {
-        currentStreak: model.currentStreak,
-        maxStreak: model.maxStreak,
-        averageRank: model.averageRank,
-        averageGuesses: model.averageGuesses,
-        averageTime: model.averageTime,
-        timesPlayed: model.timesPlayed,
-    }
-}
-
-function persistenceToUserModel(persistence: any, model: UserModel) {
-    model.updateStats(persistence.currentStreak, persistence.maxStreak, persistence.averageRank, persistence.averageGuesses, persistence.averageTime, persistence.timesPlayed);
-}
-
-function saveUserToFirebase(model: UserModel, uid: string) {
-        const persistence = userModelToPersistence(model);
+/**
+ * This method saves a local user model to persistence.
+ * @param store - User model to push to persistence
+ * @param uid - ID to give to model in order to keep track in persistence
+ */
+export function saveUserToFirebase(store: UserStore, uid: string): void {
+    const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
     persistence.uid = uid;
     push(userRef, persistence);
 }
 
-function updateUserToFirebase(model: UserModel, uid: string) {
-    const persistence = userModelToPersistence(model);
+/**
+ * This method updates a user model to persistence.
+ * @param store - User model to update to persistence
+ * @param uid - ID to give to model in order to keep track in persistence
+ */
+export function updateUserToFirebase(store: UserStore, uid: string): void {
+    const persistence = userStoreToPersistence(store);
     persistence.uid = uid;
-    update(userRef, persistence);
+    update(userRef, persistence).then(() => {});
 }
 
-function readUserFromFirebase(model: UserModel) {
+/**
+ * This method fills local user model from persistence.
+ * @param store - Local model to fill
+ */
+export async function readUserFromFirebase(store: UserStore): Promise<UserStore> {
     return get(userRef).then(snapshot => {
-                persistenceToUserModel(snapshot.val(), model);
-        return model;
+        persistenceToUserModel(store, snapshot.val());
+        return store;
     });
 }
 
+/**
+ * This private method converts our user model to store it as a POJO in persistence.
+ * @param store - User model to push to persistence
+ * @return {[key: string]: string | number} - POJO will relevant user info
+ */
+function userStoreToPersistence(store: UserStore): {[key: string]: string | number} {
+    return {
+        currentStreak: store.currentStreak,
+        maxStreak: store.maxStreak,
+        averageRank: store.averageRank,
+        averageGuesses: store.averageGuesses,
+        averageTime: store.averageTime,
+        timesPlayed: store.timesPlayed,
+    }
+}
 
-
-// Remember to uncomment the following line:
-export { initialiseFirebase, userModelToPersistence, saveUserToFirebase, updateUserToFirebase, readUserFromFirebase }
+/**
+ * This private method converts POJO from persistence to fill our local user model.
+ * @param store - The local model to fill
+ * @param persistence - The POJO obtained from persistence
+ */
+function persistenceToUserModel(store: UserStore, persistence: any): void {
+    store.updateStats(
+        persistence.currentStreak,
+        persistence.maxStreak,
+        persistence.averageRank,
+        persistence.averageGuesses,
+        persistence.averageTime,
+        persistence.timesPlayed
+    );
+}
