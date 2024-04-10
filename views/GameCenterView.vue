@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import { getAutocompleteSuggestions } from "~/model/CelebrityList";
-import { getCryptedString } from "~/utilities/Utils";
 import type { ParagraphHint } from "~/model/Hint";
+import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import { getEncryptedString } from "~/utilities/Utils";
 
 defineProps( {
     intro : {
@@ -60,7 +60,7 @@ watch(selectedName, newName)
       <div style="max-height: 75vh; overflow-y:auto;">
         <p v-for="paragraph in intro" :key="paragraph">
           <p v-if="paragraph.revealed || over">{{ paragraph.value }}</p>
-          <p v-else class="blur-sm">{{ getCryptedString(paragraph.value) }}</p>
+          <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
         </p>
       </div>
     </UCard>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 
-defineProps({})
-
 const logoFilledPath = '/img/logo-filled.svg';
 const logoTransparentPath = '/img/logo-transparent.svg';
 
@@ -24,12 +22,7 @@ const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTra
         where each clue leads you closer to uncovering the celebrity behind the blur!
       </div>
 
-      <UButton
-          to="/daily-challenge"
-          size="xl"
-          class="text-2xl"
-          label="Play"
-      >
+      <UButton to="/daily-challenge" size="xl" class="text-2xl" label="Play">
            Play
       </UButton>
 
@@ -43,7 +36,8 @@ const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTra
           <ul class="list-disc list-inside m-1">
             <li>Each guess must be one of our listed <span class="text-primary">celebrities</span>.</li>
             <li>Each unsuccessful guess brings a <span class="text-primary">new hint</span>.</li>
-            <li><span class="text-primary">Guess until you find the celebrity</span> or until <span class="text-primary">all hints are consumed</span>.</li>
+            <li><span class="text-primary">Guess until you find the celebrity</span>
+              or until <span class="text-primary">all hints are consumed</span>.</li>
           </ul>
       </div>
     </div>

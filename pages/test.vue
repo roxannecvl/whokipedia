@@ -1,6 +1,4 @@
-<script
-    setup
-    lang="ts">
+<script setup lang="ts">
 
 import { ref } from 'vue';
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource";

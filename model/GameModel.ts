@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
-import { getRandom } from "~/utilities/Utils"
 import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
+import { getRandom } from "~/utilities/Utils"
 
 export const useGameStore = defineStore('game', {
     state: () => ({
