@@ -36,6 +36,9 @@ const emit = defineEmits(['new-name-set'])
 const selectedName = ref("");
 const tremble = ref(false);
 
+const mode = useColorMode();
+const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6');
+
 function newName() {
   if (selectedName.value === "") return;
   emit("new-name-set", selectedName.value);
@@ -63,7 +66,7 @@ watch(selectedName, newName)
             trailing
             by="id"
             :style="{ fontSize: '18px', padding: '10px', height: '40px',
-                      backgroundColor: redBackground ? '#ffe6e6' : '' }"
+                      backgroundColor: redBackground ? redColor : '' }"
             :class="{'tremble': tremble }"
         />
           <div v-if="over" class="text-3xl font-black">
