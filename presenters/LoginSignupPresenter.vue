@@ -7,7 +7,7 @@ import { type UserStore } from "~/model/UserModel";
 import LoginView from "~/views/LoginView.vue";
 import SignupView from "~/views/SignupView.vue";
 
-
+// Props
 const props = defineProps({
   model: {
       type: Object as () => UserStore,
@@ -17,15 +17,17 @@ const props = defineProps({
 
 // Set up authentication
 initializeFirebase()
+
+// Constants
+const toast = useToast()
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
 
-const toast = useToast()
+// Refs
 const isLogInOpen = ref(false)
 const isUserLoggedIn = ref(false)
 
-
-// Keep this client-side
+// Watchers
 onMounted(() => {
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
@@ -42,6 +44,7 @@ onMounted(() => {
 })
 
 
+// Functions
 /**
  * Displays an error notification
  *

@@ -1,27 +1,31 @@
 <script setup lang="ts">
+
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import { passwordMinimalLength } from '~/utilities/Utils'
 
-  const emit = defineEmits(['signup-event'])
+// Emits
+const emit = defineEmits(['signup-event'])
 
-  const schema = z.object({
-    email: z.string().email('Invalid email'),
-    username: z.string(),
-    password: z.string().min(passwordMinimalLength, 'Must be at least '+passwordMinimalLength+' characters')
-  })
+// Constants
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  username: z.string(),
+  password: z.string().min(passwordMinimalLength, 'Must be at least '+passwordMinimalLength+' characters')
+})
+type Schema = z.output<typeof schema>
 
-  type Schema = z.output<typeof schema>
+// Refs
+const state = reactive({
+  email: undefined,
+  username: undefined,
+  password: undefined
+})
 
-  const state = reactive({
-    email: undefined,
-    username: undefined,
-    password: undefined
-  })
-
-  async function onSubmit (event: FormSubmitEvent<Schema>) {
-    emit("signup-event", event.data.email, event.data.username, event.data.password)
-  }
+// Functions
+async function onSubmit (event: FormSubmitEvent<Schema>) {
+  emit("signup-event", event.data.email, event.data.username, event.data.password)
+}
 
 </script>
 

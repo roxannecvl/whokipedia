@@ -2,9 +2,10 @@
 
 import type { ParagraphHint } from "~/model/Hint";
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
-import { getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
+import {blurHTML, getEncryptedString, removeNameOccurrences} from "~/utilities/Utils";
 
-defineProps( {
+// Props
+const props = defineProps( {
     intro : {
       type: Array<ParagraphHint>,
       required: true,
@@ -31,15 +32,23 @@ defineProps( {
     },
 })
 
+// Emits
 const emit = defineEmits(['new-name-set'])
 
+// Refs
 const selectedName = ref("");
 const tremble = ref(false);
 
+// Constants
 const mode = useColorMode();
 const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6');
+const encrypted = props.intro ? getEncryptedString(props.intro[0].value) : ""
 
-function newName() {
+// Watchers
+watch(selectedName, newName)
+
+// Functions
+function newName(): void {
   if (selectedName.value === "") return;
   emit("new-name-set", selectedName.value);
   tremble.value = true;
@@ -49,7 +58,9 @@ function newName() {
   }, 300);
 }
 
-watch(selectedName, newName)
+function format(str: string) : string {
+  return blurHTML(removeNameOccurrences(str, props.name))
+}
 
 </script>
 
@@ -74,11 +85,11 @@ watch(selectedName, newName)
           </div>
       </template>
       <div style="max-height: 75vh; overflow-y:auto;">
-        <p v-if="over">{{ firstSentence }}</p>
-        <div v-for="paragraph in intro" :key="paragraph">
-          <p v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</p>
-          <p v-else-if="over">{{ paragraph.value }}</p>
-          <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
+        <span v-if="over">{{ firstSentence }}</span>
+        <div v-for="paragraph in intro" :key="paragraph" style="display: inline;">
+          <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)"></span>
+          <span v-else-if="over">{{ paragraph.value }}</span>
+          <span v-else class="blur-sm">{{ encrypted }}</span>
         </div>
       </div>
     </UCard>

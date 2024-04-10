@@ -3,23 +3,26 @@ import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import { passwordMinimalLength } from '~/utilities/Utils'
 
-  const emit = defineEmits(['login-event'])
+// Emits
+const emit = defineEmits(['login-event'])
 
-  const schema = z.object({
-    email: z.string().email('Invalid email'),
-    password: z.string().min(passwordMinimalLength, 'Must be at least '+passwordMinimalLength+' characters')
-  })
+// Constants
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(passwordMinimalLength, 'Must be at least '+passwordMinimalLength+' characters')
+})
+type Schema = z.output<typeof schema>
 
-  type Schema = z.output<typeof schema>
+// Refs
+const state = reactive({
+  email: undefined,
+  password: undefined
+})
 
-  const state = reactive({
-    email: undefined,
-    password: undefined
-  })
-
-  async function onSubmit (event: FormSubmitEvent<Schema>) {
-    emit("login-event", event.data.email, event.data.password)
-  }
+// Functions
+async function onSubmit (event: FormSubmitEvent<Schema>) {
+  emit("login-event", event.data.email, event.data.password)
+}
 
 </script>
 

@@ -1,18 +1,21 @@
 <script setup lang="ts">
 
-const logoFilledPath = '/img/logo-filled.svg';
-const logoTransparentPath = '/img/logo-transparent.svg';
-
-const mode = useColorMode();
+// Refs
 const logoPath = ref('');
 
-//gives enough time to compute logoPath
-onMounted(() => {
-  logoPath.value = mode.value === 'dark' ? logoFilledPath : logoTransparentPath;
-});
+// Constants
+const logoFilledPath = '/img/logo-filled.svg';
+const logoTransparentPath = '/img/logo-transparent.svg';
+const mode = useColorMode();
 
+// Watchers
 watch(mode, (newMode) => {
   logoPath.value = newMode.value === 'dark' ? logoFilledPath : logoTransparentPath;
+});
+
+// Computed
+onMounted(() => {
+  logoPath.value = mode.value === 'dark' ? logoFilledPath : logoTransparentPath;
 });
 
 </script>
