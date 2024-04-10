@@ -1,4 +1,4 @@
-import { getRandom } from "~/utilities/Utils.ts"
+import { getRandom } from "~/utilities/Utils"
 
 /**
  * This interface represents a Hint for the game, and all its possible attributes.

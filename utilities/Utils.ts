@@ -1,4 +1,4 @@
-import { type UserStore, useUserStore } from "~/model/UserModel";
+import {type UserStore, useUserStore} from "~/model/UserModel";
 
 
 // --------------------------------- String utilities  --------------------------------- //

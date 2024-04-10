@@ -1,5 +1,5 @@
 import { ref as dbRef, push, update, get, Database, type DatabaseReference } from "firebase/database";
-import type { UserStore } from "./UserModel.js";
+import type { UserStore } from "~/model/UserModel.js";
 
 let database: Database
 let userRef: DatabaseReference
