@@ -37,7 +37,9 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
  */
 export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
     return get(dbRef(database, 'users/'+uid)).then(snapshot => {
-        persistenceToUserModel(store, snapshot.val());
+        if(snapshot.val()){
+            persistenceToUserModel(store, snapshot.val());
+        }
         return store;
     });
 }
