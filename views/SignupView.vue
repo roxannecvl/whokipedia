@@ -6,8 +6,8 @@ import type { FormSubmitEvent } from '#ui/types'
 
   const schema = z.object({
     email: z.string().email('Invalid email'),
-    username: z.string().min(8, 'Must be at least 8 characters'),
-    password: z.string().min(8, 'Must be at least 8 characters')
+    username: z.string(),
+    password: z.string().min(6, 'Must be at least 6 characters')
   })
 
   type Schema = z.output<typeof schema>
