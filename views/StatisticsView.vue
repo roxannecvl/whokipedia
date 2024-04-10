@@ -22,7 +22,8 @@ ChartJS.register(
     Legend
 )
 
-defineProps({
+// Props
+const props = defineProps({
   currentStreak: {
     type: Number,
     required: true
@@ -61,9 +62,13 @@ defineProps({
   }
 })
 
+// Emits
 const emit = defineEmits(['populate-stats'])
+
+// Constants
 const user = useCurrentUser()
 
+// Functions
 function populateStats(){
   emit('populate-stats')
 }

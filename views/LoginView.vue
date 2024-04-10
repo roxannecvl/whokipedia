@@ -1,12 +1,16 @@
 <script setup lang="ts">
 
-  const emit = defineEmits(['login-event'])
-  function login() {
-    emit("login-event", username.value, password.value)
-  }
+// Emits
+const emit = defineEmits(['login-event'])
 
-  const username = ref('')
-  const password = ref('')
+// Refs
+const username = ref('')
+const password = ref('')
+
+// Functions
+function login() {
+  emit("login-event", username.value, password.value)
+}
 
 </script>
 

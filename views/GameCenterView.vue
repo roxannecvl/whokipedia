@@ -4,7 +4,8 @@ import type { ParagraphHint } from "~/model/Hint";
 import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 import { getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
 
-defineProps( {
+// Props
+const props = defineProps( {
     intro : {
       type: Array<ParagraphHint>,
       required: true,
@@ -27,10 +28,16 @@ defineProps( {
     },
 })
 
+// Emits
 const emit = defineEmits(['new-name-set'])
 
+// Refs
 const selectedName = ref("");
 
+// Watchers
+watch(selectedName, newName)
+
+// Functions
 function newName() {
   if (selectedName.value === "") return;
   emit("new-name-set", selectedName.value);
@@ -38,8 +45,6 @@ function newName() {
     selectedName.value = "";
   }, 200);
 }
-
-watch(selectedName, newName)
 
 </script>
 
@@ -62,11 +67,11 @@ watch(selectedName, newName)
           </div>
       </template>
       <div style="max-height: 75vh; overflow-y:auto;">
-        <p v-if="over">{{ firstSentence }}</p>
-        <div v-for="paragraph in intro" :key="paragraph">
-          <p v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</p>
-          <p v-else-if="paragraph.revealed && over">{{ paragraph.value }}</p>
-          <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
+        <span v-if="over">{{ firstSentence }}</span>
+        <div v-for="paragraph in intro" :key="paragraph" style="display: inline;">
+          <span v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</span>
+          <span v-else-if="over">{{ paragraph.value }}</span>
+          <span v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</span>
         </div>
       </div>
     </UCard>

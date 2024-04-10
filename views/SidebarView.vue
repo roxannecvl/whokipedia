@@ -1,15 +1,18 @@
 <script setup lang="ts">
 
-defineProps({
+// Props
+const props = defineProps({
   hintCount: Number,
   over: Boolean,
   //TODO : add the time
 })
 
+// Constants
 const logoFilledPath = '/img/logo-filled.svg';
 const logoTransparentPath = '/img/logo-transparent.svg';
-
 const mode = useColorMode();
+
+// Computed
 const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTransparentPath);
 
 </script>

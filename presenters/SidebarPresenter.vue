@@ -3,7 +3,8 @@
 import { type GameStore } from "~/model/GameModel";
 import SidebarView from "~/views/SidebarView.vue";
 
-defineProps({
+// Props
+const props = defineProps({
   model: {
     type: Object as () => GameStore,
     required: true,

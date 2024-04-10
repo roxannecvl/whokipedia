@@ -4,13 +4,15 @@ import { type GameStore } from "~/model/GameModel";
 import InfoboxView from "~/views/InfoboxView.vue";
 import GameCenterView from "~/views/GameCenterView.vue";
 
-defineProps({
+// Props
+const props = defineProps({
   model: {
       type: Object as () => GameStore,
       required: true,
   },
 })
 
+// Constants
 const baseString = "https://en.wikipedia.org/wiki/";
 
 </script>
