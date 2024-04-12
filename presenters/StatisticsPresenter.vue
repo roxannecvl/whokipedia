@@ -30,7 +30,7 @@ const populateStats = (model: UserStore) => {
         randomUserModel.averageRank,
         randomUserModel.averageGuesses,
         randomUserModel.averageTime,
-        randomUserModel.timesPlayed
+        randomUserModel.gamesPlayed
     )
     updateUserToFirebase(model, user.value.uid)
   }
@@ -43,6 +43,6 @@ const populateStats = (model: UserStore) => {
                      :average-rank="model.averageRank" :average-guesses="model.averageGuesses"
                      :average-time="model.averageTime" :current-streak="model.currentStreak"
                      :guesses="model.guesses" :max-streak="model.maxStreak" :ranks="model.ranks"
-                     :times="model.times" :times-played="model.timesPlayed"/>
+                     :times="model.times" :games-played="model.gamesPlayed"/>
 </template>
 

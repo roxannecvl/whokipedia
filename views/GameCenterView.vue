@@ -86,7 +86,7 @@ function format(str: string) : string {
       </template>
       <div style="max-height: 75vh; overflow-y:auto;">
         <span v-if="over">{{ firstSentence }}</span>
-        <div v-for="paragraph in intro" :key="paragraph" style="display: inline;">
+        <div v-for="paragraph in intro" style="display: inline;">
           <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)"></span>
           <span v-else-if="over">{{ paragraph.value }}</span>
           <span v-else class="blur-sm">{{ encrypted }}</span>

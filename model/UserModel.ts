@@ -5,12 +5,12 @@ export const useUserStore = defineStore('user', {
         currentStreak: 0 as number,
         maxStreak: 0 as number,
         averageRank: 0 as number,
-        ranks: [] as number[],
+        ranks: [] as TimedStat[],
         averageGuesses: 0 as number,
-        guesses: [] as number[],
+        guesses: [] as TimedStat[],
         averageTime: 0 as number,
-        times: [] as number[],
-        timesPlayed: 0 as number,
+        times: [] as TimedStat[],
+        gamesPlayed: 0 as number,
     }),
     actions: {
         updateStats(currentStreak: number,
@@ -18,13 +18,13 @@ export const useUserStore = defineStore('user', {
                     averageRank: number,
                     averageGuesses: number,
                     averageTime: number,
-                    timesPlayed: number): void {
+                    gamesPlayed: number): void {
             this.currentStreak = currentStreak;
             this.maxStreak = maxStreak;
             this.averageRank = averageRank;
             this.averageGuesses = averageGuesses;
             this.averageTime = averageTime;
-            this.timesPlayed = timesPlayed;
+            this.gamesPlayed = gamesPlayed;
         },
         updateStreak(): void {
             this.currentStreak++;
@@ -37,3 +37,4 @@ export const useUserStore = defineStore('user', {
 })
 
 export type UserStore = ReturnType<typeof useUserStore>
+export type TimedStat = { number: number, date: Date }
