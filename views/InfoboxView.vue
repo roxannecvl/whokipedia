@@ -5,7 +5,7 @@ import { capitalize } from "~/utilities/Utils";
 // Props
 const props = defineProps( {
     fields: {
-      type: Array<InfoboxHint>,
+      type: Array<InfoboxHint> ,
       required: true,
     },
     imageUrl : {
