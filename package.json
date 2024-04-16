@@ -14,6 +14,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@types/infobox-parser": "^3.3.4",
     "chart.js": "^4.4.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "firebase": "^10.6.0",
     "firebase-admin": "^11.11.1",
     "firebase-functions": "^4.8.0",

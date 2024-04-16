@@ -49,10 +49,8 @@ function populateStats(){
   <div v-if="user" class="flex flex-col items-center justify-center">
     <UButton @click="populateStats()">Populate stats</UButton>
 
-    <div class="flex-row">
-      <Line :data="guessesData" :options="chartOptions" />
-      <Bar :data="ranksData" :options="chartOptions" />
-    </div>
+    <Line :data="guessesData" :options="guessesOptions" />
+    <Bar :data="ranksData" :options="ranksOptions" />
   </div>
 
   <div v-else class="flex flex-col items-center justify-center">
@@ -61,11 +59,14 @@ function populateStats(){
 </template>
 
 <script lang="ts">
+// Script to handle chart logic
 import { Line, Bar } from 'vue-chartjs'
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart as ChartJS, type ChartData, type Point, registerables } from 'chart.js'
 import type { TimedStat } from "~/model/UserModel";
 
 ChartJS.register(...registerables)
+ChartJS.register(ChartDataLabels)
 
 export default {
   components: { Line, Bar },
@@ -80,9 +81,40 @@ export default {
             borderColor: 'rgba(245,158,12,255)',
             borderWidth: 5,
             fill: false,
-            tension: 0.5
+            tension: 0.3
           }
         ]
+      }
+    },
+    guessesOptions() {
+      return {
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            }
+          },
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          datalabels: {
+            display: false,
+          }
+        },
       }
     },
     ranksData(): ChartData<"bar", (number | [number, number] | null)[]> {
@@ -93,23 +125,47 @@ export default {
             label: 'Ranks',
             data: this.$props.timedStats.map((stat: TimedStat) => stat.rank),
             borderColor: 'rgba(245,158,12,255)',
-            borderWidth: 0,
             borderRadius: 100,
-            backgroundColor: 'rgba(245,158,12,255)'
+            borderSkipped: false,
+            backgroundColor: 'rgba(245,158,12,255)',
+            barPercentage: 0.2,
+            categoryPercentage: 1,
           }
         ]
       }
     },
-    chartOptions() {
+    ranksOptions() {
       return {
         scales: {
-          y: {
-            beginAtZero: true,
+          x: {
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            },
           },
+          y: {
+            display: false,
+          },
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          datalabels: {
+            color: '#000',
+            anchor: 'end',
+            align: 'top',
+            offset: 10,
+            font: {
+              weight: 'bold'
+            },
+          }
         },
       }
     },
-  }
+  },
 
 };
 </script>
