@@ -2,9 +2,9 @@
 
 import { useCurrentUser } from 'vuefire'
 import type { UserStore } from "~/model/UserModel"
-import { updateUserToFirebase } from "~/model/FirebaseModel"
-import { getRandomUserModel } from "~/utilities/Utils";
 import StatisticsView from "~/views/StatisticsView.vue"
+import { getRandomNumber, getRandomTimedStats } from "~/utilities/Utils";
+import {readUserFromFirebase, updateUserToFirebase} from "~/model/FirebaseModel";
 
 // Props
 const props = defineProps({
@@ -17,32 +17,34 @@ const props = defineProps({
 // Constants
 const user = useCurrentUser()
 
-// TODO: remove after testing
-/**
- * Method to populate stats to persistence, used for testing purposes.
- */
-const populateStats = (model: UserStore) => {
-  if(user.value){
-    const randomUserModel = getRandomUserModel()
-    model.updateStats(
-        randomUserModel.currentStreak,
-        randomUserModel.maxStreak,
-        randomUserModel.averageRank,
-        randomUserModel.averageGuesses,
-        randomUserModel.averageTime,
-        randomUserModel.timesPlayed
+// Functions
+function populateStats () {
+  if(user.value) {
+    props.model.updateStats(
+        getRandomNumber(0, 100),
+        getRandomNumber(0, 100),
+        getRandomNumber(0, 100),
+        getRandomNumber(0, 100),
+        getRandomNumber(0, 100),
+        getRandomNumber(0, 100),
+        getRandomTimedStats(10)
     )
-    updateUserToFirebase(model, user.value.uid)
+    updateUserToFirebase(props.model, user.value.uid)
   }
 }
 
 </script>
 
 <template>
-    <StatisticsView  @populate-stats="populateStats(model)"
-                     :average-rank="model.averageRank" :average-guesses="model.averageGuesses"
-                     :average-time="model.averageTime" :current-streak="model.currentStreak"
-                     :guesses="model.guesses" :max-streak="model.maxStreak" :ranks="model.ranks"
-                     :times="model.times" :times-played="model.timesPlayed"/>
+    <StatisticsView
+        @populate-stats="populateStats()"
+        :current-streak="model.currentStreak"
+        :max-streak="model.maxStreak"
+        :average-guesses="model.averageGuesses"
+        :average-rank="model.averageRank"
+        :average-time="model.averageTime"
+        :games-played="model.gamesPlayed"
+        :timed-stats="model.timedStats"
+    />
 </template>
 

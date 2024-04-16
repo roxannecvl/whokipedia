@@ -97,4 +97,3 @@ export const useGameStore = defineStore('game', {
 })
 
 export type GameStore = ReturnType<typeof useGameStore>
-export type TimedStat = { number: number, date: Date }

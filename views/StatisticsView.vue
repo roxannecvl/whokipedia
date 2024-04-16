@@ -1,27 +1,5 @@
 <script setup lang="ts">
 
-import { Line } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-  CategoryScale,
-  LinearScale
-} from 'chart.js'
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-)
-
 // Props
 const props = defineProps({
   currentStreak: {
@@ -44,22 +22,14 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  timesPlayed: {
+  gamesPlayed: {
     type: Number,
     required: true
   },
-  times: {
-    type: Array<Number>,
+  timedStats: {
+    type: Array<TimedStat>,
     required: true
   },
-  ranks: {
-    type: Array<Number>,
-    required: true
-  },
-  guesses: {
-    type: Array<Number>,
-    required: true
-  }
 })
 
 // Emits
@@ -77,36 +47,69 @@ function populateStats(){
 
 <template>
   <div v-if="user" class="flex flex-col items-center justify-center">
-    <div>
-      <p>{{ 'User name: ' + user.displayName }}</p>
-      <p>{{ 'Current streak: ' + currentStreak }}</p>
-      <p>{{ 'Max streak: ' + maxStreak }}</p>
-      <p>{{ 'Average rank: ' + averageRank }}</p>
-      <p>{{ 'Average guesses: ' + averageGuesses }}</p>
-      <p>{{ 'Average time: ' + averageTime }}</p>
-      <p>{{ 'Times played: ' + timesPlayed }}</p>
+    <UButton @click="populateStats()">Populate stats</UButton>
+
+    <div class="flex-row">
+      <Line :data="guessesData" :options="chartOptions" />
+      <Bar :data="ranksData" :options="chartOptions" />
     </div>
-    <Line
-        id="my-chart-id"
-        :options="{
-          responsive: true,
-          scales: {
-            x: { grid: {color: 'grey'} },
-            y: { grid: {color: 'grey'} }
-          }
-        }"
-        :data="{
-          labels: Array.from(Array(times.length).keys()),
-          datasets: [ { label: 'Times', data: times, backgroundColor: 'blue', borderColor: 'blue' },
-          { label: 'Ranks', data: ranks, backgroundColor: 'green', borderColor: 'green' },
-          { label: 'Guesses', data: guesses, backgroundColor: 'red', borderColor: 'red' } ]
-        }"
-    />
   </div>
+
   <div v-else class="flex flex-col items-center justify-center">
     <p>User not logged in</p>
   </div>
-  <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-    <UButton @click="populateStats()">Populate stats</UButton>
-  </div>
 </template>
+
+<script lang="ts">
+import { Line, Bar } from 'vue-chartjs'
+import { Chart as ChartJS, type ChartData, type Point, registerables } from 'chart.js'
+import type { TimedStat } from "~/model/UserModel";
+
+ChartJS.register(...registerables)
+
+export default {
+  components: { Line, Bar },
+  computed: {
+    guessesData(): ChartData<"line", (number | Point | null)[]> {
+      return {
+        labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
+        datasets: [
+          {
+            label: 'Number of guesses',
+            data: this.$props.timedStats.map((stat: TimedStat) => stat.guesses),
+            borderColor: 'rgba(245,158,12,255)',
+            borderWidth: 5,
+            fill: false,
+            tension: 0.5
+          }
+        ]
+      }
+    },
+    ranksData(): ChartData<"bar", (number | [number, number] | null)[]> {
+      return {
+        labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
+        datasets: [
+          {
+            label: 'Ranks',
+            data: this.$props.timedStats.map((stat: TimedStat) => stat.rank),
+            borderColor: 'rgba(245,158,12,255)',
+            borderWidth: 0,
+            borderRadius: 100,
+            backgroundColor: 'rgba(245,158,12,255)'
+          }
+        ]
+      }
+    },
+    chartOptions() {
+      return {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      }
+    },
+  }
+
+};
+</script>

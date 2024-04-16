@@ -1,4 +1,4 @@
-import { type UserStore, useUserStore } from "~/model/UserModel";
+import { type TimedStat } from "~/model/UserModel";
 
 // --------------------------------- String utilities  --------------------------------- //
 
@@ -99,24 +99,6 @@ export function getEncryptedString(text : string) : string {
     return encrypted;
 }
 
-//TODO : remove after testing
-/**
- * Method to create a random user model, used for testing purposes.
- * @returns UserStore - random user model
- */
-export function getRandomUserModel(): UserStore {
-    const max_value: number = 100;
-    const store: UserStore = useUserStore();
-    store.updateStats(
-        Math.floor(Math.random() * max_value),
-        Math.floor(Math.random() * max_value),
-        Math.floor(Math.random() * max_value),
-        Math.floor(Math.random() * max_value),
-        Math.floor(Math.random() * max_value),
-        Math.floor(Math.random() * max_value))
-    return store;
-}
-
 /**
  * Given a sentence of words separated by "and", returns all
  * possible permutations of the words around these "and".
@@ -174,6 +156,45 @@ export function splitIntoEqualSentenceParts(text: string, num: number): string[]
     parts.push(sentences.slice(start).join(''));
 
     return parts;
+}
+
+/**
+ * Get a random number in the given range.
+ * @param min - min of the range
+ * @param max - max of the range
+ * @returns number - random number in the given range
+ */
+export function getRandomNumber(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Get a random array of timed statistics.
+ * @param size - size of the array
+ * @returns TimedStat[] - random array of timed statistics, chronologically ordered
+ */
+export function getRandomTimedStats(size: number): TimedStat[] {
+    let array: { [key: string]: number | Date }[] = []
+    for (let i = 0; i < size; i++) {
+        array.push({
+            date: new Date(
+                getRandomNumber(2022, 2024),
+                getRandomNumber(0, 11),
+                getRandomNumber(1, 28)
+            ),
+            guesses: getRandomNumber(0, 100),
+            rank: getRandomNumber(0, 100)
+        })
+    }
+    return array.sort((a:{ [key: string]: number | Date }, b: { [key: string]: number | Date }) => {
+            return (a.date as Date).getTime() - (b.date as Date).getTime()
+        }).map((e: { [key: string]: number | Date }): { date: string, guesses: number, rank: number } => {
+            return {
+                date: (e.date as Date).toDateString(),
+                guesses: e.guesses as number,
+                rank: e.rank as number
+            }
+        })
 }
 
 // --------------------------------- Data --------------------------------- //
