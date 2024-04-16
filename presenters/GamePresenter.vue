@@ -3,6 +3,7 @@
 import { type GameStore } from "~/model/GameModel";
 import InfoboxView from "~/views/InfoboxView.vue";
 import GameCenterView from "~/views/GameCenterView.vue";
+import SearchFieldView from "~/views/SearchFieldView.vue";
 
 // Props
 const props = defineProps({
@@ -39,16 +40,21 @@ function guessAndCheck(name : string, model : GameStore){
 </script>
 
 <template>
-  <div class="flex flex-row">
-    <GameCenterView class="max-w-[70%]"
-        @new-name-set="selectedName => guessAndCheck(selectedName, model)"
-        :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
-        :first-sentence="model.firstSentence" :redBackground="!validGuess"
+  <div class="flex flex-col" style="max-height: 80vh">
+    <SearchFieldView
+                    @new-name-set="selectedName => guessAndCheck(selectedName, model)"
+                    :over="model.end" :name="model.name" :redBackground="!validGuess"
     />
-    <InfoboxView class="max-w-[100%]"
-        :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
-        :over="model.end" :buttonLink="baseString + model.name"
-    />
+    <div class="flex flex-row"  style="overflow-y:auto; max-height: 70vh">
+      <GameCenterView class="max-w-[70%]"
+          :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
+          :first-sentence="model.firstSentence"
+      />
+      <InfoboxView class="max-w-[100%]"
+          :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
+          :over="model.end" :buttonLink="baseString + model.name"
+      />
+    </div>
   </div>
 
 </template>

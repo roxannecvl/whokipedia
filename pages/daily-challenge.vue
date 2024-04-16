@@ -21,7 +21,7 @@ const isRulesOpen = ref(false)
     </div>
     <div v-else>
       <div class="hidden md:flex">
-        <div class="w-1/6 p-2"><SidebarPresenter :model="store" /></div>
+        <div class="w-1/6 p-2" style="max-height: 75vh; overflow-y:auto"><SidebarPresenter :model="store" /></div>
         <div class="w-5/6 p-2"><GamePresenter :model="store" /></div>
       </div>
       <div class="flex md:hidden flex-col ">
