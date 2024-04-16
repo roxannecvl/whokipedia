@@ -6,9 +6,9 @@ import { getRandom } from "~/utilities/Utils"
 export const useGameStore = defineStore('game', {
     state: () => ({
         name: "" as string,
-        images: undefined as BlurHint[] | undefined,
-        paragraphs: undefined as ParagraphHint[] | undefined,
-        infobox: undefined as InfoboxHint[] | undefined,
+        images: [] as BlurHint[],
+        paragraphs: [] as ParagraphHint[],
+        infobox: [] as InfoboxHint[],
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
         time: 0 as number,
@@ -19,25 +19,25 @@ export const useGameStore = defineStore('game', {
         loading: false as boolean,
     }),
     getters: {
-        imageUrl(state): string | undefined  {
-            return state.images ? state.images[0].url : undefined
+        imageUrl(state): string {
+            return state.images ? state.images[0].url : ""
         },
-        blur(state): number | undefined {
+        blur(state): number {
             return state.images ? state.images
                 .filter((image: BlurHint) => image.revealed)
                 .reduce((max, curr) => {
                     return max.blur > curr.blur ? max : curr
-                }).blur : undefined
+                }).blur : 4
         },
-        intro(state): ParagraphHint[] | undefined {
-            if(!state.paragraphs) return undefined
+        intro(state): ParagraphHint[] {
+            if(!state.paragraphs) return []
             if(!this.firstSentence) return state.paragraphs
             let intro: ParagraphHint[] = state.paragraphs.slice()
             intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
             return intro
         },
-        firstSentence(state): string | undefined {
-            if(!state.paragraphs) return undefined
+        firstSentence(state): string {
+            if(!state.paragraphs) return ""
             const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/[^.!?]+[.!?]+/g)
             return match ? match[0] : state.paragraphs[0].value
         }
@@ -97,5 +97,4 @@ export const useGameStore = defineStore('game', {
 })
 
 export type GameStore = ReturnType<typeof useGameStore>
-
-
+export type TimedStat = { number: number, date: Date }

@@ -19,25 +19,24 @@ const props = defineProps({
 initializeFirebase()
 
 // Constants
+let ready = ref(false)
 const toast = useToast()
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
 
 // Refs
 const isLogInOpen = ref(false)
-const isUserLoggedIn = ref(false)
 
 // Watchers
 onMounted(() => {
+  ready.value = true
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
       // User logged out
       props.model.$reset()
-      isUserLoggedIn.value = false
     } else if (user) {
       // User logged in
       readUserFromFirebase(props.model, user.uid)
-      isUserLoggedIn.value = true
       isLogInOpen.value = false
     }
   })
@@ -102,7 +101,8 @@ function logout(): void {
 </script>
 
 <template>
-  <UButton v-if="isUserLoggedIn" label="Log out" @click="logout"/>
+  <div v-if="ready">
+  <UButton v-if="user" label="Log out" @click="logout"/>
   <UButton v-else label="Log in" @click="isLogInOpen = true" />
   <UModal v-model="isLogInOpen">
     <div class="p-4">
@@ -122,4 +122,5 @@ function logout(): void {
       </div>
     </div>
   </UModal>
+  </div>
 </template>
