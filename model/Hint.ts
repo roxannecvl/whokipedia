@@ -93,7 +93,7 @@ export function imagesOf(url: string): BlurHint[] {
     return [{
             url: url,
             level: 0,
-            blur: 4,
+            blur: 5,
             revealed: true
         },
         {

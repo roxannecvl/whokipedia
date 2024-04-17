@@ -10,6 +10,18 @@ const props = defineProps({
     type: Object as () => GameStore,
     required: true,
   },
+  timeSec: {
+    type : Number,
+    required : true,
+  },
+  showTime: {
+    type : Boolean,
+    required : true,
+  },
+  showRules: {
+    type : Boolean,
+    required : true,
+  },
 })
 
 </script>
@@ -17,5 +29,5 @@ const props = defineProps({
 <template>
   <SidebarView
       @new-time-set="seconds => {model.time = seconds}"
-      :hintCount="model.nbGuesses" :over="model.end"/>
+      :guessCount="model.nbGuesses" :totalGuesses="model.totalGuesses" :over="model.end" :seconds="timeSec" :showTime="showTime" :showRules="showRules"/>
 </template>
