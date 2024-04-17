@@ -33,7 +33,7 @@ const props = defineProps( {
       <template #header>
         <div class="flex flex-col items-center justify-center">
           <img :src="imageUrl" alt="image" class="w-40 object-cover pb-2" :class="{
-              'blur-none': blur === 0 || over,
+              'blur-none': blur === 0,
               'blur-sm': blur === 1,
               'blur': blur === 2,
               'blur-md': blur === 3,

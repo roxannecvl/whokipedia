@@ -67,7 +67,7 @@ export const useGameStore = defineStore('game', {
             if (this.curGuess == this.name) {
                 this.end = true;
                 this.win = true;
-                this.blur = this.updateBlur()
+                this.blur = 0;
             } else this.getNewHint();
             return true;
         },
