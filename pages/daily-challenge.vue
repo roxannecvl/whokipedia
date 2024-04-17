@@ -9,8 +9,9 @@ import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 // TODO: retrieve celebrity name from persistence
 const store: GameStore = useGameStore()
 store.init(getRandom(celebrities))
-const elapsedTime = ref(0)
 
+// Refs
+const elapsedTime = ref(0)
 const isRulesOpen = ref(false)
 
 // Computed

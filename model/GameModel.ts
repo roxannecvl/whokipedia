@@ -47,9 +47,8 @@ export const useGameStore = defineStore('game', {
                     fetchIntro(this.name),
                 ])
                 this.images = images
-                this.totalGuesses += images.length - 1
                 this.infobox = infobox
-                this.totalGuesses += infobox.length - 1
+                this.totalGuesses += infobox.length + images.length - 2
                 this.paragraphs = paragraphs
                 if (this.intro) this.totalGuesses += this.intro.length
                 this.blur = this.updateBlur()
@@ -97,9 +96,7 @@ export const useGameStore = defineStore('game', {
         updateBlur(): number {
             return this.images.length > 0 ?
                 this.images.filter((image: BlurHint) => image.revealed)
-                    .reduce((min, curr) => {
-                        return min.blur < curr.blur ? min : curr
-                    }).blur
+                    .reduce((min, curr) =>  min.blur < curr.blur ? min : curr).blur
                 : 5
         },
     }
