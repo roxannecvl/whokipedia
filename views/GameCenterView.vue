@@ -45,7 +45,9 @@ const props = defineProps( {
 })
 
 // Constants
-const encrypted = props.intro ? getEncryptedString(props.intro[0].value) : ""
+const encrypted : string[] = props.intro ?
+    props.intro.map(paragraph => getEncryptedString(paragraph.value))
+    : [""]
 
 // Functions
 function format(str: string) : string {
@@ -64,10 +66,10 @@ function format(str: string) : string {
     </div>
 
     <span v-if="over">{{ firstSentence }}</span>
-    <div v-for="paragraph in intro" :key="paragraph" style="display: inline;">
+    <div v-for="(paragraph, index) in intro" :key="index" style="display: inline;">
       <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)"></span>
       <span v-else-if="over">{{ paragraph.value }}</span>
-      <span v-else class="blur-sm">{{ encrypted }}</span>
+      <span v-else class="blur-sm">{{ encrypted[index] }}</span>
     </div>
   </div>
 </template>

@@ -2,7 +2,11 @@
 
 // Props
 const props = defineProps({
-  hintCount: {
+  guessCount: {
+    type : Number,
+    required : true,
+  },
+  totalGuesses : {
     type : Number,
     required : true,
   },
@@ -55,7 +59,7 @@ function showAndEmit(seconds : number, over : boolean){
   <div v-if="showTime">
     <div v-if="showRules">
       <UAlert
-        :title="'Guess number ' + hintCount"
+        :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
         color="primary"
         :variant="over ? 'subtle': 'outline'"
         :description="showAndEmit(seconds, over)"
@@ -65,7 +69,7 @@ function showAndEmit(seconds : number, over : boolean){
     <div v-else class="flex flex-row">
       <div class="w-1/2 pl-2 pr-2">
       <UAlert
-          :title="'Guess number ' + hintCount"
+          :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
           color="primary"
           :variant="over ? 'subtle': 'outline'"
           class="mb-8"

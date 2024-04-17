@@ -29,5 +29,5 @@ const props = defineProps({
 <template>
   <SidebarView
       @new-time-set="seconds => {model.time = seconds}"
-      :hintCount="model.nbGuesses" :over="model.end" :seconds="timeSec" :showTime="showTime" :showRules="showRules"/>
+      :guessCount="model.nbGuesses" :totalGuesses="model.totalGuesses" :over="model.end" :seconds="timeSec" :showTime="showTime" :showRules="showRules"/>
 </template>
