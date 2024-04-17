@@ -13,6 +13,8 @@ const isDark = computed({
   set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 })
 
+const user = useCurrentUser()
+
 </script>
 
 <template>
@@ -47,6 +49,9 @@ const isDark = computed({
             </div>
           </a>
           <div class="flex justify-between items-center">
+            <div v-if="user">
+              <UButton @click="navigateTo('/statistics')">Statistics</UButton>
+            </div>
             <div class="p-3">
               <LoginSignupPresenter :model="store"/>
             </div>

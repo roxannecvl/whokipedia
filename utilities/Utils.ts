@@ -183,7 +183,7 @@ export function getRandomTimedStats(size: number): TimedStat[] {
                 getRandomNumber(1, 28)
             ),
             guesses: getRandomNumber(1, 10),
-            rank: getRandomNumber(0, 100)
+            rank: getRandomNumber(1, 100)
         })
     }
     return array.sort((a:{ [key: string]: number | Date }, b: { [key: string]: number | Date }) => {

@@ -46,15 +46,55 @@ function populateStats(){
 </script>
 
 <template>
+  <UButton @click="populateStats()">Populate stats</UButton>
   <div v-if="user" class="flex flex-col items-center justify-center">
     <p class="font-black text-3xl">Statistics</p>
-    <UButton @click="populateStats()">Populate stats</UButton>
-    <div class="flex justify-center items-end w-full">
-      <div class="w-1/2">
-        <Line height="300" width="0" :data="guessesData" :options="guessesOptions" />
+    <div class="flex justify-around w-full mt-10">
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+          {{ currentStreak }}
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
       </div>
-      <div class="w-1/2">
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+          {{ maxStreak }}
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+          {{ averageRank }}
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+          {{ averageGuesses }}
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+          {{ averageTime }}
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Avg.Time</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+          {{ gamesPlayed }}
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Games Played</p>
+      </div>
+    </div>
+    <div class="flex justify-center items-end w-full mt-10">
+      <div class="w-1/2 flex flex-col items-center">
+        <Line :data="guessesData" :options="guessesOptions" />
+        <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
+      </div>
+      <div class="w-1/2 flex flex-col items-center">
         <Bar :data="ranksData" :options="ranksOptions" />
+        <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
       </div>
     </div>
   </div>
@@ -73,7 +113,17 @@ ChartJS.register(...registerables)
 
 export default {
   components: { Line, Bar },
+  data() {
+    return {
+      guessesTitle: 'Number of guesses',
+      ranksTitle: 'Daily rank',
+      mainColor: 'rgba(245,158,12,255)'
+    }
+  },
   computed: {
+    legendColor(): string {
+      return this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+    },
     guessesData(): ChartData<"line", (number | Point | null)[]> {
       return {
         labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
@@ -81,7 +131,7 @@ export default {
           {
             label: 'Number of guesses',
             data: this.$props.timedStats.map((stat: TimedStat) => stat.guesses),
-            borderColor: 'rgba(245,158,12,255)',
+            borderColor: this.mainColor,
             borderWidth: 5,
             fill: false,
             tension: 0.3,
@@ -102,7 +152,7 @@ export default {
             },
             offset: true,
             ticks: {
-              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+              color: this.legendColor
             }
           },
           y: {
@@ -114,7 +164,7 @@ export default {
               display: false
             },
             ticks: {
-              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+              color: this.legendColor
             }
           },
         },
@@ -141,10 +191,9 @@ export default {
           {
             label: 'Ranks',
             data: this.$props.timedStats.map((stat: TimedStat) => stat.rank),
-            borderColor: 'rgba(245,158,12,255)',
             borderRadius: 100,
             borderSkipped: false,
-            backgroundColor: 'rgba(245,158,12,255)',
+            backgroundColor: this.mainColor,
             barPercentage: 0.3,
           }
         ]
@@ -162,7 +211,7 @@ export default {
               display: false
             },
             ticks: {
-              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+              color: this.legendColor
             }
           },
           y: {
@@ -174,7 +223,7 @@ export default {
               display: false
             },
             ticks: {
-              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+              color: this.legendColor
             }
           },
         },
