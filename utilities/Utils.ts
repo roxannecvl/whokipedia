@@ -182,7 +182,7 @@ export function getRandomTimedStats(size: number): TimedStat[] {
                 getRandomNumber(0, 11),
                 getRandomNumber(1, 28)
             ),
-            guesses: getRandomNumber(0, 100),
+            guesses: getRandomNumber(1, 10),
             rank: getRandomNumber(0, 100)
         })
     }
@@ -190,7 +190,7 @@ export function getRandomTimedStats(size: number): TimedStat[] {
             return (a.date as Date).getTime() - (b.date as Date).getTime()
         }).map((e: { [key: string]: number | Date }): { date: string, guesses: number, rank: number } => {
             return {
-                date: `${(e.date as Date).getDate() + 1}/${(e.date as Date).getMonth() + 1}/${(e.date as Date).getFullYear()}`,
+                date: `${(e.date as Date).getDate() + 1}/${(e.date as Date).getMonth() + 1}/${(e.date as Date).getFullYear() - 2000}`,
                 guesses: e.guesses as number,
                 rank: e.rank as number
             }

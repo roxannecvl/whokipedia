@@ -47,12 +47,17 @@ function populateStats(){
 
 <template>
   <div v-if="user" class="flex flex-col items-center justify-center">
+    <p class="font-black text-3xl">Statistics</p>
     <UButton @click="populateStats()">Populate stats</UButton>
-
-    <Line :data="guessesData" :options="guessesOptions" />
-    <Bar :data="ranksData" :options="ranksOptions" />
+    <div class="flex justify-center items-end w-full">
+      <div class="w-1/2">
+        <Line height="300" width="0" :data="guessesData" :options="guessesOptions" />
+      </div>
+      <div class="w-1/2">
+        <Bar :data="ranksData" :options="ranksOptions" />
+      </div>
+    </div>
   </div>
-
   <div v-else class="flex flex-col items-center justify-center">
     <p>User not logged in</p>
   </div>
@@ -61,12 +66,10 @@ function populateStats(){
 <script lang="ts">
 // Script to handle chart logic
 import { Line, Bar } from 'vue-chartjs'
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Chart as ChartJS, type ChartData, type Point, registerables } from 'chart.js'
+import {Chart as ChartJS, type ChartData, type ChartOptions, type Point, registerables} from 'chart.js'
 import type { TimedStat } from "~/model/UserModel";
 
 ChartJS.register(...registerables)
-ChartJS.register(ChartDataLabels)
 
 export default {
   components: { Line, Bar },
@@ -81,13 +84,14 @@ export default {
             borderColor: 'rgba(245,158,12,255)',
             borderWidth: 5,
             fill: false,
-            tension: 0.3
+            tension: 0.3,
           }
         ]
       }
     },
-    guessesOptions() {
+    guessesOptions(): ChartOptions<"line"> {
       return {
+        responsive: true,
         scales: {
           x: {
             grid: {
@@ -95,6 +99,10 @@ export default {
             },
             border: {
               display: false
+            },
+            offset: true,
+            ticks: {
+              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
             }
           },
           y: {
@@ -104,6 +112,9 @@ export default {
             },
             border: {
               display: false
+            },
+            ticks: {
+              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
             }
           },
         },
@@ -111,9 +122,15 @@ export default {
           legend: {
             display: false
           },
-          datalabels: {
-            display: false,
-          }
+          tooltip: {
+            usePointStyle: true,
+            displayColors: false,
+            callbacks: {
+              label: (tooltipItem): string | void | string[] => {
+                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString();
+              }
+            }
+          },
         },
       }
     },
@@ -128,14 +145,14 @@ export default {
             borderRadius: 100,
             borderSkipped: false,
             backgroundColor: 'rgba(245,158,12,255)',
-            barPercentage: 0.2,
-            categoryPercentage: 1,
+            barPercentage: 0.3,
           }
         ]
       }
     },
-    ranksOptions() {
+    ranksOptions(): ChartOptions<"bar"> {
       return {
+        responsive: true,
         scales: {
           x: {
             grid: {
@@ -144,28 +161,40 @@ export default {
             border: {
               display: false
             },
+            ticks: {
+              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+            }
           },
           y: {
-            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            },
+            ticks: {
+              color: this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+            }
           },
         },
         plugins: {
           legend: {
             display: false
           },
-          datalabels: {
-            color: '#000',
-            anchor: 'end',
-            align: 'top',
-            offset: 10,
-            font: {
-              weight: 'bold'
-            },
-          }
+          tooltip: {
+            usePointStyle: true,
+            displayColors: false,
+            callbacks: {
+              label: (tooltipItem): string | void | string[] => {
+                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString();
+              }
+            }
+          },
         },
       }
     },
   },
+}
 
-};
 </script>

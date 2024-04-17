@@ -4,7 +4,7 @@ import { useCurrentUser } from 'vuefire'
 import type { UserStore } from "~/model/UserModel"
 import StatisticsView from "~/views/StatisticsView.vue"
 import { getRandomNumber, getRandomTimedStats } from "~/utilities/Utils";
-import {readUserFromFirebase, updateUserToFirebase} from "~/model/FirebaseModel";
+import { updateUserToFirebase } from "~/model/FirebaseModel";
 
 // Props
 const props = defineProps({
@@ -21,12 +21,12 @@ const user = useCurrentUser()
 function populateStats () {
   if(user.value) {
     props.model.updateStats(
-        getRandomNumber(0, 100),
-        getRandomNumber(0, 100),
-        getRandomNumber(0, 100),
-        getRandomNumber(0, 100),
-        getRandomNumber(0, 100),
-        getRandomNumber(0, 100),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
         getRandomTimedStats(10)
     )
     updateUserToFirebase(props.model, user.value.uid)
