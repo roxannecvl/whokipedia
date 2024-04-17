@@ -49,50 +49,54 @@ function populateStats(){
   <UButton @click="populateStats()">Populate stats</UButton>
   <div v-if="user" class="flex flex-col items-center justify-center">
     <p class="font-black text-3xl">Statistics</p>
-    <div class="flex justify-around w-full mt-10">
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-          {{ currentStreak }}
+    <div class="flex flex-col md:flex-row justify-around w-full mt-10">
+      <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ currentStreak }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ maxStreak }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ averageRank }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+        </div>
       </div>
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-          {{ maxStreak }}
+      <div class="flex justify-around w-full md:w-1/2">
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ averageGuesses }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
-      </div>
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-          {{ averageRank }}
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ averageTime }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg.Time</p>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
-      </div>
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-          {{ averageGuesses }}
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ gamesPlayed }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Games Played</p>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
-      </div>
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-          {{ averageTime }}
-        </div>
-        <p class="mt-3 text-sm text-gray-500">Avg.Time</p>
-      </div>
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-          {{ gamesPlayed }}
-        </div>
-        <p class="mt-3 text-sm text-gray-500">Games Played</p>
       </div>
     </div>
-    <div class="flex justify-center items-end w-full mt-10">
-      <div class="w-1/2 flex flex-col items-center">
+    <div class="flex flex-col md:flex-row justify-center items-end w-full mt-10">
+      <div class="w-full md:w-1/2 mb-5 md:mb-0 flex flex-col items-center">
         <Line :data="guessesData" :options="guessesOptions" />
         <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
       </div>
-      <div class="w-1/2 flex flex-col items-center">
+      <div class="w-full md:w-1/2 flex flex-col items-center">
         <Bar :data="ranksData" :options="ranksOptions" />
         <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
       </div>
