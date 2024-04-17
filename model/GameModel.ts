@@ -105,7 +105,7 @@ export const useGameStore = defineStore('game', {
                     .reduce((min, curr) => {
                         return min.blur < curr.blur ? min : curr
                     }).blur
-                : 4
+                : 5
         },
     }
 })
