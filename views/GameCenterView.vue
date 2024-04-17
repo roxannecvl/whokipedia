@@ -1,8 +1,9 @@
 <script setup lang="ts">
 
 import type {InfoboxHint, ParagraphHint} from "~/model/Hint";
-import {blurHTML, getEncryptedString, removeNameOccurrences} from "~/utilities/Utils";
+import { blurHTML, getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
 import InfoboxView from "~/views/InfoboxView.vue";
+
 
 // Props
 const props = defineProps( {

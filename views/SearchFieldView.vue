@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {getAutocompleteSuggestions} from "~/model/CelebrityList";
+import { getAutocompleteSuggestions } from "~/model/CelebrityList";
 
 // Props
 const props = defineProps( {
@@ -45,8 +45,7 @@ function newName(): void {
 
 
 <template>
-  <UInputMenu
-      v-if="!over"
+  <UInputMenu v-if="!over"
       v-model="selectedName"
       :search="getAutocompleteSuggestions"
       placeholder="Take a guess..."

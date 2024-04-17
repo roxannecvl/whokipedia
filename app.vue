@@ -41,11 +41,7 @@ const isDark = computed({
           </div>
           <a href="/">
             <div class="flex">
-              <img
-                  :src="logoPath"
-                  alt="logo"
-                  class="w-9 h-9 mx-auto"
-              />
+              <img :src="logoPath" alt="logo" class="w-9 h-9 mx-auto"/>
               <p class="font-black text-3xl hidden sm:block select-none">
                 Whokipedia
               </p>

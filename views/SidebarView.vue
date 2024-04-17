@@ -68,15 +68,13 @@ function showAndEmit(seconds : number, over : boolean){
     </div>
     <div v-else class="flex flex-row">
       <div class="w-1/2 pl-2 pr-2">
-      <UAlert
-          :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
-          color="primary"
-          :variant="over ? 'subtle': 'outline'"
-          class="mb-8"
-      />
-    </div>
-
-
+        <UAlert
+            :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
+            color="primary"
+            :variant="over ? 'subtle': 'outline'"
+            class="mb-8"
+        />
+      </div>
       <div class="w-1/2 pl-2 pr-2">
         <UAlert
             :title="showAndEmit(seconds, over)"
@@ -85,19 +83,12 @@ function showAndEmit(seconds : number, over : boolean){
             class="mb-8"
         />
       </div>
-
     </div>
-
-
   </div>
-
-
+  
 
   <div v-if="showRules">
-    <UDivider
-        label="How to play"
-        :ui="{ label: 'text-xl font-bold' }"
-    />
+    <UDivider label="How to play" :ui="{ label: 'text-xl font-bold' }"/>
 
     <p class="py-3 font-semibold">
     Guess the celebrity <span class="text-primary">in as few hints as possible</span>

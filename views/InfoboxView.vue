@@ -32,11 +32,7 @@ const props = defineProps( {
     <UCard class="flex flex-col items-center justify-center pt-3">
       <template #header>
         <div class="flex flex-col items-center justify-center">
-          <img
-              :src="imageUrl"
-              alt="image"
-              class="w-40 object-cover pb-2"
-              :class="{
+          <img :src="imageUrl" alt="image" class="w-40 object-cover pb-2" :class="{
               'blur-none': blur === 0 || over,
               'blur-sm': blur === 1,
               'blur': blur === 2,
@@ -73,12 +69,7 @@ const props = defineProps( {
         </table>
       </div>
       <div v-if="over" style="display: flex; justify-content: center;">
-        <UButton
-            :to="buttonLink"
-            size="lg"
-        >
-          Learn more
-        </UButton>
+        <UButton :to="buttonLink" size="lg">Learn more</UButton>
       </div>
     </UCard>
   </div>

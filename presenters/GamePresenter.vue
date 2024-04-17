@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { type GameStore } from "~/model/GameModel";
-import InfoboxView from "~/views/InfoboxView.vue";
 import GameCenterView from "~/views/GameCenterView.vue";
 import SearchFieldView from "~/views/SearchFieldView.vue";
 
