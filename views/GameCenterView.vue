@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import type { ParagraphHint } from "~/model/Hint";
-import {blurHTML, getEncryptedString, removeNameOccurrences} from "~/utilities/Utils";
+import { blurHTML, getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
 
 // Props
 const props = defineProps( {
