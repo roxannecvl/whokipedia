@@ -2,37 +2,40 @@
 
 // Props
 const props = defineProps({
-  hintCount: Number,
-  over: Boolean,
+  hintCount: {
+    type : Number,
+    required : true,
+  },
+  over: {
+    type : Boolean,
+    required : true,
+  },
+  seconds: {
+    type : Number,
+    required : true,
+  },
+  showTime: {
+    type : Boolean,
+    required : true,
+  },
+  showRules: {
+    type : Boolean,
+    required : true,
+  },
 })
 
 // Emits
 const emit = defineEmits(['new-time-set'])
 
-// Refs
-const elapsedTime = ref(0);
-
-// Constants
-const logoFilledPath = '/img/logo-filled.svg';
-const logoTransparentPath = '/img/logo-transparent.svg';
-const mode = useColorMode();
-
-// Computed
-const logoPath = computed(() => mode.value === 'dark' ? logoFilledPath : logoTransparentPath);
-let timerInterval: NodeJS.Timeout | null = null;
+//Ref
+let once = true
 
 // Functions
-onMounted(() => {
-  timerInterval = setInterval(() => {
-    elapsedTime.value++;
-  }, 1000);
-});
 
-function formatTime(seconds : number, over : boolean){
-  if(over && timerInterval !== null){
-    clearInterval(timerInterval);
-    emit("new-time-set", elapsedTime.value);
-    timerInterval = null;
+function showAndEmit(seconds : number, over : boolean){
+  if(over && once){
+    once = false;
+    emit("new-time-set", seconds);
   }
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -49,15 +52,44 @@ function formatTime(seconds : number, over : boolean){
 
 <template>
 
-  <UAlert
-      :title="'Guess number ' + hintCount"
-      color="primary"
-      :variant="over ? 'subtle': 'outline'"
-      :description="formatTime(elapsedTime, over)"
-      class="mb-8"
-  />
+  <div v-if="showTime">
+    <div v-if="showRules">
+      <UAlert
+        :title="'Guess number ' + hintCount"
+        color="primary"
+        :variant="over ? 'subtle': 'outline'"
+        :description="showAndEmit(seconds, over)"
+        class="mb-8"
+      />
+    </div>
+    <div v-else class="flex flex-row">
+      <div class="w-1/2 pl-2 pr-2">
+      <UAlert
+          :title="'Guess number ' + hintCount"
+          color="primary"
+          :variant="over ? 'subtle': 'outline'"
+          class="mb-8"
+      />
+    </div>
 
-  <div>
+
+      <div class="w-1/2 pl-2 pr-2">
+        <UAlert
+            :title="showAndEmit(seconds, over)"
+            color="primary"
+            :variant="over ? 'subtle': 'outline'"
+            class="mb-8"
+        />
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+
+  <div v-if="showRules">
     <UDivider
         label="How to play"
         :ui="{ label: 'text-xl font-bold' }"

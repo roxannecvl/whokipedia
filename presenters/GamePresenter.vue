@@ -45,16 +45,14 @@ function guessAndCheck(name : string, model : GameStore){
                     @new-name-set="selectedName => guessAndCheck(selectedName, model)"
                     :over="model.end" :name="model.name" :redBackground="!validGuess"
     />
-    <div class="flex flex-row"  style="overflow-y:auto; max-height: 70vh">
-      <GameCenterView class="max-w-[70%]"
+    <div style="overflow-y:auto; max-height: 70vh">
+      <GameCenterView
           :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
-          :first-sentence="model.firstSentence"
-      />
-      <InfoboxView class="max-w-[100%]"
-          :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
-          :over="model.end" :buttonLink="baseString + model.name"
+          :first-sentence="model.firstSentence" :fields = "model.infobox" :imageUrl="model.imageUrl"
+          :blur="model.blur" :buttonLink="baseString + model.name"
       />
     </div>
   </div>
 
 </template>
+
