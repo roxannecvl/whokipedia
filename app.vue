@@ -40,12 +40,8 @@ const user = useCurrentUser()
             </div>
           </a>
           <div class="flex justify-between items-center">
-            <div v-if="user">
-              <UButton @click="navigateTo('/statistics')">Statistics</UButton>
-            </div>
-            <div class="p-3">
-              <LoginSignupPresenter :model="store"/>
-            </div>
+            <div><UButton @click="navigateTo('/statistics')" :disabled="!user">Statistics</UButton></div>
+            <div class="p-3"><LoginSignupPresenter :model="store"/></div>
             <div class="p-3">
               <ClientOnly>
                 <UTooltip text="Open on Github">
