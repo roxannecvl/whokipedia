@@ -35,7 +35,6 @@ const emit = defineEmits(['new-time-set'])
 let once = true
 
 // Functions
-
 function showAndEmit(seconds : number, over : boolean){
   if(over && once){
     once = false;
@@ -85,11 +84,9 @@ function showAndEmit(seconds : number, over : boolean){
       </div>
     </div>
   </div>
-  
 
   <div v-if="showRules">
     <UDivider label="How to play" :ui="{ label: 'text-xl font-bold' }"/>
-
     <p class="py-3 font-semibold">
     Guess the celebrity <span class="text-primary">in as few hints as possible</span>
     </p>

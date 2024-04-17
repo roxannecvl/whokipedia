@@ -6,9 +6,9 @@ import { getRandom } from "~/utilities/Utils"
 export const useGameStore = defineStore('game', {
     state: () => ({
         name: "" as string,
-        images: undefined as BlurHint[] | undefined,
-        paragraphs: undefined as ParagraphHint[] | undefined,
-        infobox: undefined as InfoboxHint[] | undefined,
+        images: [] as BlurHint[],
+        paragraphs: [] as ParagraphHint[],
+        infobox: [] as InfoboxHint[],
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
         totalGuesses: 1 as number,
@@ -21,18 +21,16 @@ export const useGameStore = defineStore('game', {
         loading: false as boolean,
     }),
     getters: {
-        imageUrl(state): string | undefined  {
-            return state.images ? state.images[0].url : undefined
+        imageUrl(state): string {
+            return state.images && state.images.length > 0 ? state.images[0].url : ""
         },
-        intro(state): ParagraphHint[] | undefined {
-            if(!state.paragraphs) return undefined
-            if(!this.firstSentence) return state.paragraphs
+        intro(state): ParagraphHint[] {
             let intro: ParagraphHint[] = state.paragraphs.slice()
             intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
             return intro.filter(paragraph => paragraph.value !== "")
         },
-        firstSentence(state): string | undefined {
-            if(!state.paragraphs) return undefined
+        firstSentence(state): string {
+            if(state.paragraphs.length === 0) return ""
             const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/[^.!?]+[.!?]+/g)
             return match ? match[0] : state.paragraphs[0].value
         }
@@ -69,21 +67,18 @@ export const useGameStore = defineStore('game', {
             if (this.curGuess == this.name) {
                 this.end = true;
                 this.win = true;
+                this.blur = this.updateBlur()
             } else this.getNewHint();
             return true;
         },
         getNewHint(): void {
-            if (this.infobox !== undefined && this.images !== undefined && this.paragraphs !== undefined) {
+            if (this.infobox.length !== 0 && this.images.length !== 0 && this.paragraphs.length !== 0) {
                 const levelHintsLeft: (InfoboxHint | ParagraphHint | BlurHint)[] = [
                     ...this.images,
                     ...this.infobox,
-                    ...this.paragraphs.filter(paragraph => {
-                        let firstSentence = this.firstSentence
-                        if(firstSentence){
-                            return paragraph.value !== "" && paragraph.value !== firstSentence
-                        }
-                        return paragraph.value !== ""
-                    } ),
+                    ...this.paragraphs.filter(paragraph =>
+                        paragraph.value !== "" && paragraph.value !== this.firstSentence
+                     ),
                 ].filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == this.hintLevel)
 
                 if (levelHintsLeft.length == 0) {
@@ -100,7 +95,7 @@ export const useGameStore = defineStore('game', {
             }
         },
         updateBlur(): number {
-            return this.images ?
+            return this.images.length > 0 ?
                 this.images.filter((image: BlurHint) => image.revealed)
                     .reduce((min, curr) => {
                         return min.blur < curr.blur ? min : curr
