@@ -27,7 +27,6 @@ function populateStats () {
         getRandomNumber(1, 10),
         getRandomNumber(1, 10),
         getRandomNumber(1, 10),
-        getRandomNumber(1, 10),
         getRandomTimedStats(1)
     )
     updateUserToFirebase(props.model, user.value.uid)
