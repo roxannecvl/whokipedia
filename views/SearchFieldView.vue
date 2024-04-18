@@ -11,7 +11,7 @@ const props = defineProps( {
     type : String,
     required: true,
   },
-  redBackground : {
+  alert : {
     type : Boolean,
     required: true,
   },
@@ -27,6 +27,9 @@ const tremble = ref(false);
 // Constants
 const mode = useColorMode();
 const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6');
+const toast = useToast();
+const errTitle = "Already guessed!";
+const errDescription = "This guess doesn't count as a new guess, try again :)";
 
 // Watchers
 watch(selectedName, newName)
@@ -40,6 +43,23 @@ function newName(): void {
     selectedName.value = "";
     tremble.value = false;
   }, 300);
+  setTimeout(() => {
+    if(props.alert){
+      toast.add({
+        title: errTitle,
+        description: errDescription,
+        icon: 'i-heroicons-x-circle',
+        color:"red",
+        timeout: 2500
+      })
+    }
+  }, 50);
+}
+
+function setAlert() : void {
+  if(props.alert){
+
+  }
 }
 </script>
 
@@ -53,7 +73,7 @@ function newName(): void {
       trailing
       by="id"
       :style="{ fontSize: '18px', padding: '10px', height: '40px',
-                      backgroundColor: redBackground ? redColor : '' }"
+                      backgroundColor: alert ? redColor : '' }"
       :class="{'tremble': tremble }"
   />
   <div v-if="over" class="text-3xl font-black">

@@ -16,8 +16,8 @@ const props = defineProps({
 })
 
 // TODO: retrieve celebrity name from persistence
-const gameStore: GameStore = useGameStore()
-gameStore.init(getRandom(celebrities))
+const store: GameStore = useGameStore()
+store.init(getRandom(celebrities))
 
 // Refs
 const elapsedTime = ref(0)
@@ -47,23 +47,25 @@ function checkStopInterval(over : boolean){
 
 <template>
   <div>
-    <div class="w-full flex justify-center items-center" v-if="gameStore.loading">
+    <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
     <div v-else>
+
       <div class="hidden lg:flex">
         <div class="w-1/6 p-2" style="max-height: 75vh; overflow-y:auto">
-          <SidebarPresenter :model="gameStore" :timeSec="checkStopInterval(gameStore.end)" :showTime="true" :showRules="true"/>
+          <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
         </div>
-        <div class="w-5/6 p-2"><GamePresenter :userModel="userModel" :gameModel="gameStore" /></div>
+        <div class="w-5/6 p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
       </div>
+
       <div class="lg:hidden">
         <div>
           <div class="w-1/5 inline-block justify-center">
             <UButton label="See rules" size="xl" class="text-lg" @click="isRulesOpen = true"/>
           </div>
           <div class="w-4/5 inline-block">
-            <SidebarPresenter :model="gameStore" :timeSec="checkStopInterval(gameStore.end)" :showTime="true" :showRules="false"/>
+            <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="false"/>
           </div>
         </div>
         <USlideover v-model="isRulesOpen" title="Rules">
@@ -72,12 +74,13 @@ function checkStopInterval(over : boolean){
               <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
             </div>
             <div class="p-5 w-full box-border">
-              <SidebarPresenter :model="gameStore" :timeSec="checkStopInterval(gameStore.end)" :showTime="false" :showRules="true"/>
+              <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="false" :showRules="true"/>
             </div>
           </UCard>
         </USlideover>
-        <div class="p-2"><GamePresenter :userModel="userModel" :gameModel="gameStore" /></div>
+        <div class="p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
       </div>
+      
     </div>
   </div>
 </template>
