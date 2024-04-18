@@ -2,6 +2,7 @@
 
 import { type UserStore, useUserStore } from "./model/UserModel";
 import LoginSignupPresenter from "~/presenters/LoginSignupPresenter.vue";
+import StatisticsPresenter from "~/presenters/StatisticsPresenter.vue";
 
 // Set up user model
 const store: UserStore = useUserStore()
@@ -43,7 +44,7 @@ const user = useCurrentUser()
             </div>
           </a>
           <div class="flex justify-between items-center">
-            <div><UButton @click="navigateTo('/statistics')" :disabled="!user">Statistics</UButton></div>
+            <div class="p-3"><StatisticsPresenter :model="store"/></div>
             <div class="p-3"><LoginSignupPresenter :model="store"/></div>
             <div class="p-3">
               <ClientOnly>

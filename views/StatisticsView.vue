@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import type { TimedStat } from "~/model/UserModel";
+
 // Props
 const props = defineProps({
   currentStreak: {
@@ -35,6 +37,9 @@ const props = defineProps({
 // Emits
 const emit = defineEmits(['populate-stats'])
 
+// Refs
+const isStatOpen = ref(false)
+
 // Constants
 const user = useCurrentUser()
 
@@ -46,72 +51,81 @@ function populateStats(){
 </script>
 
 <template>
-  <UButton @click="populateStats()">Populate stats</UButton>
-  <div v-if="user" class="flex flex-col items-center justify-center">
-    <p class="font-black text-3xl">Statistics</p>
-    <div class="flex flex-col md:flex-row justify-around w-full mt-10">
-      <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-            {{ currentStreak }}
-          </div>
-          <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+  <UButton label="Statistics" @click="isStatOpen = true" :disabled="!user"/>
+  <UModal v-model="isStatOpen" :ui="{
+    width: 'w-full sm:max-w-full sm:w-5/6',
+  }">
+    <UCard :ui="{ ring: '' }">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Statistics</h3>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isStatOpen = false" />
         </div>
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-            {{ maxStreak }}
-          </div>
-          <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+      </template>
+        <div class="flex flex-col items-center mb-10">
+          <UButton @click="populateStats()" class="text-center">Populate stats</UButton>
         </div>
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-            {{ averageRank }}
+        <div class="flex flex-col md:flex-row justify-around mt-3">
+          <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
+            <div class="flex flex-col items-center">
+              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                {{ currentStreak }}
+              </div>
+              <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                {{ maxStreak }}
+              </div>
+              <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                {{ averageRank }}
+              </div>
+              <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+            </div>
           </div>
-          <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+          <div class="flex justify-around w-full md:w-1/2">
+            <div class="flex flex-col items-center">
+              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                {{ averageGuesses }}
+              </div>
+              <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                {{ averageTime }}
+              </div>
+              <p class="mt-3 text-sm text-gray-500">Avg. Time</p>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                {{ gamesPlayed }}
+              </div>
+              <p class="mt-3 text-sm text-gray-500">Games Played</p>
+            </div>
+          </div>
+        </div>
+      <div class="flex flex-col md:flex-row justify-between items-center md:items-end w-full mt-10">
+        <div class="flex flex-col items-center w-full md:w-1/2 mb-5 md:mb-0">
+          <Line :data="guessesData" :options="guessesOptions" />
+          <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
+        </div>
+        <div class="flex flex-col items-center w-full md:w-1/2">
+          <Bar :data="ranksData" :options="ranksOptions" />
+          <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
         </div>
       </div>
-      <div class="flex justify-around w-full md:w-1/2">
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-            {{ averageGuesses }}
-          </div>
-          <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
-        </div>
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-            {{ averageTime }}
-          </div>
-          <p class="mt-3 text-sm text-gray-500">Avg.Time</p>
-        </div>
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
-            {{ gamesPlayed }}
-          </div>
-          <p class="mt-3 text-sm text-gray-500">Games Played</p>
-        </div>
-      </div>
-    </div>
-    <div class="flex flex-col md:flex-row justify-center items-end w-full mt-10">
-      <div class="w-full md:w-1/2 mb-5 md:mb-0 flex flex-col items-center">
-        <Line :data="guessesData" :options="guessesOptions" />
-        <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
-      </div>
-      <div class="w-full md:w-1/2 flex flex-col items-center">
-        <Bar :data="ranksData" :options="ranksOptions" />
-        <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
-      </div>
-    </div>
-  </div>
-  <div v-else class="flex flex-col items-center justify-center">
-    <p>User not logged in</p>
-  </div>
+    </UCard>
+  </UModal>
 </template>
+
 
 <script lang="ts">
 // Script to handle chart logic
 import { Line, Bar } from 'vue-chartjs'
-import {Chart as ChartJS, type ChartData, type ChartOptions, type Point, registerables} from 'chart.js'
-import type { TimedStat } from "~/model/UserModel";
+import { Chart as ChartJS, type ChartData, type ChartOptions, type Point, registerables } from 'chart.js'
 
 ChartJS.register(...registerables)
 

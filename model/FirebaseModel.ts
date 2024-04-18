@@ -81,7 +81,8 @@ function userStoreToPersistence(store: UserStore): {[key: string]: string | numb
         averageGuesses: store.averageGuesses,
         averageTime: store.averageTime,
         gamesPlayed: store.gamesPlayed,
-        timedStats: store.timedStats
+        // Workaround to Firebase saving empty arrays as undefined
+        timedStats: store.timedStats.length > 0 ? store.timedStats : "empty"
     }
 }
 
@@ -98,7 +99,8 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         persistence.averageGuesses,
         persistence.averageTime,
         persistence.gamesPlayed,
-        persistence.timedStats
+        // Workaround to Firebase saving empty arrays as undefined
+        persistence.timedStats === "empty" ? [] : persistence.timedStats
     );
     store.updateUsername(persistence.username);
 }
