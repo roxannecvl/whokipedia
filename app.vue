@@ -4,7 +4,7 @@ import { type UserStore, useUserStore } from "./model/UserModel";
 import LoginSignupPresenter from "~/presenters/LoginSignupPresenter.vue";
 
 // Set up user model
-const store: UserStore = useUserStore()
+const userStore: UserStore = useUserStore()
 
 // Constants
 const logoPath = '/img/logo-primary-filled.svg';
@@ -44,7 +44,7 @@ const user = useCurrentUser()
           </a>
           <div class="flex justify-between items-center">
             <div><UButton @click="navigateTo('/statistics')" :disabled="!user">Statistics</UButton></div>
-            <div class="p-3"><LoginSignupPresenter :model="store"/></div>
+            <div class="p-3"><LoginSignupPresenter :model="userStore"/></div>
             <div class="p-3">
               <ClientOnly>
                 <UTooltip text="Open on Github">
@@ -61,7 +61,7 @@ const user = useCurrentUser()
       </template>
 
       <main>
-        <NuxtPage/>
+        <NuxtPage :userModel="userStore"/>
       </main>
 
       <UNotifications />

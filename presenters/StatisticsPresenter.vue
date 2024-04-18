@@ -27,7 +27,8 @@ function populateStats () {
         getRandomNumber(1, 10),
         getRandomNumber(1, 10),
         getRandomNumber(1, 10),
-        getRandomTimedStats(10)
+        getRandomNumber(1, 10),
+        getRandomTimedStats(1)
     )
     updateUserToFirebase(props.model, user.value.uid)
   }
@@ -42,7 +43,7 @@ function populateStats () {
         :max-streak="model.maxStreak"
         :average-guesses="model.averageGuesses"
         :average-rank="model.averageRank"
-        :average-time="model.averageTime"
+        :win-rate="model.winRate"
         :games-played="model.gamesPlayed"
         :timed-stats="model.timedStats"
     />
