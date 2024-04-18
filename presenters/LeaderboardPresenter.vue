@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import LeaderboardView from "~/views/LeaderboardView.vue";
-import { getAllUserFromFirebase } from "~/model/FirebaseModel.js";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
+import { getAllUserFromFirebase, type UserPersistence } from "~/model/FirebaseModel.js"
+import LeaderboardView from "~/views/LeaderboardView.vue"
 
+// Refs
+const usersData = ref([] as UserPersistence[])
 
-const usersData = ref([]);
-const user = useCurrentUser();
-const loadData = async () => {
+// Constants
+const user = useCurrentUser()
+
+// Functions
+async function loadData () {
     getAllUserFromFirebase().then((data) => {
-        const sortedUserData = data.sort((a, b) => a.averageRank - b.averageRank);
-        if (user.value){
-            sortedUserData.filter((item) => item.username === user.value.displayName).map((item) => item.class = 'border-solid border-2 border-primary');
-        }
-        usersData.value = sortedUserData;
-    }).catch((err) => {
-        console.log(err);
-    });
-};
+        const sortedUserData = data.sort((a: UserPersistence, b: UserPersistence) => (a.averageRank - b.averageRank))
+        sortedUserData
+            .filter((item: UserPersistence) => item.username === user.value?.displayName)
+            .map((item: UserPersistence) => item.class = 'border-solid border-2 border-primary')
+        usersData.value = sortedUserData
+    }).catch(err => console.log(err))
+}
 
-onMounted(loadData);
+onMounted(loadData)
 </script>
 
 <template>
