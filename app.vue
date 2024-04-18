@@ -1,23 +1,9 @@
 <script lang="ts" setup>
-
 import { type UserStore, useUserStore } from "./model/UserModel";
-import LoginSignupPresenter from "~/presenters/LoginSignupPresenter.vue";
+import HeaderPresenter from "~/presenters/HeaderPresenter.vue";
 
 // Set up user model
 const store: UserStore = useUserStore()
-
-// Constants
-const logoPath = '/img/logo-primary-filled.svg';
-
-// Set up color mode
-const colorMode = useColorMode()
-const isDark = computed({
-  get: () => colorMode.value === 'dark',
-  set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-})
-
-const user = useCurrentUser()
-
 </script>
 
 <template>
@@ -25,47 +11,12 @@ const user = useCurrentUser()
   <UContainer class="p-0 sm:py-5">
     <UCard :ui="{ rounded: 'rounded-none sm:rounded-lg' }">
       <template #header>
-        <div class="flex justify-between items-center " style="max-height: 3vh">
-          <div>
-            <ClientOnly>
-              <UTooltip :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
-                <UButton
-                    :icon="isDark ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'"
-                    @click="isDark = !isDark"
-                    color="white"/>
-              </UTooltip>
-            </ClientOnly>
-          </div>
-          <a href="/">
-            <div class="flex">
-              <img :src="logoPath" alt="logo" class="w-9 h-9 mx-auto"/>
-              <p class="font-black text-3xl hidden sm:block select-none">Whokipedia</p>
-            </div>
-          </a>
-          <div class="flex justify-between items-center">
-            <div><UButton @click="navigateTo('/statistics')" :disabled="!user">Statistics</UButton></div>
-            <div class="p-3"><LoginSignupPresenter :model="store"/></div>
-            <div class="p-3">
-              <ClientOnly>
-                <UTooltip text="Open on Github">
-                  <UButton
-                      :to="`https://github.com/roxannecvl/whokipedia`"
-                      icon="i-simple-icons-github"
-                      color="white"
-                      target="_blank"/>
-                </UTooltip>
-              </ClientOnly>
-            </div>
-          </div>
-        </div>
+        <HeaderPresenter :model="store"/>
       </template>
-
       <main>
-        <NuxtPage/>
+        <NuxtPage :userModel="store"/>
       </main>
-
       <UNotifications />
-
     </UCard>
     <UNotifications />
   </UContainer>

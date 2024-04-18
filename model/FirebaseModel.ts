@@ -1,5 +1,6 @@
 import { ref as dbRef, set, update, get, Database, type DatabaseReference } from "firebase/database";
 import type { UserStore, TimedStat } from "~/model/UserModel.js";
+import { getCurrentDayTimestamp } from "~/utilities/Utils";
 
 let database: Database
 let userRef: DatabaseReference
@@ -18,8 +19,8 @@ export function initializeFirebase(): void {
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export function saveUserToFirebase(store: UserStore, username: string, uid: string): void {
-    store.updateUsername(username);
-    const persistence: {[key: string]: string | number | TimedStat[]} = userStoreToPersistence(store);
+    store.updateUser(uid, username);
+    const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
     set(dbRef(database, 'users/'+uid), persistence);
 }
 
@@ -29,8 +30,20 @@ export function saveUserToFirebase(store: UserStore, username: string, uid: stri
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export function updateUserToFirebase(store: UserStore, uid: string): void {
-    const persistence = userStoreToPersistence(store);
-    update(dbRef(database, 'users/'+uid), persistence).then(() => {});
+    const persistence = userStoreToPersistence(store)
+    update(dbRef(database, 'users/'+uid), persistence)
+    store.timedStats?.map((stat) => {
+        update(dbRef(database, 'users/'+uid+'/stats/'+stat.date), {guesses: stat.guesses, rank: stat.rank, time: stat.time})
+    })
+}
+
+/**
+ * This method updates a user rank in a particular stat to persistence.
+ * @param store - User model to update to persistence
+ * @param uid - ID to give to model in order to keep track in persistence
+ */
+export function updateUserRankToFirebase(rank: number, uid: string): void {
+    update(dbRef(database, 'users/'+uid+'/stats/'+getCurrentDayTimestamp()), {rank: rank})
 }
 
 /**
@@ -55,13 +68,23 @@ export async function getAllUserFromFirebase(): Promise<Object[]> {
         const usersData: Object[] = [];
         snapshot.forEach((child) => {
             usersData.push({
+                uid: child.key,
                 username: child.val().username,
                 currentStreak: child.val().currentStreak,
                 maxStreak: child.val().maxStreak,
                 averageRank: child.val().averageRank,
                 averageGuesses: child.val().averageGuesses,
-                averageTime: child.val().averageTime,
-                timesPlayed: child.val().timesPlayed});
+                winRate: child.val().winRate,
+                timesPlayed: child.val().timesPlayed,
+                timedStats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map(key => {
+                    return {
+                        date: parseInt(key),
+                        guesses: child.val().stats[key].guesses,
+                        rank: child.val().stats[key].rank,
+                        time: child.val().stats[key].time
+                    }
+                })
+            });
         });
         return usersData;
     });
@@ -72,16 +95,15 @@ export async function getAllUserFromFirebase(): Promise<Object[]> {
  * @param store - User model to push to persistence
  * @return {[key: string]: string | number} - POJO will relevant user info
  */
-function userStoreToPersistence(store: UserStore): {[key: string]: string | number | TimedStat[]} {
+function userStoreToPersistence(store: UserStore): {[key: string]: string | number} {
     return {
         username: store.username,
         currentStreak: store.currentStreak,
         maxStreak: store.maxStreak,
         averageRank: store.averageRank,
         averageGuesses: store.averageGuesses,
-        averageTime: store.averageTime,
+        winRate: store.winRate,
         gamesPlayed: store.gamesPlayed,
-        timedStats: store.timedStats
     }
 }
 
@@ -96,9 +118,17 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         persistence.maxStreak,
         persistence.averageRank,
         persistence.averageGuesses,
-        persistence.averageTime,
+        persistence.winRate,
         persistence.gamesPlayed,
-        persistence.timedStats
+        // Workaround to Firebase saving empty arrays as undefined
+        persistence.stats === undefined ? [] : Object.keys(persistence.stats).map(key => {
+            return {
+                date: parseInt(key),
+                guesses: persistence.stats[key].guesses,
+                rank: persistence.stats[key].rank,
+                time: persistence.stats[key].time
+            }
+        })
     );
-    store.updateUsername(persistence.username);
+    store.updateUser(persistence.uid, persistence.username);
 }

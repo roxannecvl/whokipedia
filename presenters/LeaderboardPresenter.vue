@@ -8,9 +8,9 @@ const usersData = ref([]);
 const user = useCurrentUser();
 const loadData = async () => {
     getAllUserFromFirebase().then((data) => {
-        const sortedUserData = data.sort((a, b) => a.averageRank - b.averageRank);
+        const sortedUserData = data;
         if (user.value){
-            sortedUserData.filter((item) => item.username === user.value.displayName).map((item) => item.class = 'border-solid border-2 border-primary');
+            sortedUserData.filter((item) => item.uid === user.value.uid).map((item) => item.class = 'border-solid border-2 border-primary');
         }
         usersData.value = sortedUserData;
     }).catch((err) => {
