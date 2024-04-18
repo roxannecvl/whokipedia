@@ -1,16 +1,18 @@
 <script setup lang="ts">
 
 import { type GameStore } from "~/model/GameModel";
-import InfoboxView from "~/views/InfoboxView.vue";
 import GameCenterView from "~/views/GameCenterView.vue";
+import SearchFieldView from "~/views/SearchFieldView.vue";
 
-defineProps({
+// Props
+const props = defineProps({
   model: {
       type: Object as () => GameStore,
       required: true,
   },
 })
 
+// Constants
 const baseString = "https://en.wikipedia.org/wiki/";
 const validGuess = ref(true);
 const toast = useToast();
@@ -37,16 +39,19 @@ function guessAndCheck(name : string, model : GameStore){
 </script>
 
 <template>
-  <div class="flex flex-row">
-    <GameCenterView class="max-w-[70%]"
-        @new-name-set="selectedName => guessAndCheck(selectedName, model)"
-        :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
-        :first-sentence="model.firstSentence" :redBackground="!validGuess"
+  <div class="flex flex-col" style="max-height: 80vh">
+    <SearchFieldView
+                    @new-name-set="selectedName => guessAndCheck(selectedName, model)"
+                    :over="model.end" :name="model.name" :redBackground="!validGuess"
     />
-    <InfoboxView class="max-w-[100%]"
-        :fields = "model.infobox" :imageUrl="model.imageUrl" :blur="model.blur"
-        :over="model.end" :buttonLink="baseString + model.name"
-    />
+    <div style="overflow-y:auto; max-height: 70vh">
+      <GameCenterView
+          :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
+          :first-sentence="model.firstSentence" :fields = "model.infobox" :imageUrl="model.imageUrl"
+          :blur="model.blur" :buttonLink="baseString + model.name"
+      />
+    </div>
   </div>
 
 </template>
+

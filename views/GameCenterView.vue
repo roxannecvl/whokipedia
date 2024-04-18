@@ -1,20 +1,22 @@
 <script setup lang="ts">
 
-import type { ParagraphHint } from "~/model/Hint";
-import { getAutocompleteSuggestions } from "~/model/CelebrityList";
-import { getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
+import type { InfoboxHint, ParagraphHint } from "~/model/Hint";
+import { blurHTML, getEncryptedString, removeNameOccurrences } from "~/utilities/Utils";
+import InfoboxView from "~/views/InfoboxView.vue";
 
-defineProps( {
+
+// Props
+const props = defineProps( {
     intro : {
       type: Array<ParagraphHint>,
       required: true,
     },
-    over : {
-      type : Boolean,
-      required: true,
-    },
     name: {
       type : String,
+      required: true,
+    },
+    over : {
+      type : Boolean,
       required: true,
     },
     win : {
@@ -25,77 +27,61 @@ defineProps( {
       type: String,
       required: true
     },
-    redBackground : {
-      type : Boolean,
+    fields: {
+      type: Array<InfoboxHint>,
+      required: true,
+    },
+    imageUrl : {
+      type: String,
+      required: true,
+    },
+    blur : {
+      type : Number,
+      required: true,
+    },
+    buttonLink : {
+      type : String,
       required: true,
     },
 })
 
-const emit = defineEmits(['new-name-set'])
+// Constants
+const encrypted : string[] = props.intro ?
+    props.intro.map(paragraph => getEncryptedString(paragraph.value))
+    : [""]
 
-const selectedName = ref("");
-const tremble = ref(false);
-
-const mode = useColorMode();
-const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6');
-
-function newName() {
-  if (selectedName.value === "") return;
-  emit("new-name-set", selectedName.value);
-  tremble.value = true;
-  setTimeout(() => {
-    selectedName.value = "";
-    tremble.value = false;
-  }, 300);
+// Functions
+function format(str: string) : string {
+  return blurHTML(removeNameOccurrences(str, props.name))
 }
-
-watch(selectedName, newName)
 
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <UCard>
-      <template #header>
-        <UInputMenu
-            v-if="!over"
-            v-model="selectedName"
-            :search="getAutocompleteSuggestions"
-            placeholder="Take a guess..."
-            option-attribute="name"
-            trailing
-            by="id"
-            :style="{ fontSize: '18px', padding: '10px', height: '40px',
-                      backgroundColor: redBackground ? redColor : '' }"
-            :class="{'tremble': tremble }"
-        />
-          <div v-if="over" class="text-3xl font-black">
-            {{name}}
-          </div>
-      </template>
-      <div style="max-height: 75vh; overflow-y:auto;">
-        <p v-if="over">{{ firstSentence }}</p>
-        <div v-for="paragraph in intro" :key="paragraph">
-          <p v-if="paragraph.revealed && !over">{{ removeNameOccurrences(paragraph.value, name) }}</p>
-          <p v-else-if="over">{{ paragraph.value }}</p>
-          <p v-else class="blur-sm">{{ getEncryptedString(paragraph.value) }}</p>
-        </div>
-      </div>
-    </UCard>
+  <div class="pt-5 pr-5 pl-5 text-justify">
+    <div class="articleRight">
+      <InfoboxView
+          :fields = "fields" :imageUrl="imageUrl" :blur="blur"
+          :over="over" :buttonLink="buttonLink"
+      />
+    </div>
+
+    <span v-if="over">{{ firstSentence }}</span>
+    <div v-for="(paragraph, index) in intro" :key="index" style="display: inline;">
+      <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)"></span>
+      <span v-else-if="over">{{ paragraph.value }}</span>
+      <span v-else class="blur-sm">{{ encrypted[index] }}</span>
+    </div>
   </div>
 </template>
 
+
 <style>
-
-@keyframes tremble {
-  0% { transform: translate(0); }
-  25% { transform: translate(-15px, 0px); }
-  50% { transform: translate(15px, 0px); }
-  75% { transform: translate(-15px, 0px); }
-  100% { transform: translate(0); }
-}
-
-.tremble {
-  animation: tremble 0.3s ease-in-out 1;
+.articleRight {
+  float: right;
+  overflow: hidden;
+  padding: 3px;
+  margin: 0 0 5px 15px;
 }
 </style>
+

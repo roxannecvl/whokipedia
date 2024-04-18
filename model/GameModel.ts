@@ -6,11 +6,14 @@ import { getRandom } from "~/utilities/Utils"
 export const useGameStore = defineStore('game', {
     state: () => ({
         name: "" as string,
-        images: undefined as BlurHint[] | undefined,
-        paragraphs: undefined as ParagraphHint[] | undefined,
-        infobox: undefined as InfoboxHint[] | undefined,
+        images: [] as BlurHint[],
+        paragraphs: [] as ParagraphHint[],
+        infobox: [] as InfoboxHint[],
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
+        totalGuesses: 1 as number,
+        blur: 0 as number,
+        time: 0 as number,
         curGuess: "" as string,
         prevGuesses: [] as string[],
         end: false as boolean,
@@ -18,26 +21,17 @@ export const useGameStore = defineStore('game', {
         loading: false as boolean,
     }),
     getters: {
-        imageUrl(state): string | undefined  {
-            return state.images ? state.images[0].url : undefined
+        imageUrl(state): string {
+            return state.images && state.images.length > 0 ? state.images[0].url : ""
         },
-        blur(state): number | undefined {
-            return state.images ? state.images
-                .filter((image: BlurHint) => image.revealed)
-                .reduce((max, curr) => {
-                    return max.blur > curr.blur ? max : curr
-                }).blur : undefined
-        },
-        intro(state): ParagraphHint[] | undefined {
-            if(!state.paragraphs) return undefined
-            if(!this.firstSentence) return state.paragraphs
+        intro(state): ParagraphHint[] {
             let intro: ParagraphHint[] = state.paragraphs.slice()
             intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
-            return intro
+            return intro.filter(paragraph => paragraph.value !== "")
         },
-        firstSentence(state): string | undefined {
-            if(!state.paragraphs) return undefined
-            const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/^.*?[.!?](?:\s|$)/)
+        firstSentence(state): string {
+            if(state.paragraphs.length === 0) return ""
+            const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/[^.!?]+[.!?]+/g)
             return match ? match[0] : state.paragraphs[0].value
         }
     },
@@ -54,7 +48,10 @@ export const useGameStore = defineStore('game', {
                 ])
                 this.images = images
                 this.infobox = infobox
+                this.totalGuesses += infobox.length + images.length - 2
                 this.paragraphs = paragraphs
+                if (this.intro) this.totalGuesses += this.intro.length
+                this.blur = this.updateBlur()
             } catch (error) {
                 console.error("'Error initializing new game : ', error")
             } finally {
@@ -69,15 +66,18 @@ export const useGameStore = defineStore('game', {
             if (this.curGuess == this.name) {
                 this.end = true;
                 this.win = true;
+                this.blur = 0;
             } else this.getNewHint();
             return true;
         },
         getNewHint(): void {
-            if (this.infobox !== undefined && this.images !== undefined && this.paragraphs !== undefined) {
+            if (this.infobox.length !== 0 && this.images.length !== 0 && this.paragraphs.length !== 0) {
                 const levelHintsLeft: (InfoboxHint | ParagraphHint | BlurHint)[] = [
                     ...this.images,
                     ...this.infobox,
-                    ...this.paragraphs
+                    ...this.paragraphs.filter(paragraph =>
+                        paragraph.value !== "" && paragraph.value !== this.firstSentence
+                     ),
                 ].filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == this.hintLevel)
 
                 if (levelHintsLeft.length == 0) {
@@ -89,9 +89,16 @@ export const useGameStore = defineStore('game', {
                     this.getNewHint()
                 } else {
                     getRandom(levelHintsLeft).revealed = true;
+                    this.blur = this.updateBlur()
                 }
             }
-        }
+        },
+        updateBlur(): number {
+            return this.images.length > 0 ?
+                this.images.filter((image: BlurHint) => image.revealed)
+                    .reduce((min, curr) =>  min.blur < curr.blur ? min : curr).blur
+                : 5
+        },
     }
 })
 

@@ -6,14 +6,16 @@ import { updateUserToFirebase } from "~/model/FirebaseModel"
 import { getRandomUserModel } from "~/utilities/Utils";
 import StatisticsView from "~/views/StatisticsView.vue"
 
-defineProps({
+// Props
+const props = defineProps({
   model: {
     type: Object as () => UserStore,
     required: true,
   }
 })
 
-let user = useCurrentUser()
+// Constants
+const user = useCurrentUser()
 
 // TODO: remove after testing
 /**
