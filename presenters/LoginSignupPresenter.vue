@@ -58,7 +58,6 @@ function login(username: string, password: string): void {
         setTimeout(() => {
           errorMessage.value = ""
         }, 300);
-        //displayErrorNotification(message)
       })
 }
 
@@ -81,7 +80,6 @@ function signup(email: string, username: string, password: string): void {
         setTimeout(() => {
           errorMessage.value = ""
         }, 300);
-        //displayErrorNotification(message)
       })
 }
 
@@ -97,7 +95,6 @@ function logout(): void {
         setTimeout(() => {
           errorMessage.value = ""
         }, 300);
-        //displayErrorNotification(message)
       })
 }
 
