@@ -14,9 +14,11 @@ export function initializeFirebase(): void {
 /**
  * This method saves a local user model to persistence.
  * @param store - User model to push to persistence
+ * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function saveUserToFirebase(store: UserStore, uid: string): void {
+export function saveUserToFirebase(store: UserStore, username: string, uid: string): void {
+    store.updateUsername(username);
     const persistence: {[key: string]: string | number | TimedStat[]} = userStoreToPersistence(store);
     set(dbRef(database, 'users/'+uid), persistence);
 }
@@ -46,12 +48,33 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
 }
 
 /**
+ * This method gets all user stats for leaderboard.
+ */
+export async function getAllUserFromFirebase(): Promise<Object[]> {
+    return get(dbRef(database, 'users')).then(snapshot => {
+        const usersData: Object[] = [];
+        snapshot.forEach((child) => {
+            usersData.push({
+                username: child.val().username,
+                currentStreak: child.val().currentStreak,
+                maxStreak: child.val().maxStreak,
+                averageRank: child.val().averageRank,
+                averageGuesses: child.val().averageGuesses,
+                averageTime: child.val().averageTime,
+                timesPlayed: child.val().timesPlayed});
+        });
+        return usersData;
+    });
+}
+
+/**
  * This private method converts our user model to store it as a POJO in persistence.
  * @param store - User model to push to persistence
  * @return {[key: string]: string | number} - POJO will relevant user info
  */
 function userStoreToPersistence(store: UserStore): {[key: string]: string | number | TimedStat[]} {
     return {
+        username: store.username,
         currentStreak: store.currentStreak,
         maxStreak: store.maxStreak,
         averageRank: store.averageRank,
@@ -77,4 +100,5 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         persistence.gamesPlayed,
         persistence.timedStats
     );
+    store.updateUsername(persistence.username);
 }

@@ -76,7 +76,7 @@ function login(username: string, password: string): void {
 function signup(email: string, username: string, password: string): void {
   createUserWithEmailAndPassword(auth, email, password)
       .then((credentials: UserCredential) => {
-        saveUserToFirebase(props.model, credentials.user?.uid);
+        saveUserToFirebase(props.model, username, credentials.user?.uid);
         updateCurrentUserProfile({displayName: username})
       })
       .catch((error) => {
