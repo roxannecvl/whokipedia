@@ -2,9 +2,16 @@
 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth";
 import { useCurrentUser, useFirebaseAuth, updateCurrentUserProfile } from "vuefire";
-import { initializeFirebase, readUserFromFirebase, saveUserToFirebase } from "~/model/FirebaseModel";
+import {
+  getAllUserFromFirebase,
+  initializeFirebase,
+  readUserFromFirebase,
+  saveUserToFirebase,
+  updateUserToFirebase, type UserPersistence
+} from "~/model/FirebaseModel";
 import { type UserStore } from "~/model/UserModel";
-import LoginSignupView from "~/views/LoginSignupView.vue";
+import { getRandomNumber, getRandomTimedStats } from "~/utilities/Utils";
+import HeaderView from "~/views/HeaderView.vue";
 
 // Props
 const props = defineProps({
@@ -24,6 +31,7 @@ const user = useCurrentUser()
 // Refs
 const closeModal = ref(false)
 const errorMessage = ref("")
+const usersData = ref([] as UserPersistence[])
 
 // Watchers
 onMounted(() => {
@@ -98,11 +106,46 @@ function logout(): void {
       })
 }
 
+function populateStats () {
+  if(user.value) {
+    props.model.updateStats(
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomNumber(1, 10),
+        getRandomTimedStats(10)
+    )
+    updateUserToFirebase(props.model, user.value.uid)
+  }
+}
+
+// Lifecycle hooks
+onMounted(async () => {
+  getAllUserFromFirebase().then((data) => {
+    usersData.value = data.sort((a: UserPersistence, b: UserPersistence) => (a.averageRank - b.averageRank))
+  }).catch(err => console.log(err))
+})
+
 </script>
 
 <template>
-  <LoginSignupView
-      @login-event-bis="login" @signup-event-bis="signup" @logout-event="logout"
-      :isUserLoggedIn="user !== null" :close="closeModal"  :error="errorMessage"
+  <HeaderView
+      @login-event-tris="login"
+      @signup-event-tris="signup"
+      @logout-event-bis="logout"
+      @populate-stats="populateStats()"
+      :closeLSV="closeModal"
+      :errorLSV="errorMessage"
+      :currentStreakSV="model.currentStreak"
+      :maxStreakSV="model.maxStreak"
+      :averageRankSV="model.averageRank"
+      :averageGuessesSV="model.averageGuesses"
+      :averageTimeSV="model.averageTime"
+      :gamesPlayedSV="model.gamesPlayed"
+      :timedStatsSV="model.timedStats"
+      :usersDataLV="usersData"
+      :displayNameLV="user?.displayName ?? ''"
   />
 </template>

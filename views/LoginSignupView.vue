@@ -5,10 +5,6 @@ import {readUserFromFirebase} from "~/model/FirebaseModel";
 
 //Props
 const props = defineProps({
-  isUserLoggedIn: {
-    type : Boolean,
-    required : true,
-  },
   close: {
     type : Boolean,
     required : true,
@@ -21,14 +17,17 @@ const props = defineProps({
 
 // Emits
 const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event'])
+
+// Refs
+const ready = ref(false)
 const isModalOpen = ref(false);
 
 // Constants
+const user = useCurrentUser()
 const toast = useToast()
-const ready = ref(false)
 
 // Functions
-onMounted(() => {ready.value = true})
+onMounted(() => { ready.value = true })
 
 /**
  * Displays an error notification
@@ -52,7 +51,7 @@ watch(() => props.error, (newValue) => {
 
 <template>
   <div v-if="ready">
-    <UButton v-if="isUserLoggedIn" label="Log out" @click="emit('logout-event')"/>
+    <UButton v-if="user" label="Log out" @click="emit('logout-event')"/>
     <UButton v-else label="Log in" @click="isModalOpen = true" />
     <UModal v-model="isModalOpen">
       <div class="p-4">
