@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth";
-import { useCurrentUser, useFirebaseAuth, updateCurrentUserProfile } from "vuefire";
+import { useCurrentUser, useFirebaseAuth } from "vuefire";
 import {
   getAllUserFromFirebase,
   initializeFirebase,
@@ -79,7 +79,6 @@ function signup(email: string, username: string, password: string): void {
   createUserWithEmailAndPassword(auth, email, password)
       .then((credentials: UserCredential) => {
         saveUserToFirebase(props.model, username, credentials.user?.uid);
-        updateCurrentUserProfile({displayName: username})
       })
       .catch((error) => {
         const message: string = "Failed to sign up : " + error
@@ -145,7 +144,7 @@ onMounted(async () => {
       :averageTimeSV="model.averageTime"
       :gamesPlayedSV="model.gamesPlayed"
       :timedStatsSV="model.timedStats"
-      :usersDataLV="usersData"
-      :displayNameLV="user?.displayName ?? ''"
+      :gamesLV="usersData"
+      :usernameLV="model.username"
   />
 </template>

@@ -41,4 +41,4 @@ export const useUserStore = defineStore('user', {
 })
 
 export type UserStore = ReturnType<typeof useUserStore>
-export type TimedStat = { date: string, guesses: number, rank: number }
+export type TimedStat = { date: string, guesses: number, rank: number, time: number }

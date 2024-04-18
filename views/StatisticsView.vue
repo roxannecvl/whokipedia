@@ -62,59 +62,61 @@ function populateStats(){
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isStatOpen = false" />
         </div>
       </template>
-        <div class="flex flex-col items-center mb-10">
-          <UButton @click="populateStats()" class="text-center">Populate stats</UButton>
-        </div>
-        <div class="flex flex-col md:flex-row justify-around mt-3">
-          <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
-            <div class="flex flex-col items-center">
-              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                {{ currentStreak }}
+        <div style="max-height: 80vh; overflow-y: auto">
+          <div class="flex flex-col items-center mb-10">
+            <UButton @click="populateStats()" class="text-center">Populate stats</UButton>
+          </div>
+          <div class="flex flex-col md:flex-row justify-around mt-3">
+            <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ currentStreak }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
               </div>
-              <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ maxStreak }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ averageRank }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+              </div>
             </div>
-            <div class="flex flex-col items-center">
-              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                {{ maxStreak }}
+            <div class="flex justify-around w-full md:w-1/2">
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ averageGuesses }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
               </div>
-              <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                {{ averageRank }}
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ averageTime }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Avg. Time</p>
               </div>
-              <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ gamesPlayed }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Games Played</p>
+              </div>
             </div>
           </div>
-          <div class="flex justify-around w-full md:w-1/2">
-            <div class="flex flex-col items-center">
-              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                {{ averageGuesses }}
-              </div>
-              <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                {{ averageTime }}
-              </div>
-              <p class="mt-3 text-sm text-gray-500">Avg. Time</p>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                {{ gamesPlayed }}
-              </div>
-              <p class="mt-3 text-sm text-gray-500">Games Played</p>
-            </div>
+        <div class="flex flex-col md:flex-row justify-between items-center md:items-end w-full mt-10">
+          <div class="flex flex-col items-center w-full md:w-1/2 mb-5 md:mb-0">
+            <Line :data="guessesData" :options="guessesOptions" />
+            <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
           </div>
-        </div>
-      <div class="flex flex-col md:flex-row justify-between items-center md:items-end w-full mt-10">
-        <div class="flex flex-col items-center w-full md:w-1/2 mb-5 md:mb-0">
-          <Line :data="guessesData" :options="guessesOptions" />
-          <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
-        </div>
-        <div class="flex flex-col items-center w-full md:w-1/2">
-          <Bar :data="ranksData" :options="ranksOptions" />
-          <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
+          <div class="flex flex-col items-center w-full md:w-1/2">
+            <Bar :data="ranksData" :options="ranksOptions" />
+            <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
+          </div>
         </div>
       </div>
     </UCard>

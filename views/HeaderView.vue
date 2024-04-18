@@ -43,11 +43,11 @@ const props = defineProps({
     type: Array<TimedStat>,
     required: true
   },
-  usersDataLV : {
+  gamesLV : {
     type: Array<UserPersistence>,
     required: true,
   },
-  displayNameLV: {
+  usernameLV: {
     type: String,
     required: true,
   }
@@ -92,8 +92,8 @@ function populateStats() {
     <div class="flex justify-between items-center">
       <div class="p-3">
         <LeaderboardView
-            :usersData="usersDataLV"
-            :displayName="displayNameLV"
+            :games="gamesLV"
+            :username="usernameLV"
         />
       </div>
       <div class="p-3">
