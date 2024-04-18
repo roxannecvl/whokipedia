@@ -5,6 +5,15 @@ import { celebrities } from "~/model/CelebrityList";
 import { getRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
+import type { UserStore } from "~/model/UserModel";
+
+// Props
+const props = defineProps({
+  userModel: {
+      type: Object as () => UserStore,
+      required: true,
+  },
+})
 
 // TODO: retrieve celebrity name from persistence
 const store: GameStore = useGameStore()
@@ -47,7 +56,7 @@ function checkStopInterval(over : boolean){
         <div class="w-1/6 p-2" style="max-height: 75vh; overflow-y:auto">
           <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
         </div>
-        <div class="w-5/6 p-2"><GamePresenter :model="store" /></div>
+        <div class="w-5/6 p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
       </div>
 
       <div class="lg:hidden">
@@ -69,7 +78,7 @@ function checkStopInterval(over : boolean){
             </div>
           </UCard>
         </USlideover>
-        <div class="p-2"><GamePresenter :model="store" /></div>
+        <div class="p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
       </div>
       
     </div>

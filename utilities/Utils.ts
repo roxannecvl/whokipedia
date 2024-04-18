@@ -169,30 +169,39 @@ export function getRandomNumber(min: number, max: number) {
 }
 
 /**
+ * Get the current day timestamp.
+ * @returns number - current day timestamp
+ *
+ */
+export function getCurrentDayTimestamp(): number {
+    const currentDate = new Date()
+    currentDate.setHours(0, 0, 0, 0)
+    return currentDate.getTime()
+}
+
+/**
  * Get a random array of timed statistics.
  * @param size - size of the array
  * @returns TimedStat[] - random array of timed statistics, chronologically ordered
  */
 export function getRandomTimedStats(size: number): TimedStat[] {
-    let array: { [key: string]: number | Date }[] = []
+    let array: { [key: string]: number }[] = []
     for (let i = 0; i < size; i++) {
         array.push({
-            date: new Date(
-                getRandomNumber(2022, 2024),
-                getRandomNumber(0, 11),
-                getRandomNumber(1, 28)
-            ),
+            date: getCurrentDayTimestamp(),
             guesses: getRandomNumber(1, 10),
-            rank: getRandomNumber(1, 100)
+            rank: getRandomNumber(1, 100),
+            time: getRandomNumber(1, 100)
         })
     }
-    return array.sort((a:{ [key: string]: number | Date }, b: { [key: string]: number | Date }) => {
-            return (a.date as Date).getTime() - (b.date as Date).getTime()
-        }).map((e: { [key: string]: number | Date }): { date: string, guesses: number, rank: number } => {
+    return array.sort((a:{ [key: string]: number }, b: { [key: string]: number }) => {
+            return (a.date - b.date)
+        }).map((e: { [key: string]: number }): { date: number, guesses: number, rank: number, time: number } => {
             return {
-                date: `${(e.date as Date).getDate() + 1}/${(e.date as Date).getMonth() + 1}/${(e.date as Date).getFullYear() - 2000}`,
+                date: e.date as number,
                 guesses: e.guesses as number,
-                rank: e.rank as number
+                rank: e.rank as number,
+                time: e.time as number
             }
         })
 }

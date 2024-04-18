@@ -16,7 +16,7 @@ const textColor = computed(() => mode.value === 'dark' ? 'text-white' : 'text-bl
 
 const columns = [{
   key: 'averageRank',
-  label: '#',
+  label: 'Average rank',
 }, {
   key: 'username',
   label: 'Username'
@@ -30,8 +30,8 @@ const columns = [{
   key: 'averageGuesses',
   label: 'Average guesses'
 }, {
-  key: 'averageTime',
-  label: 'Average time'
+  key: 'winRate',
+  label: 'Win rate'
 }, {
   key: 'timesPlayed',
   label: 'Times played'
@@ -44,7 +44,7 @@ const columns = [{
     <h1 class="font-bold text-5xl m-5">Leaderboard</h1>
     <UTable :rows="usersData" :columns="columns" :ui="{ tbody: ''}">
         <template #averageRank-data="{ row }">
-            <span :class="[row.username === displayName && 'text-primary-500 dark:text-primary-400', textColor, 'font-bold']">{{ row.averageRank }}</span>
+            <span class={{textColor}}>{{ row.averageRank }}</span>
         </template>
         <template #username-data="{ row }">
             <span class={{textColor}}>{{ row.username }}</span>
@@ -58,8 +58,8 @@ const columns = [{
         <template #averageGuesses-data="{ row }">
             <span class={{textColor}}>{{ row.averageGuesses }}</span>
         </template>
-        <template #averageTime-data="{ row }">
-            <span class={{textColor}}>{{ row.averageTime }}</span>
+        <template #winRate-data="{ row }">
+            <span class={{textColor}}>{{ row.winRate }}</span>
         </template>
         <template #timesPlayed-data="{ row }">
             <span class={{textColor}}>{{ row.timesPlayed }}</span>
