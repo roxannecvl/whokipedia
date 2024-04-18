@@ -11,6 +11,9 @@ const props = defineProps( {
     }
 })
 
+const mode = useColorMode();
+const textColor = computed(() => mode.value === 'dark' ? 'text-white' : 'text-black');
+
 const columns = [{
   key: 'averageRank',
   label: '#',
@@ -41,25 +44,25 @@ const columns = [{
     <h1 class="font-bold text-5xl m-5">Leaderboard</h1>
     <UTable :rows="usersData" :columns="columns" :ui="{ tbody: ''}">
         <template #averageRank-data="{ row }">
-            <span class="font-bold text-black dark:text-white" :class="[row.username === displayName && 'text-primary-500 dark:text-primary-400']">{{ row.averageRank }}</span>
+            <span :class="[row.username === displayName && 'text-primary-500 dark:text-primary-400', textColor, 'font-bold']">{{ row.averageRank }}</span>
         </template>
         <template #username-data="{ row }">
-            <span class="text-black dark:text-white">{{ row.username }}</span>
+            <span class={{textColor}}>{{ row.username }}</span>
         </template>
         <template #currentStreak-data="{ row }">
-            <span class=" text-black dark:text-white">{{ row.currentStreak }}</span>
+            <span class={{textColor}}>{{ row.currentStreak }}</span>
         </template>
         <template #maxStreak-data="{ row }">
-            <span class=" text-black dark:text-white">{{ row.maxStreak }}</span>
+            <span class={{textColor}}>{{ row.maxStreak }}</span>
         </template>
         <template #averageGuesses-data="{ row }">
-            <span class=" text-black dark:text-white">{{ row.averageGuesses }}</span>
+            <span class={{textColor}}>{{ row.averageGuesses }}</span>
         </template>
         <template #averageTime-data="{ row }">
-            <span class=" text-black dark:text-white">{{ row.averageTime }}</span>
+            <span class={{textColor}}>{{ row.averageTime }}</span>
         </template>
         <template #timesPlayed-data="{ row }">
-            <span class=" text-black dark:text-white">{{ row.timesPlayed }}</span>
+            <span class={{textColor}}>{{ row.timesPlayed }}</span>
         </template>
     </UTable>
   </div>
