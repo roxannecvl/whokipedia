@@ -1,5 +1,5 @@
 import { ref as dbRef, set, update, get, Database, type DatabaseReference } from "firebase/database";
-import type { UserStore } from "~/model/UserModel.js";
+import type { UserStore, TimedStat } from "~/model/UserModel.js";
 
 let database: Database
 let userRef: DatabaseReference
@@ -17,7 +17,7 @@ export function initializeFirebase(): void {
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export function saveUserToFirebase(store: UserStore, uid: string): void {
-    const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
+    const persistence: {[key: string]: string | number | TimedStat[]} = userStoreToPersistence(store);
     set(dbRef(database, 'users/'+uid), persistence);
 }
 
@@ -34,6 +34,7 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
 /**
  * This method fills local user model from persistence.
  * @param store - Local model to fill
+ * @param uid - ID to give to model in order to keep track in persistence
  */
 export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
     return get(dbRef(database, 'users/'+uid)).then(snapshot => {
@@ -49,14 +50,15 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
  * @param store - User model to push to persistence
  * @return {[key: string]: string | number} - POJO will relevant user info
  */
-function userStoreToPersistence(store: UserStore): {[key: string]: string | number} {
+function userStoreToPersistence(store: UserStore): {[key: string]: string | number | TimedStat[]} {
     return {
         currentStreak: store.currentStreak,
         maxStreak: store.maxStreak,
         averageRank: store.averageRank,
         averageGuesses: store.averageGuesses,
         averageTime: store.averageTime,
-        timesPlayed: store.timesPlayed,
+        gamesPlayed: store.gamesPlayed,
+        timedStats: store.timedStats
     }
 }
 
@@ -72,6 +74,7 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         persistence.averageRank,
         persistence.averageGuesses,
         persistence.averageTime,
-        persistence.timesPlayed
+        persistence.gamesPlayed,
+        persistence.timedStats
     );
 }

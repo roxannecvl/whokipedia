@@ -103,5 +103,3 @@ export const useGameStore = defineStore('game', {
 })
 
 export type GameStore = ReturnType<typeof useGameStore>
-
-
