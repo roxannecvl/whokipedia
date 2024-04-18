@@ -16,22 +16,19 @@ const isDark = computed({
   set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 })
 
+const user = useCurrentUser()
+
 </script>
 
 <template>
-  <Body
-      class="bg-gray-50 dark:bg-gray-950 h-full">
-  <UContainer
-      class="p-0 sm:py-5">
-    <UCard :ui="{
-      rounded: 'rounded-none sm:rounded-lg',
-    }">
+  <Body class="bg-gray-50 dark:bg-gray-950 h-full">
+  <UContainer class="p-0 sm:py-5">
+    <UCard :ui="{ rounded: 'rounded-none sm:rounded-lg' }">
       <template #header>
         <div class="flex justify-between items-center " style="max-height: 3vh">
           <div>
             <ClientOnly>
-              <UTooltip
-                  :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
+              <UTooltip :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
                 <UButton
                     :icon="isDark ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'"
                     @click="isDark = !isDark"
@@ -42,19 +39,15 @@ const isDark = computed({
           <a href="/">
             <div class="flex">
               <img :src="logoPath" alt="logo" class="w-9 h-9 mx-auto"/>
-              <p class="font-black text-3xl hidden sm:block select-none">
-                Whokipedia
-              </p>
+              <p class="font-black text-3xl hidden sm:block select-none">Whokipedia</p>
             </div>
           </a>
           <div class="flex justify-between items-center">
-            <div class="p-3">
-              <LoginSignupPresenter :model="store"/>
-            </div>
+            <div><UButton @click="navigateTo('/statistics')" :disabled="!user">Statistics</UButton></div>
+            <div class="p-3"><LoginSignupPresenter :model="store"/></div>
             <div class="p-3">
               <ClientOnly>
-                <UTooltip
-                    text="Open on Github">
+                <UTooltip text="Open on Github">
                   <UButton
                       :to="`https://github.com/roxannecvl/whokipedia`"
                       icon="i-simple-icons-github"

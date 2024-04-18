@@ -1,27 +1,5 @@
 <script setup lang="ts">
 
-import { Line } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-  CategoryScale,
-  LinearScale
-} from 'chart.js'
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-)
-
 // Props
 const props = defineProps({
   currentStreak: {
@@ -44,22 +22,14 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  timesPlayed: {
+  gamesPlayed: {
     type: Number,
     required: true
   },
-  times: {
-    type: Array<Number>,
+  timedStats: {
+    type: Array<TimedStat>,
     required: true
   },
-  ranks: {
-    type: Array<Number>,
-    required: true
-  },
-  guesses: {
-    type: Array<Number>,
-    required: true
-  }
 })
 
 // Emits
@@ -76,37 +46,207 @@ function populateStats(){
 </script>
 
 <template>
+  <UButton @click="populateStats()">Populate stats</UButton>
   <div v-if="user" class="flex flex-col items-center justify-center">
-    <div>
-      <p>{{ 'User name: ' + user.displayName }}</p>
-      <p>{{ 'Current streak: ' + currentStreak }}</p>
-      <p>{{ 'Max streak: ' + maxStreak }}</p>
-      <p>{{ 'Average rank: ' + averageRank }}</p>
-      <p>{{ 'Average guesses: ' + averageGuesses }}</p>
-      <p>{{ 'Average time: ' + averageTime }}</p>
-      <p>{{ 'Times played: ' + timesPlayed }}</p>
+    <p class="font-black text-3xl">Statistics</p>
+    <div class="flex flex-col md:flex-row justify-around w-full mt-10">
+      <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ currentStreak }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ maxStreak }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ averageRank }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+        </div>
+      </div>
+      <div class="flex justify-around w-full md:w-1/2">
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ averageGuesses }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center mr-2 h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ averageTime }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg.Time</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-8 text-2xl font-extrabold border-primary">
+            {{ gamesPlayed }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Games Played</p>
+        </div>
+      </div>
     </div>
-    <Line
-        id="my-chart-id"
-        :options="{
-          responsive: true,
-          scales: {
-            x: { grid: {color: 'grey'} },
-            y: { grid: {color: 'grey'} }
-          }
-        }"
-        :data="{
-          labels: Array.from(Array(times.length).keys()),
-          datasets: [ { label: 'Times', data: times, backgroundColor: 'blue', borderColor: 'blue' },
-          { label: 'Ranks', data: ranks, backgroundColor: 'green', borderColor: 'green' },
-          { label: 'Guesses', data: guesses, backgroundColor: 'red', borderColor: 'red' } ]
-        }"
-    />
+    <div class="flex flex-col md:flex-row justify-center items-end w-full mt-10">
+      <div class="w-full md:w-1/2 mb-5 md:mb-0 flex flex-col items-center">
+        <Line :data="guessesData" :options="guessesOptions" />
+        <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
+      </div>
+      <div class="w-full md:w-1/2 flex flex-col items-center">
+        <Bar :data="ranksData" :options="ranksOptions" />
+        <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
+      </div>
+    </div>
   </div>
   <div v-else class="flex flex-col items-center justify-center">
     <p>User not logged in</p>
   </div>
-  <div v-if="user" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-    <UButton @click="populateStats()">Populate stats</UButton>
-  </div>
 </template>
+
+<script lang="ts">
+// Script to handle chart logic
+import { Line, Bar } from 'vue-chartjs'
+import {Chart as ChartJS, type ChartData, type ChartOptions, type Point, registerables} from 'chart.js'
+import type { TimedStat } from "~/model/UserModel";
+
+ChartJS.register(...registerables)
+
+export default {
+  components: { Line, Bar },
+  data() {
+    return {
+      guessesTitle: 'Number of guesses',
+      ranksTitle: 'Daily rank',
+      mainColor: 'rgba(245,158,12,255)'
+    }
+  },
+  computed: {
+    legendColor(): string {
+      return this.$colorMode.value === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+    },
+    guessesData(): ChartData<"line", (number | Point | null)[]> {
+      return {
+        labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
+        datasets: [
+          {
+            label: 'Number of guesses',
+            data: this.$props.timedStats.map((stat: TimedStat) => stat.guesses),
+            borderColor: this.mainColor,
+            borderWidth: 5,
+            fill: false,
+            tension: 0.3,
+          }
+        ]
+      }
+    },
+    guessesOptions(): ChartOptions<"line"> {
+      return {
+        responsive: true,
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            },
+            offset: true,
+            ticks: {
+              color: this.legendColor
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            },
+            ticks: {
+              color: this.legendColor
+            }
+          },
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            usePointStyle: true,
+            displayColors: false,
+            callbacks: {
+              label: (tooltipItem): string | void | string[] => {
+                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString();
+              }
+            }
+          },
+        },
+      }
+    },
+    ranksData(): ChartData<"bar", (number | [number, number] | null)[]> {
+      return {
+        labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
+        datasets: [
+          {
+            label: 'Ranks',
+            data: this.$props.timedStats.map((stat: TimedStat) => stat.rank),
+            borderRadius: 100,
+            borderSkipped: false,
+            backgroundColor: this.mainColor,
+            barPercentage: 0.3,
+          }
+        ]
+      }
+    },
+    ranksOptions(): ChartOptions<"bar"> {
+      return {
+        responsive: true,
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            },
+            ticks: {
+              color: this.legendColor
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false
+            },
+            ticks: {
+              color: this.legendColor
+            }
+          },
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            usePointStyle: true,
+            displayColors: false,
+            callbacks: {
+              label: (tooltipItem): string | void | string[] => {
+                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString();
+              }
+            }
+          },
+        },
+      }
+    },
+  },
+}
+</script>

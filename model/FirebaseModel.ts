@@ -1,5 +1,5 @@
 import { ref as dbRef, set, update, get, Database, type DatabaseReference } from "firebase/database";
-import type { UserStore } from "~/model/UserModel.js";
+import type { UserStore, TimedStat } from "~/model/UserModel.js";
 
 let database: Database
 let userRef: DatabaseReference
@@ -14,11 +14,12 @@ export function initializeFirebase(): void {
 /**
  * This method saves a local user model to persistence.
  * @param store - User model to push to persistence
+ * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export function saveUserToFirebase(store: UserStore, username: string, uid: string): void {
     store.updateUsername(username);
-    const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
+    const persistence: {[key: string]: string | number | TimedStat[]} = userStoreToPersistence(store);
     set(dbRef(database, 'users/'+uid), persistence);
 }
 
@@ -35,6 +36,7 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
 /**
  * This method fills local user model from persistence.
  * @param store - Local model to fill
+ * @param uid - ID to give to model in order to keep track in persistence
  */
 export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
     return get(dbRef(database, 'users/'+uid)).then(snapshot => {
@@ -70,7 +72,7 @@ export async function getAllUserFromFirebase(): Promise<Object[]> {
  * @param store - User model to push to persistence
  * @return {[key: string]: string | number} - POJO will relevant user info
  */
-function userStoreToPersistence(store: UserStore): {[key: string]: string | number} {
+function userStoreToPersistence(store: UserStore): {[key: string]: string | number | TimedStat[]} {
     return {
         username: store.username,
         currentStreak: store.currentStreak,
@@ -78,7 +80,8 @@ function userStoreToPersistence(store: UserStore): {[key: string]: string | numb
         averageRank: store.averageRank,
         averageGuesses: store.averageGuesses,
         averageTime: store.averageTime,
-        timesPlayed: store.timesPlayed,
+        gamesPlayed: store.gamesPlayed,
+        timedStats: store.timedStats
     }
 }
 
@@ -94,7 +97,8 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         persistence.averageRank,
         persistence.averageGuesses,
         persistence.averageTime,
-        persistence.timesPlayed
+        persistence.gamesPlayed,
+        persistence.timedStats
     );
     store.updateUsername(persistence.username);
 }
