@@ -6,6 +6,7 @@ import { initializeFirebase, readUserFromFirebase, saveUserToFirebase } from "~/
 import { type UserStore } from "~/model/UserModel";
 import LoginView from "~/views/LoginView.vue";
 import SignupView from "~/views/SignupView.vue";
+import LoginSignupView from "~/views/LoginSignupView.vue";
 
 // Props
 const props = defineProps({
@@ -99,27 +100,17 @@ function logout(): void {
       })
 }
 
+function changeLogInOpenStatus(value : boolean) : void {
+  isLogInOpen.value = value
+}
+
 </script>
 
 <template>
-  <UButton v-if="isUserLoggedIn" label="Log out" @click="logout"/>
-  <UButton v-else label="Log in" @click="isLogInOpen = true" />
-  <UModal v-model="isLogInOpen">
-    <div class="p-4">
-      <div class="flex justify-center">
-        <div class="w-60 ">
-          <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
-            <template #item="{ item }">
-              <div v-if="item.key === 'login'">
-                <LoginView @login-event="login"/>
-              </div>
-              <div v-else-if="item.key === 'signup'">
-                <SignupView @signup-event="signup"/>
-              </div>
-            </template>
-          </UTabs>
-        </div>
-      </div>
-    </div>
-  </UModal>
+  <LoginSignupView
+      @login-event-bis="login" @signup-event-bis="signup" @logout-event="logout"
+      @open-login="changeLogInOpenStatus(true)" @close-login="changeLogInOpenStatus(false)"
+      :isLogInOpen="isLogInOpen" :isUserLoggedIn="isUserLoggedIn"
+  />
+
 </template>
