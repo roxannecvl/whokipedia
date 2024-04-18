@@ -102,25 +102,25 @@ function logout(): void {
 
 <template>
   <div v-if="ready">
-  <UButton v-if="user" label="Log out" @click="logout"/>
-  <UButton v-else label="Log in" @click="isLogInOpen = true" />
-  <UModal v-model="isLogInOpen">
-    <div class="p-4">
-      <div class="flex justify-center">
-        <div class="w-60 ">
-          <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
-            <template #item="{ item }">
-              <div v-if="item.key === 'login'">
-                <LoginView @login-event="login"/>
-              </div>
-              <div v-else-if="item.key === 'signup'">
-                <SignupView @signup-event="signup"/>
-              </div>
-            </template>
-          </UTabs>
+    <UButton v-if="user" label="Log out" @click="logout"/>
+    <UButton v-else label="Log in" @click="isLogInOpen = true" />
+    <UModal v-model="isLogInOpen">
+      <div class="p-4">
+        <div class="flex justify-center">
+          <div class="w-60 ">
+            <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
+              <template #item="{ item }">
+                <div v-if="item.key === 'login'">
+                  <LoginView @login-event="login"/>
+                </div>
+                <div v-else-if="item.key === 'signup'">
+                  <SignupView @signup-event="signup"/>
+                </div>
+              </template>
+            </UTabs>
+          </div>
         </div>
       </div>
-    </div>
-  </UModal>
+    </UModal>
   </div>
 </template>
