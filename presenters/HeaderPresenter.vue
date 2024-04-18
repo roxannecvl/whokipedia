@@ -11,7 +11,7 @@ import {
   type UserPersistence,
 } from "~/model/FirebaseModel";
 import { type UserStore } from "~/model/UserModel";
-import {getCurrentDayTimestamp, getRandomNumber, getRandomTimedStats} from "~/utilities/Utils";
+import { getCurrentDayTimestamp, getRandomNumber, getRandomTimedStats } from "~/utilities/Utils";
 import HeaderView from "~/views/HeaderView.vue";
 
 // Props
