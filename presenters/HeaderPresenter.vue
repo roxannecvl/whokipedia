@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, ty
 import { useCurrentUser, useFirebaseAuth, updateCurrentUserProfile } from "vuefire";
 import { initializeFirebase, readUserFromFirebase, saveUserToFirebase } from "~/model/FirebaseModel";
 import { type UserStore } from "~/model/UserModel";
-import LoginSignupView from "~/views/LoginSignupView.vue";
+import HeaderView from "~/views/HeaderView.vue";
 
 // Props
 const props = defineProps({
@@ -101,8 +101,8 @@ function logout(): void {
 </script>
 
 <template>
-  <LoginSignupView
-      @login-event-bis="login" @signup-event-bis="signup" @logout-event="logout"
-      :isUserLoggedIn="user !== null" :close="closeModal"  :error="errorMessage"
+  <HeaderView
+      @login-event-tris="login" @signup-event-tris="signup" @logout-event-bis="logout"
+      :isUserLoggedInLSV="user !== null" :closeLSV="closeModal"  :errorLSV="errorMessage"
   />
 </template>

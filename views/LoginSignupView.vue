@@ -21,11 +21,11 @@ const props = defineProps({
 
 // Emits
 const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event'])
-const isModalOpen = ref(false);
 
 // Constants
 const toast = useToast()
 const ready = ref(false)
+const isModalOpen = ref(false);
 
 // Functions
 onMounted(() => {ready.value = true})
