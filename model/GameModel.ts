@@ -7,12 +7,12 @@ export const useGameStore = defineStore('game', {
     state: () => ({
         name: "" as string,
         images: [] as BlurHint[],
+        imageUrl: "" as string,
         paragraphs: [] as ParagraphHint[],
         infobox: [] as InfoboxHint[],
         hintLevel: 1 as number,
         nbGuesses: 0 as number,
         totalGuesses: 1 as number,
-        blur: 0 as number,
         time: 0 as number,
         curGuess: "" as string,
         prevGuesses: [] as string[],
@@ -21,9 +21,6 @@ export const useGameStore = defineStore('game', {
         loading: false as boolean,
     }),
     getters: {
-        imageUrl(state): string {
-            return state.images && state.images.length > 0 ? state.images[0].url : ""
-        },
         intro(state): ParagraphHint[] {
             let intro: ParagraphHint[] = state.paragraphs.slice()
             intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
@@ -51,7 +48,7 @@ export const useGameStore = defineStore('game', {
                 this.totalGuesses += infobox.length + images.length - 2
                 this.paragraphs = paragraphs
                 if (this.intro) this.totalGuesses += this.intro.length
-                this.blur = this.updateBlur()
+                this.imageUrl = this.updateImage()
             } catch (error) {
                 console.error("'Error initializing new game : ', error")
             } finally {
@@ -66,7 +63,7 @@ export const useGameStore = defineStore('game', {
             if (this.curGuess == this.name) {
                 this.end = true;
                 this.win = true;
-                this.blur = 0;
+                this.imageUrl = this.images[this.images.length - 1].url;
             } else this.getNewHint();
             return true;
         },
@@ -89,15 +86,15 @@ export const useGameStore = defineStore('game', {
                     this.getNewHint()
                 } else {
                     getRandom(levelHintsLeft).revealed = true;
-                    this.blur = this.updateBlur()
+                    this.imageUrl = this.updateImage()
                 }
             }
         },
-        updateBlur(): number {
+        updateImage(): string {
             return this.images.length > 0 ?
                 this.images.filter((image: BlurHint) => image.revealed)
-                    .reduce((min, curr) =>  min.blur < curr.blur ? min : curr).blur
-                : 5
+                    .reduce((max, curr) =>  max.level > curr.level ? max : curr).url
+                : ""
         },
     }
 })

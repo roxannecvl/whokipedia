@@ -40,9 +40,6 @@ function checkStopInterval(over : boolean){
   }
   return elapsedTime.value;
 }
-
-
-
 </script>
 
 <template>

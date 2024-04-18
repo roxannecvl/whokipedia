@@ -91,7 +91,7 @@ function hasPlayedAtDate(item : any, timestamp: number){
       <GameCenterView
           :intro="gameModel.intro" :over="gameModel.end" :name="gameModel.name" :win = "gameModel.win"
           :first-sentence="gameModel.firstSentence" :fields = "gameModel.infobox" :imageUrl="gameModel.imageUrl"
-          :blur="gameModel.blur" :buttonLink="baseString + gameModel.name"
+          :buttonLink="baseString + gameModel.name"
       />
     </div>
   </div>
