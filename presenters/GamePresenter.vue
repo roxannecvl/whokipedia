@@ -34,13 +34,6 @@ function guessAndCheck(name : string, gameModel : GameStore){
   }
 
   if(gameModel.end){
-    toast.add({
-      title: gameModel.win ? "You won!" : "You lost!",
-      description: gameModel.win ? "Congratulations! You guessed the celebrity!" : "Better luck next time!",
-      icon: gameModel.win ? 'i-heroicons-check-circle' : 'i-heroicons-x-circle',
-      color: gameModel.win ? "green" : "red",
-      timeout: 2500
-    })
     computeRank(gameModel).then((rank) => {
       if(user.value && rank) {
         props.userModel.endGame(gameModel.win, rank, gameModel.nbGuesses, gameModel.time, getCurrentDayTimestamp());
@@ -68,7 +61,7 @@ async function computeRank(gameModel : GameStore){
 
     for (let index = 0; index < sortedUserData.length; index++) {
         const item = sortedUserData[index]
-        const stat = item.timedStats.find((stat: any) => parseInt(stat.date) === timestamp)
+        const stat = item.timedStats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
         if (gameModel.nbGuesses < stat.guesses || (gameModel.nbGuesses === stat.guesses && gameModel.time < stat.time)) {
             for (let i = index; i < sortedUserData.length; i++) {
                 updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
@@ -92,7 +85,7 @@ function hasPlayedAtDate(item : any, timestamp: number){
   <div class="flex flex-col" style="max-height: 80vh">
     <SearchFieldView
                     @new-name-set="selectedName => guessAndCheck(selectedName, gameModel)"
-                    :over="model.end" :name="model.name" :alert="!validGuess"
+                    :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
     />
     <div style="overflow-y:auto; max-height: 70vh">
       <GameCenterView
