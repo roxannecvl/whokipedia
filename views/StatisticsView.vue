@@ -20,7 +20,7 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  averageTime: {
+  winRate: {
     type: Number,
     required: true
   },
@@ -96,9 +96,9 @@ function populateStats(){
               </div>
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ averageTime }}
+                  {{ winRate }}
                 </div>
-                <p class="mt-3 text-sm text-gray-500">Avg. Time</p>
+                <p class="mt-3 text-sm text-gray-500">Win Rate</p>
               </div>
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">

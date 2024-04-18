@@ -14,7 +14,7 @@ const store: UserStore = useUserStore()
         <HeaderPresenter :model="store"/>
       </template>
       <main>
-        <NuxtPage/>
+        <NuxtPage :userModel="store"/>
       </main>
       <UNotifications />
     </UCard>

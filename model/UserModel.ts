@@ -2,12 +2,13 @@ import { defineStore } from "pinia";
 
 export const useUserStore = defineStore('user', {
     state: () => ({
+        uid: '' as string,
         username: '' as string,
         currentStreak: 0 as number,
         maxStreak: 0 as number,
         averageRank: 0 as number,
         averageGuesses: 0 as number,
-        averageTime: 0 as number,
+        winRate: 0 as number,
         gamesPlayed: 0 as number,
         timedStats: [] as TimedStat[],
     }),
@@ -16,18 +17,33 @@ export const useUserStore = defineStore('user', {
                     maxStreak: number,
                     averageRank: number,
                     averageGuesses: number,
-                    averageTime: number,
+                    winRate: number,
                     gamesPlayed: number,
                     timedStats: TimedStat[]): void {
             this.currentStreak = currentStreak;
             this.maxStreak = maxStreak;
             this.averageRank = averageRank;
             this.averageGuesses = averageGuesses;
-            this.averageTime = averageTime;
+            this.winRate = winRate;
             this.gamesPlayed = gamesPlayed;
             this.timedStats = timedStats
         },
-        updateUsername(username: string): void {
+        endGame(win: boolean, rank: number, guesses: number, time: number, date: number): void {
+            if (win) {
+                this.updateStreak();
+                this.winRate = (this.winRate * this.gamesPlayed + 1) / (this.gamesPlayed+1);
+                if(this.timedStats === undefined) this.timedStats = new Array<TimedStat>();
+                this.timedStats.push({date, guesses, rank, time});
+                this.averageRank = (this.averageRank * this.gamesPlayed + rank) / (this.gamesPlayed+1);
+                this.averageGuesses = (this.averageGuesses * this.gamesPlayed + guesses) / (this.gamesPlayed+1);
+            }else {
+                this.resetStreak();
+                this.winRate = (this.winRate * this.gamesPlayed) / (this.gamesPlayed+1);
+            }
+            this.gamesPlayed++;
+        },
+        updateUser(uid: string, username: string): void {
+            this.uid = uid;
             this.username = username;
         },
         updateStreak(): void {
@@ -41,4 +57,4 @@ export const useUserStore = defineStore('user', {
 })
 
 export type UserStore = ReturnType<typeof useUserStore>
-export type TimedStat = { date: string, guesses: number, rank: number, time: number }
+export type TimedStat = { date: number, guesses: number, rank: number, time: number }
