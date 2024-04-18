@@ -25,18 +25,18 @@ const baseString = "https://en.wikipedia.org/wiki/";
 const validGuess = ref(true);
 const user = useCurrentUser()
 
-function guessAndCheck(name : string, gameModel : GameStore){
-  validGuess.value = gameModel.makeAGuess.bind(gameModel)(name);
+function guessAndCheck(name : string){
+  validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name);
   if(!validGuess.value) {
     setTimeout(() => {
       validGuess.value = true;
     }, 2500);
   }
 
-  if(gameModel.end){
-    computeRank(gameModel).then((rank) => {
+  if(props.gameModel.end){
+    computeRank().then((rank) => {
       if(user.value && rank) {
-        props.userModel.endGame(gameModel.win, rank, gameModel.nbGuesses, gameModel.time, getCurrentDayTimestamp());
+        props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, getCurrentDayTimestamp());
         updateUserToFirebase(props.userModel, user.value.uid);
       }
     }).catch((err) => {
@@ -45,7 +45,7 @@ function guessAndCheck(name : string, gameModel : GameStore){
   }
 }
 
-async function computeRank(gameModel : GameStore){
+async function computeRank(){
   return getAllUserFromFirebase().then((data) => {
     const filteredUserData = data.filter((item) => (hasPlayedAtDate(item, getCurrentDayTimestamp()) && item.uid !== user.value?.uid))
 
@@ -62,7 +62,7 @@ async function computeRank(gameModel : GameStore){
     for (let index = 0; index < sortedUserData.length; index++) {
         const item = sortedUserData[index]
         const stat = item.timedStats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
-        if (gameModel.nbGuesses < stat.guesses || (gameModel.nbGuesses === stat.guesses && gameModel.time < stat.time)) {
+        if (props.gameModel.nbGuesses < stat.guesses || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time)) {
             for (let i = index; i < sortedUserData.length; i++) {
                 updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
             }
@@ -84,7 +84,7 @@ function hasPlayedAtDate(item : any, timestamp: number){
 <template>
   <div class="flex flex-col" style="max-height: 80vh">
     <SearchFieldView
-                    @new-name-set="selectedName => guessAndCheck(selectedName, gameModel)"
+                    @new-name-set="selectedName => guessAndCheck(selectedName)"
                     :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
     />
     <div style="overflow-y:auto; max-height: 70vh">
