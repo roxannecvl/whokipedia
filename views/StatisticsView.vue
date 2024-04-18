@@ -146,7 +146,10 @@ export default {
     },
     guessesData(): ChartData<"line", (number | Point | null)[]> {
       return {
-        labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
+        labels: this.$props.timedStats.map((stat: TimedStat) => {
+          const date: Date = new Date(stat.date)
+          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+        }),
         datasets: [
           {
             label: 'Number of guesses',
@@ -206,7 +209,10 @@ export default {
     },
     ranksData(): ChartData<"bar", (number | [number, number] | null)[]> {
       return {
-        labels: this.$props.timedStats.map((stat: TimedStat) => stat.date),
+        labels: this.$props.timedStats.map((stat: TimedStat) => {
+          const date: Date = new Date(stat.date)
+          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+        }),
         datasets: [
           {
             label: 'Ranks',

@@ -50,7 +50,7 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
  * @param uid - User ID to update
  */
 export function updateUserRankToFirebase(rank: number, uid: string): void {
-    update(dbRef(database, 'users/'+uid+'/stats/'+getCurrentDayTimestamp()), {rank: rank})
+    update(dbRef(database, 'users/' + uid + '/stats/' + getCurrentDayTimestamp()), { rank: rank }).then()
 }
 
 /**
@@ -70,9 +70,9 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
 /**
  * This method gets all user stats for leaderboard.
  */
-export async function getAllUserFromFirebase(): Promise<Object[]> {
+export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
     return get(dbRef(database, 'users')).then(snapshot => {
-        const usersData: Object[] = [];
+        const usersData: UserPersistence[] = [];
         snapshot.forEach((child) => {
             usersData.push({
                 uid: child.key,
@@ -138,4 +138,21 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         })
     );
     store.updateUser(persistence.uid, persistence.username);
+}
+
+export type UserPersistence = {
+    uid: string,
+    username: string,
+    currentStreak: number,
+    maxStreak: number,
+    averageRank: number,
+    averageGuesses: number,
+    winRate: number,
+    gamesPlayed: number,
+    stats: {
+        date: number,
+        guesses: number,
+        rank: number,
+        time: number
+    }[]
 }

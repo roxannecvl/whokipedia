@@ -4,7 +4,12 @@ import { type GameStore } from "~/model/GameModel";
 import type { UserStore } from "~/model/UserModel";
 import GameCenterView from "~/views/GameCenterView.vue";
 import SearchFieldView from "~/views/SearchFieldView.vue";
-import { updateUserToFirebase, getAllUserFromFirebase, updateUserRankToFirebase } from "~/model/FirebaseModel";
+import {
+  updateUserToFirebase,
+  getAllUserFromFirebase,
+  updateUserRankToFirebase,
+  type UserPersistence
+} from "~/model/FirebaseModel";
 import { getCurrentDayTimestamp } from "~/utilities/Utils";
 
 // Props
@@ -45,29 +50,37 @@ function guessAndCheck(name : string){
   }
 }
 
-async function computeRank(){
-  return getAllUserFromFirebase().then((data) => {
-    const filteredUserData = data.filter((item) => (hasPlayedAtDate(item, getCurrentDayTimestamp()) && item.uid !== user.value?.uid))
+async function computeRank() {
+  return getAllUserFromFirebase().then((data: UserPersistence[]) => {
+    const filteredUserData = data.filter((item: UserPersistence) => {
+      return item.stats !== undefined
+          && item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+          && item.uid !== user.value?.uid
+    })
 
-    //sort by timedStats nbGuesses or time if nbGuesses are equal
+    // Sort by number of guesses or time if number of guesses is equal
     const sortedUserData = filteredUserData.sort((a, b) => {
-      const aStats = a.timedStats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
-      const bStats = b.timedStats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
-      if(aStats.nbGuesses === bStats.nbGuesses){
-        return aStats.time - bStats.time;
+      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
+      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
+      if (aStats && bStats) {
+        if (aStats.guesses === bStats.guesses) {
+          return aStats.time - bStats.time;
+        }
+        return aStats.guesses - bStats.guesses;
       }
-      return aStats.nbGuesses - bStats.nbGuesses;
+      return 0;
     });
 
     for (let index = 0; index < sortedUserData.length; index++) {
-        const item = sortedUserData[index]
-        const stat = item.timedStats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
-        if (props.gameModel.nbGuesses < stat.guesses || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time)) {
-            for (let i = index; i < sortedUserData.length; i++) {
-                updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
-            }
-            return index + 1
-        }
+      const item = sortedUserData[index]
+      const stat = item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+        if (stat && (props.gameModel.nbGuesses < stat.guesses
+            || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time))) {
+          for (let i = index; i < sortedUserData.length; i++) {
+            updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
+          }
+          return index + 1
+      }
     }
     return sortedUserData.length + 1;
   }).catch((err) => {
@@ -76,7 +89,7 @@ async function computeRank(){
 }
 
 function hasPlayedAtDate(item : any, timestamp: number){
-  return item.timedStats !== undefined && item.timedStats.find((stat: any) => parseInt(stat.date) === timestamp)
+  return
 }
 
 </script>

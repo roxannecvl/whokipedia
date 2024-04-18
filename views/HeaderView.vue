@@ -3,7 +3,6 @@ import LoginSignupView from "~/views/LoginSignupView.vue";
 import StatisticsView from "~/views/StatisticsView.vue";
 import LeaderboardView from "~/views/LeaderboardView.vue";
 import type { TimedStat } from "~/model/UserModel";
-import type { UserPersistence } from "~/model/FirebaseModel";
 
 // Props
 const props = defineProps({
@@ -31,7 +30,7 @@ const props = defineProps({
     type: Number,
     required: true
   },
-  averageTimeSV: {
+  winRateSV: {
     type: Number,
     required: true
   },
@@ -44,7 +43,7 @@ const props = defineProps({
     required: true
   },
   gamesLV : {
-    type: Array<UserPersistence>,
+    type: Array<Object>,
     required: true,
   },
   usernameLV: {
@@ -103,7 +102,7 @@ function populateStats() {
             :max-streak="maxStreakSV"
             :average-guesses="averageGuessesSV"
             :average-rank="averageRankSV"
-            :average-time="averageTimeSV"
+            :win-rate="winRateSV"
             :games-played="gamesPlayedSV"
             :timed-stats="timedStatsSV"
         />

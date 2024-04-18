@@ -7,10 +7,11 @@ import {
   initializeFirebase,
   readUserFromFirebase,
   saveUserToFirebase,
-  updateUserToFirebase, type UserPersistence
+  updateUserToFirebase,
+  type UserPersistence,
 } from "~/model/FirebaseModel";
 import { type UserStore } from "~/model/UserModel";
-import { getRandomNumber, getRandomTimedStats } from "~/utilities/Utils";
+import {getCurrentDayTimestamp, getRandomNumber, getRandomTimedStats} from "~/utilities/Utils";
 import HeaderView from "~/views/HeaderView.vue";
 
 // Props
@@ -122,9 +123,26 @@ function populateStats () {
 
 // Lifecycle hooks
 onMounted(async () => {
-  getAllUserFromFirebase().then((data) => {
-    usersData.value = data.sort((a: UserPersistence, b: UserPersistence) => (a.averageRank - b.averageRank))
-  }).catch(err => console.log(err))
+  getAllUserFromFirebase().then((data: UserPersistence[]) => {
+    const filteredUserData: UserPersistence[] = data.filter((item: UserPersistence) => {
+      return item.stats !== undefined
+          && item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+          && item.uid !== user.value?.uid
+    })
+
+    // Sort by number of guesses or time if number of guesses is equal
+    usersData.value = filteredUserData.sort((a: UserPersistence, b: UserPersistence) => {
+      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
+      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
+      if (aStats && bStats) {
+        if (aStats.guesses === bStats.guesses) {
+          return aStats.time - bStats.time;
+        }
+        return aStats.guesses - bStats.guesses;
+      }
+      return 0;
+    })
+  })
 })
 
 </script>
@@ -141,7 +159,7 @@ onMounted(async () => {
       :maxStreakSV="model.maxStreak"
       :averageRankSV="model.averageRank"
       :averageGuessesSV="model.averageGuesses"
-      :averageTimeSV="model.averageTime"
+      :winRateSV="model.winRate"
       :gamesPlayedSV="model.gamesPlayed"
       :timedStatsSV="model.timedStats"
       :gamesLV="usersData"
