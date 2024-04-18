@@ -6,6 +6,9 @@ import LoginSignupPresenter from "~/presenters/LoginSignupPresenter.vue";
 // Set up user model
 const store: UserStore = useUserStore()
 
+// Constants
+const logoPath = '/img/logo-primary-filled.svg';
+
 // Set up color mode
 const colorMode = useColorMode()
 const isDark = computed({
@@ -22,7 +25,7 @@ const user = useCurrentUser()
   <UContainer class="p-0 sm:py-5">
     <UCard :ui="{ rounded: 'rounded-none sm:rounded-lg' }">
       <template #header>
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center " style="max-height: 3vh">
           <div>
             <ClientOnly>
               <UTooltip :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
@@ -35,7 +38,7 @@ const user = useCurrentUser()
           </div>
           <a href="/">
             <div class="flex">
-              <UIcon name="i-heroicons-magnifying-glass-16-solid" class="text-primary w-10 h-10 hidden sm:block"/>
+              <img :src="logoPath" alt="logo" class="w-9 h-9 mx-auto"/>
               <p class="font-black text-3xl hidden sm:block select-none">Whokipedia</p>
             </div>
           </a>
