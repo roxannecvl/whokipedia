@@ -4,8 +4,6 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, ty
 import { useCurrentUser, useFirebaseAuth, updateCurrentUserProfile } from "vuefire";
 import { initializeFirebase, readUserFromFirebase, saveUserToFirebase } from "~/model/FirebaseModel";
 import { type UserStore } from "~/model/UserModel";
-import LoginView from "~/views/LoginView.vue";
-import SignupView from "~/views/SignupView.vue";
 import LoginSignupView from "~/views/LoginSignupView.vue";
 
 // Props
@@ -26,7 +24,6 @@ const user = useCurrentUser()
 
 // Refs
 const isLogInOpen = ref(false)
-const isUserLoggedIn = ref(false)
 
 // Watchers
 onMounted(() => {
@@ -34,11 +31,9 @@ onMounted(() => {
     if (prevUser && !user) {
       // User logged out
       props.model.$reset()
-      isUserLoggedIn.value = false
     } else if (user) {
       // User logged in
       readUserFromFirebase(props.model, user.uid)
-      isUserLoggedIn.value = true
       isLogInOpen.value = false
     }
   })
@@ -78,7 +73,7 @@ function login(username: string, password: string): void {
 function signup(email: string, username: string, password: string): void {
   createUserWithEmailAndPassword(auth, email, password)
       .then((credentials: UserCredential) => {
-        saveUserToFirebase(props.model, credentials.user?.uid);
+        saveUserToFirebase(props.model, username, credentials.user?.uid);
         updateCurrentUserProfile({displayName: username})
       })
       .catch((error) => {
@@ -110,7 +105,6 @@ function changeLogInOpenStatus(value : boolean) : void {
   <LoginSignupView
       @login-event-bis="login" @signup-event-bis="signup" @logout-event="logout"
       @open-login="changeLogInOpenStatus(true)" @close-login="changeLogInOpenStatus(false)"
-      :isLogInOpen="isLogInOpen" :isUserLoggedIn="isUserLoggedIn"
+      :isLogInOpen="isLogInOpen" :isUserLoggedIn="user"
   />
-
 </template>

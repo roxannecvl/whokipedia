@@ -2,15 +2,14 @@ import { defineStore } from "pinia";
 
 export const useUserStore = defineStore('user', {
     state: () => ({
+        username: '' as string,
         currentStreak: 0 as number,
         maxStreak: 0 as number,
         averageRank: 0 as number,
-        ranks: [] as number[],
         averageGuesses: 0 as number,
-        guesses: [] as number[],
         averageTime: 0 as number,
-        times: [] as number[],
-        timesPlayed: 0 as number,
+        gamesPlayed: 0 as number,
+        timedStats: [] as TimedStat[],
     }),
     actions: {
         updateStats(currentStreak: number,
@@ -18,13 +17,18 @@ export const useUserStore = defineStore('user', {
                     averageRank: number,
                     averageGuesses: number,
                     averageTime: number,
-                    timesPlayed: number): void {
+                    gamesPlayed: number,
+                    timedStats: TimedStat[]): void {
             this.currentStreak = currentStreak;
             this.maxStreak = maxStreak;
             this.averageRank = averageRank;
             this.averageGuesses = averageGuesses;
             this.averageTime = averageTime;
-            this.timesPlayed = timesPlayed;
+            this.gamesPlayed = gamesPlayed;
+            this.timedStats = timedStats
+        },
+        updateUsername(username: string): void {
+            this.username = username;
         },
         updateStreak(): void {
             this.currentStreak++;
@@ -37,3 +41,4 @@ export const useUserStore = defineStore('user', {
 })
 
 export type UserStore = ReturnType<typeof useUserStore>
+export type TimedStat = { date: string, guesses: number, rank: number }
