@@ -18,12 +18,12 @@ const props = defineProps({
 initializeFirebase()
 
 // Constants
-const toast = useToast()
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
 
 // Refs
-const isLogInOpen = ref(false)
+const closeModal = ref(false)
+const errorMessage = ref("")
 
 // Watchers
 onMounted(() => {
@@ -34,22 +34,16 @@ onMounted(() => {
     } else if (user) {
       // User logged in
       readUserFromFirebase(props.model, user.uid)
-      isLogInOpen.value = false
+      closeModal.value = true
+      setTimeout(() => {
+        closeModal.value = false
+      }, 1000);
     }
   })
 })
 
 
 // Functions
-/**
- * Displays an error notification
- *
- * @param description - The description of the error
- */
-function displayErrorNotification(description: string) {
-  toast.add({ title: 'Error', description: description, icon: 'i-heroicons-x-circle', color:"red"})
-}
-
 /**
  * Method to log in the user.
  * @param username - Username used for login
@@ -60,7 +54,11 @@ function login(username: string, password: string): void {
       .catch((error) => {
         const message: string = "Failed to log in : " + error
         console.error(message)
-        displayErrorNotification(message)
+        errorMessage.value = message
+        setTimeout(() => {
+          errorMessage.value = ""
+        }, 300);
+        //displayErrorNotification(message)
       })
 }
 
@@ -79,7 +77,11 @@ function signup(email: string, username: string, password: string): void {
       .catch((error) => {
         const message: string = "Failed to sign up : " + error
         console.error(message)
-        displayErrorNotification(message)
+        errorMessage.value = message
+        setTimeout(() => {
+          errorMessage.value = ""
+        }, 300);
+        //displayErrorNotification(message)
       })
 }
 
@@ -91,12 +93,12 @@ function logout(): void {
       .catch((error) => {
         const message = "Failed to log out : " + error
         console.error(message)
-        displayErrorNotification(message)
+        errorMessage.value = message
+        setTimeout(() => {
+          errorMessage.value = ""
+        }, 300);
+        //displayErrorNotification(message)
       })
-}
-
-function changeLogInOpenStatus(value : boolean) : void {
-  isLogInOpen.value = value
 }
 
 </script>
@@ -104,7 +106,6 @@ function changeLogInOpenStatus(value : boolean) : void {
 <template>
   <LoginSignupView
       @login-event-bis="login" @signup-event-bis="signup" @logout-event="logout"
-      @open-login="changeLogInOpenStatus(true)" @close-login="changeLogInOpenStatus(false)"
-      :isLogInOpen="isLogInOpen" :isUserLoggedIn="user"
+      :isUserLoggedIn="user !== null" :close="closeModal"  :error="errorMessage"
   />
 </template>
