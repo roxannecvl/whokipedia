@@ -35,10 +35,6 @@ const props = defineProps( {
       type: String,
       required: true,
     },
-    blur : {
-      type : Number,
-      required: true,
-    },
     buttonLink : {
       type : String,
       required: true,
@@ -59,29 +55,19 @@ function format(str: string) : string {
 
 <template>
   <div class="pt-5 pr-5 pl-5 text-justify">
-    <div class="articleRight">
+    <div class="p-3 sm:mb-1 sm:ml-3 sm:float-right overflow-hidden">
       <InfoboxView
-          :fields = "fields" :imageUrl="imageUrl" :blur="blur"
+          :fields = "fields" :imageUrl="imageUrl"
           :over="over" :buttonLink="buttonLink"
       />
     </div>
 
     <span v-if="over">{{ firstSentence }}</span>
-    <div v-for="(paragraph, index) in intro" :key="index" style="display: inline;">
+    <div v-for="(paragraph, index) in intro" :key="index" class="inline">
       <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)"></span>
       <span v-else-if="over">{{ paragraph.value }}</span>
       <span v-else class="blur-sm">{{ encrypted[index] }}</span>
     </div>
   </div>
 </template>
-
-
-<style>
-.articleRight {
-  float: right;
-  overflow: hidden;
-  padding: 3px;
-  margin: 0 0 5px 15px;
-}
-</style>
 

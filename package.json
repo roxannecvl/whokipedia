@@ -18,6 +18,7 @@
     "firebase-admin": "^11.11.1",
     "firebase-functions": "^4.8.0",
     "fuse.js": "^6.4.6",
+    "jimp": "^0.22.12",
     "nuxt": "^3.10.3",
     "nuxt-vuefire": "^1.0.2",
     "pinia": "^2.1.7",

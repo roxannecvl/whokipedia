@@ -9,7 +9,6 @@ interface Hint {
     readonly level: number,
     readonly value: string,
     readonly number: number,
-    readonly blur: number,
     readonly url: string,
     revealed: boolean
 }
@@ -18,13 +17,13 @@ interface Hint {
  * This type represents an infobox field. It contains attributes
  * `label`, `level`, `value` and `revealed`.
  */
-export type InfoboxHint = Omit<Hint, 'number' | 'blur' | 'url'>
+export type InfoboxHint = Omit<Hint, 'number' | 'url'>
 
 /**
  * This type represents an intro paragraph. It contains attributes
  * `level`, `value`, `number` and `revealed`.
  */
-export type ParagraphHint = Omit<Hint, 'label' | 'blur' | 'url'>
+export type ParagraphHint = Omit<Hint, 'label' | 'url'>
 
 /**
  * This type represents a level of blur for image. It contains attributes
@@ -89,23 +88,37 @@ export function paragraphsOf(arr: string[]): ParagraphHint[] {
  * This method creates an array of blur level hints with the image url passed as argument.
  * @param url - the image to blur url
  */
-export function imagesOf(url: string): BlurHint[] {
-    return [{
+export async function imagesOf(url: string): Promise<BlurHint[]> {
+
+    const urlBlur1 = await $fetch('/api/blur-image', {
+        method: 'POST',
+        body: JSON.stringify({
             url: url,
+            blur: 20
+        })
+    })
+
+    const urlBlur2 = await $fetch('/api/blur-image', {
+        method: 'POST',
+        body: JSON.stringify({
+            url: url,
+            blur: 10
+        })
+    })
+
+    return [{
+            url: urlBlur1,
             level: 0,
-            blur: 5,
             revealed: true
         },
         {
-            url: url,
+            url: urlBlur2,
             level: 2,
-            blur: 2,
             revealed: false
         },
         {
             url: url,
             level: 3,
-            blur: 0,
             revealed: false
         }]
 }

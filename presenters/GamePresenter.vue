@@ -48,7 +48,7 @@ function guessAndCheck(name : string, model : GameStore){
       <GameCenterView
           :intro="model.intro" :over="model.end" :name="model.name" :win = "model.win"
           :first-sentence="model.firstSentence" :fields = "model.infobox" :imageUrl="model.imageUrl"
-          :blur="model.blur" :buttonLink="baseString + model.name"
+          :buttonLink="baseString + model.name"
       />
     </div>
   </div>

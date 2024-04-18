@@ -12,10 +12,6 @@ const props = defineProps( {
       type: String,
       required: true,
     },
-    blur : {
-      type : Number,
-      required: true,
-    },
     over : {
       type : Boolean,
       required: true,
@@ -28,28 +24,16 @@ const props = defineProps( {
 </script>
 
 <template>
-  <div class="pt-3">
-    <UCard class="flex flex-col items-center justify-center pt-3">
+  <div>
+    <UCard class="flex flex-col items-center justify-center pt-3" :ui="{header: {padding:''}}">
       <template #header>
-        <div class="flex flex-col items-center justify-center">
-          <img :src="imageUrl" alt="image" class="w-40 object-cover pb-2" :class="{
-              'blur-none': blur === 0,
-              'blur-sm': blur === 1,
-              'blur': blur === 2,
-              'blur-md': blur === 3,
-              'blur-lg': blur === 4,
-              'blur-xl': blur === 5,
-              'blur-2xl': blur === 6,
-              'blur-3xl': blur === 7
-            }"
-          />
-
+        <div class="flex flex-col items-center justify-center my-5">
+          <img :src="imageUrl" alt="image" class="w-40 object-cover pointer-events-none rounded-md rounded-b-md shadow-md"/>
         </div>
       </template>
       <div class="flex flex-col items-center justify-center py-5">
         <table>
-          <tr v-for="field in fields"
-              :key="field">
+          <tr v-for="(field, index) in fields" :key="index">
               <td class="text-left align-top pr-6 pt-2">
                 <p v-if="field.label === 'Death' && !field.revealed"
                    class="text-blue-500 font-semibold"> Status </p>
