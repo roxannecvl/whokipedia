@@ -33,7 +33,7 @@ const user = useCurrentUser()
 const closeModal = ref(false)
 const errorMessage = ref("")
 const usersData = ref([] as leaderboardData[])
-interface leaderboardData {
+export interface leaderboardData {
   readonly rank: number,
   readonly username: string,
   readonly guesses: number,
@@ -156,7 +156,7 @@ function updateLeaderboard(){
         username : val.username,
         guesses : stats.guesses,
         time : stats.time,
-        averageRank : val.averageRank}
+        averageRank : Math.round(val.averageRank)}
       else return {
         rank :filteredUserData.length + 1,
         username : val.username,

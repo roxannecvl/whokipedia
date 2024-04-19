@@ -8,6 +8,7 @@ import {
   updateUserToFirebase,
   getAllUserFromFirebase,
   updateUserRankToFirebase,
+  updateUserAVGRankToFirebase,
   type UserPersistence
 } from "~/model/FirebaseModel";
 import { getCurrentDayTimestamp } from "~/utilities/Utils";
@@ -78,6 +79,7 @@ async function computeRank() {
             || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time))) {
           for (let i = index; i < sortedUserData.length; i++) {
             updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
+            updateUserAVGRankToFirebase(1, sortedUserData[i].uid)
           }
           return index + 1
       }

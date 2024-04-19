@@ -53,6 +53,20 @@ export function updateUserRankToFirebase(rank: number, uid: string): void {
     update(dbRef(database, 'users/' + uid + '/stats/' + getCurrentDayTimestamp()), { rank: rank }).then()
 }
 
+
+/**
+ * This method updates a user averageRank
+ * @param uid - User ID to update
+ */
+export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
+    get(dbRef(database, 'users/' + uid)).then(snapshot => {
+        if(snapshot.val() && snapshot.val().averageRank){
+            let newAverage = snapshot.val().averageRank + diff / snapshot.val().gamesPlayed
+            update(dbRef(database, 'users/' + uid), {averageRank : newAverage}).then()
+        }
+    });
+}
+
 /**
  * This method fills local user model from persistence.
  * @param store - Local model to fill
