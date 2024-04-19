@@ -171,11 +171,23 @@ export function getRandomNumber(min: number, max: number) {
 /**
  * Get the current day timestamp.
  * @returns number - current day timestamp
- *
  */
 export function getCurrentDayTimestamp(): number {
-    const currentDate = new Date()
+    const currentDate: Date = new Date()
     currentDate.setHours(0, 0, 0, 0)
+    return currentDate.getTime()
+}
+
+/**
+ * Get a random timestamp.
+ * @returns number - random timestamp
+ */
+function getRandomTimestamp(): number {
+    const currentDate: Date = new Date(
+        getRandomNumber(2020, 2024),
+        getRandomNumber(0, 11),
+        getRandomNumber(1, 28)
+    )
     return currentDate.getTime()
 }
 
@@ -185,18 +197,18 @@ export function getCurrentDayTimestamp(): number {
  * @returns TimedStat[] - random array of timed statistics, chronologically ordered
  */
 export function getRandomTimedStats(size: number): TimedStat[] {
-    let array: { [key: string]: number }[] = []
+    let array: TimedStat[] = []
     for (let i = 0; i < size; i++) {
         array.push({
-            date: getCurrentDayTimestamp(),
+            date: getRandomTimestamp(),
             guesses: getRandomNumber(1, 10),
             rank: getRandomNumber(1, 100),
             time: getRandomNumber(1, 100)
         })
     }
-    return array.sort((a:{ [key: string]: number }, b: { [key: string]: number }) => {
+    return array.sort((a: TimedStat, b: TimedStat) => {
             return (a.date - b.date)
-        }).map((e: { [key: string]: number }): { date: number, guesses: number, rank: number, time: number } => {
+        }).map((e: TimedStat): TimedStat => {
             return {
                 date: e.date as number,
                 guesses: e.guesses as number,

@@ -1,9 +1,8 @@
-import { ref as dbRef, set, update, get, Database, type DatabaseReference } from "firebase/database";
-import type { UserStore, TimedStat } from "~/model/UserModel.js";
+import { ref as dbRef, set, update, get, Database } from "firebase/database";
+import type { UserStore } from "~/model/UserModel.js";
 import { getCurrentDayTimestamp } from "~/utilities/Utils";
 
 let database: Database
-let userRef: DatabaseReference
 
 /**
  * This method initializes Firebase database.
@@ -21,7 +20,7 @@ export function initializeFirebase(): void {
 export function saveUserToFirebase(store: UserStore, username: string, uid: string): void {
     store.updateUser(uid, username);
     const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
-    set(dbRef(database, 'users/'+uid), persistence);
+    set(dbRef(database, 'users/' + uid), persistence).then();
 }
 
 /**
@@ -31,19 +30,27 @@ export function saveUserToFirebase(store: UserStore, username: string, uid: stri
  */
 export function updateUserToFirebase(store: UserStore, uid: string): void {
     const persistence = userStoreToPersistence(store)
-    update(dbRef(database, 'users/'+uid), persistence)
+
+    // First update user's general stats
+    update(dbRef(database, 'users/' + uid), persistence).then()
+
+    // Then update user's daily stats
     store.timedStats?.map((stat) => {
-        update(dbRef(database, 'users/'+uid+'/stats/'+stat.date), {guesses: stat.guesses, rank: stat.rank, time: stat.time})
+        update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
+            guesses: stat.guesses,
+            rank: stat.rank,
+            time: stat.time
+        }).then()
     })
 }
 
 /**
  * This method updates a user rank in a particular stat to persistence.
- * @param store - User model to update to persistence
- * @param uid - ID to give to model in order to keep track in persistence
+ * @param rank - Rank to update to persistence
+ * @param uid - User ID to update
  */
 export function updateUserRankToFirebase(rank: number, uid: string): void {
-    update(dbRef(database, 'users/'+uid+'/stats/'+getCurrentDayTimestamp()), {rank: rank})
+    update(dbRef(database, 'users/' + uid + '/stats/' + getCurrentDayTimestamp()), { rank: rank }).then()
 }
 
 /**
@@ -52,7 +59,7 @@ export function updateUserRankToFirebase(rank: number, uid: string): void {
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
-    return get(dbRef(database, 'users/'+uid)).then(snapshot => {
+    return get(dbRef(database, 'users/' + uid)).then(snapshot => {
         if(snapshot.val()){
             persistenceToUserModel(store, snapshot.val());
         }
@@ -63,9 +70,9 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
 /**
  * This method gets all user stats for leaderboard.
  */
-export async function getAllUserFromFirebase(): Promise<Object[]> {
+export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
     return get(dbRef(database, 'users')).then(snapshot => {
-        const usersData: Object[] = [];
+        const usersData: UserPersistence[] = [];
         snapshot.forEach((child) => {
             usersData.push({
                 uid: child.key,
@@ -75,8 +82,8 @@ export async function getAllUserFromFirebase(): Promise<Object[]> {
                 averageRank: child.val().averageRank,
                 averageGuesses: child.val().averageGuesses,
                 winRate: child.val().winRate,
-                timesPlayed: child.val().timesPlayed,
-                timedStats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map(key => {
+                gamesPlayed: child.val().gamesPlayed,
+                stats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map(key => {
                     return {
                         date: parseInt(key),
                         guesses: child.val().stats[key].guesses,
@@ -93,9 +100,9 @@ export async function getAllUserFromFirebase(): Promise<Object[]> {
 /**
  * This private method converts our user model to store it as a POJO in persistence.
  * @param store - User model to push to persistence
- * @return {[key: string]: string | number} - POJO will relevant user info
+ * @return UserPersistence - POJO will relevant user info
  */
-function userStoreToPersistence(store: UserStore): {[key: string]: string | number} {
+function userStoreToPersistence(store: UserStore): any {
     return {
         username: store.username,
         currentStreak: store.currentStreak,
@@ -131,4 +138,21 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         })
     );
     store.updateUser(persistence.uid, persistence.username);
+}
+
+export type UserPersistence = {
+    uid: string,
+    username: string,
+    currentStreak: number,
+    maxStreak: number,
+    averageRank: number,
+    averageGuesses: number,
+    winRate: number,
+    gamesPlayed: number,
+    stats: {
+        date: number,
+        guesses: number,
+        rank: number,
+        time: number
+    }[]
 }

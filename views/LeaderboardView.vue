@@ -1,70 +1,68 @@
 <script setup lang="ts">
 
-const props = defineProps( {
-    usersData : {
+// Props
+const props = defineProps({
+    games : {
       type: Array<Object>,
       required: true,
     },
-    displayName: {
+    username: {
       type: String,
       required: true,
-    }
+    },
 })
 
-const mode = useColorMode();
-const textColor = computed(() => mode.value === 'dark' ? 'text-white' : 'text-black');
+// Emits
+const emit = defineEmits(['update-leaderboard'])
 
+// Refs
+const isLeaderboardOpen = ref(false)
+
+// Constants
+const user = useCurrentUser()
 const columns = [{
-  key: 'averageRank',
-  label: 'Average rank',
+  key: 'rank',
+  label: 'Rank',
+  sortable: true
 }, {
   key: 'username',
   label: 'Username'
 }, {
-  key: 'currentStreak',
-  label: 'Current streak'
+  key: 'guesses',
+  label: 'Guesses',
 }, {
-  key: 'maxStreak',
-  label: 'Max streak'
+  key: 'time',
+  label: 'Time',
 }, {
-  key: 'averageGuesses',
-  label: 'Average guesses'
-}, {
-  key: 'winRate',
-  label: 'Win rate'
-}, {
-  key: 'timesPlayed',
-  label: 'Times played'
+  key: 'averageRank',
+  label: 'Average Rank',
+  sortable: true
 }]
 
 </script>
 
 <template>
-  <div class="w-100 h-100 flex flex-col justify-center items-center">
-    <h1 class="font-bold text-5xl m-5">Leaderboard</h1>
-    <UTable :rows="usersData" :columns="columns" :ui="{ tbody: ''}">
-        <template #averageRank-data="{ row }">
-            <span class={{textColor}}>{{ row.averageRank }}</span>
-        </template>
-        <template #username-data="{ row }">
-            <span class={{textColor}}>{{ row.username }}</span>
-        </template>
-        <template #currentStreak-data="{ row }">
-            <span class={{textColor}}>{{ row.currentStreak }}</span>
-        </template>
-        <template #maxStreak-data="{ row }">
-            <span class={{textColor}}>{{ row.maxStreak }}</span>
-        </template>
-        <template #averageGuesses-data="{ row }">
-            <span class={{textColor}}>{{ row.averageGuesses }}</span>
-        </template>
-        <template #winRate-data="{ row }">
-            <span class={{textColor}}>{{ row.winRate }}</span>
-        </template>
-        <template #timesPlayed-data="{ row }">
-            <span class={{textColor}}>{{ row.timesPlayed }}</span>
-        </template>
-    </UTable>
-  </div>
-
+  <UButton label="Leaderboard" @click="() => {isLeaderboardOpen = true; emit('update-leaderboard') }" :disabled="!user"/>
+  <UModal v-model="isLeaderboardOpen" :ui="{
+    width: 'w-full sm:max-w-full sm:w-5/6',
+  }">
+    <UCard :ui="{ ring: '' }">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-row gap-2">
+            <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Leaderboard</h3>
+            <UButton color="gray" variant="ghost" icon="i-heroicons-arrow-path-20-solid" @click="emit('update-leaderboard')"/>
+          </div>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isLeaderboardOpen = false" />
+        </div>
+      </template>
+      <div>
+        <UTable :columns="columns" :rows="games" :ui="{
+          wrapper: 'max-h-96 overflow-auto rounded-lg',
+          thead: 'sticky top-0 z-10 bg-gray-50 dark:bg-gray-950',
+        }" />
+      </div>
+    </UCard>
+  </UModal>
 </template>
+
