@@ -42,12 +42,14 @@ const props = defineProps( {
                 <p v-else class="text-blue-500 font-semibold blur-sm"> Unknown </p>
               </td>
               <td class="text-left pt-2">
+                <Transition>
                   <div v-if="field.revealed || over">
                     <p v-for="value in field.value.split(/(?:,?\s*and|,|and)(?=\s|$)/g)" :key="value">
                       {{ capitalize(value) }}
                     </p>
                   </div>
                   <p v-else class="blur-sm"> cheater </p>
+                </Transition>
               </td>
           </tr>
         </table>
@@ -58,3 +60,25 @@ const props = defineProps( {
     </UCard>
   </div>
 </template>
+
+<style scoped>
+.v-enter-active {
+  animation: scale 1.5s ;
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+    color: rgb(245, 158, 12);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+</style>

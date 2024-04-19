@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { type UserStore, useUserStore } from "./model/UserModel";
-import HeaderPresenter from "~/presenters/HeaderPresenter.vue";
+import { type UserStore, useUserStore } from "./model/UserModel"
+import HeaderPresenter from "~/presenters/HeaderPresenter.vue"
 
 // Set up user model
 const store: UserStore = useUserStore()
