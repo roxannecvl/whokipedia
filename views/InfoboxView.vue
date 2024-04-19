@@ -25,7 +25,7 @@ const props = defineProps( {
 
 <template>
   <div>
-    <UCard class="flex flex-col items-center justify-center pt-3" :ui="{header: {padding:''}}">
+    <UCard class="flex flex-col items-center justify-center" :ui="{header: {padding:''}}">
       <template #header>
         <div class="flex flex-col items-center justify-center my-5">
           <img :src="imageUrl" alt="image" class="w-40 object-cover pointer-events-none rounded-md rounded-b-md shadow-md"/>

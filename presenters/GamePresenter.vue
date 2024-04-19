@@ -82,12 +82,12 @@ function hasPlayedAtDate(item : any, timestamp: number){
 </script>
 
 <template>
-  <div class="flex flex-col" style="max-height: 80vh">
-    <SearchFieldView
+  <div class="flex flex-col h-fit">
+    <SearchFieldView class="px-2"
                     @new-name-set="selectedName => guessAndCheck(selectedName)"
                     :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
     />
-    <div style="overflow-y:auto; max-height: 70vh">
+    <div class="overflow-y-auto">
       <GameCenterView
           :intro="gameModel.intro" :over="gameModel.end" :name="gameModel.name" :win = "gameModel.win"
           :first-sentence="gameModel.firstSentence" :fields = "gameModel.infobox" :imageUrl="gameModel.imageUrl"

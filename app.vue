@@ -7,9 +7,18 @@ const store: UserStore = useUserStore()
 </script>
 
 <template>
-  <Body class="bg-gray-50 dark:bg-gray-950 h-full">
-  <UContainer class="p-0 sm:py-5">
-    <UCard :ui="{ rounded: 'rounded-none sm:rounded-lg' }">
+  <Body class="bg-gray-50 dark:bg-gray-950">
+  <UContainer class="p-0 sm:py-5 h-screen">
+    <UCard
+      :ui="{
+        base: 'flex flex-col h-full',
+        rounded: 'rounded-none sm:rounded-lg',
+        body: {
+          base: 'h-full overflow-auto',
+        }
+      }"
+      class="h-full"
+    >
       <template #header>
         <HeaderPresenter :model="store"/>
       </template>
