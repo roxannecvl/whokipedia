@@ -12,6 +12,9 @@ const props = defineProps({
     },
 })
 
+// Emits
+const emit = defineEmits(['update-leaderboard'])
+
 // Refs
 const isLeaderboardOpen = ref(false)
 
@@ -39,14 +42,17 @@ const columns = [{
 </script>
 
 <template>
-  <UButton label="Leaderboard" @click="isLeaderboardOpen = true" :disabled="!user"/>
+  <UButton label="Leaderboard" @click="() => {isLeaderboardOpen = true; emit('update-leaderboard') }" :disabled="!user"/>
   <UModal v-model="isLeaderboardOpen" :ui="{
     width: 'w-full sm:max-w-full sm:w-5/6',
   }">
     <UCard :ui="{ ring: '' }">
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Leaderboard</h3>
+          <div class="flex flex-row gap-2">
+            <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Leaderboard</h3>
+            <UButton color="gray" variant="ghost" icon="i-heroicons-arrow-path-20-solid" @click="emit('update-leaderboard')"/>
+          </div>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isLeaderboardOpen = false" />
         </div>
       </template>

@@ -32,7 +32,14 @@ const user = useCurrentUser()
 // Refs
 const closeModal = ref(false)
 const errorMessage = ref("")
-const usersData = ref([] as UserPersistence[])
+const usersData = ref([] as leaderboardData[])
+interface leaderboardData {
+  readonly rank: number,
+  readonly username: string,
+  readonly guesses: number,
+  readonly time: number,
+  readonly averageRank: number,
+}
 
 // Watchers
 onMounted(() => {
@@ -121,19 +128,17 @@ function populateStats () {
   }
 }
 
-// Lifecycle hooks
-onMounted(async () => {
-  getAllUserFromFirebase().then((data: UserPersistence[]) => {
-    const filteredUserData: UserPersistence[] = data.filter((item: UserPersistence) => {
-      return item.stats !== undefined
-          && item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
-          && item.uid !== user.value?.uid
-    })
+function updateLeaderboard(){
+  getAllUserFromFirebase().then(data => {
+
+    // Keep only players of the day
+    let filteredUserData : UserPersistence[] = data.filter((item: UserPersistence) =>
+        item.stats && item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp()))
 
     // Sort by number of guesses or time if number of guesses is equal
-    usersData.value = filteredUserData.sort((a: UserPersistence, b: UserPersistence) => {
-      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
-      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
+    let rankedData : UserPersistence []  = filteredUserData.sort((a: UserPersistence, b: UserPersistence) => {
+      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
       if (aStats && bStats) {
         if (aStats.guesses === bStats.guesses) {
           return aStats.time - bStats.time;
@@ -142,8 +147,25 @@ onMounted(async () => {
       }
       return 0;
     })
+
+    // Keep only information relevant to the leaderboard
+    usersData.value = rankedData.map((val : UserPersistence) => {
+      const stats = val.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      if(stats) return {
+        rank: stats.rank,
+        username : val.username,
+        guesses : stats.guesses,
+        time : stats.time,
+        averageRank : val.averageRank}
+      else return {
+        rank :filteredUserData.length + 1,
+        username : val.username,
+        guesses : 1000,
+        time : 1000,
+        averageRank : val.averageRank}
+    })
   })
-})
+}
 
 </script>
 
@@ -152,7 +174,8 @@ onMounted(async () => {
       @login-event-tris="login"
       @signup-event-tris="signup"
       @logout-event-bis="logout"
-      @populate-stats="populateStats()"
+      @populate-stats="populateStats"
+      @update-leaderboard-bis="updateLeaderboard"
       :closeLSV="closeModal"
       :errorLSV="errorMessage"
       :currentStreakSV="model.currentStreak"

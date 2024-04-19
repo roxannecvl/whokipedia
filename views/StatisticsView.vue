@@ -43,11 +43,6 @@ const isStatOpen = ref(false)
 // Constants
 const user = useCurrentUser()
 
-// Functions
-function populateStats(){
-  emit('populate-stats')
-}
-
 </script>
 
 <template>
@@ -64,7 +59,7 @@ function populateStats(){
       </template>
         <div style="max-height: 80vh; overflow-y: auto">
           <div class="flex flex-col items-center mb-10">
-            <UButton @click="populateStats()" class="text-center">Populate stats</UButton>
+            <UButton @click="emit('populate-stats')" class="text-center">Populate stats</UButton>
           </div>
           <div class="flex flex-col md:flex-row justify-around mt-3">
             <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">

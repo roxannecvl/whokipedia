@@ -88,10 +88,6 @@ async function computeRank() {
   });
 }
 
-function hasPlayedAtDate(item : any, timestamp: number){
-  return
-}
-
 </script>
 
 <template>

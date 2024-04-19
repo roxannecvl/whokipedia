@@ -53,7 +53,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis', 'populate-stats'])
+const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis', 'populate-stats', 'update-leaderboard-bis'])
 
 // Constants
 const logoPath = '/img/logo-primary-filled.svg';
@@ -91,6 +91,7 @@ function populateStats() {
     <div class="flex justify-between items-center">
       <div class="p-3">
         <LeaderboardView
+            @update-leaderboard ="emit('update-leaderboard-bis')"
             :games="gamesLV"
             :username="usernameLV"
         />
