@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type {leaderboardData} from "~/presenters/HeaderPresenter.vue";
 
 // Props
 const props = defineProps({
     games : {
-      type: Array<Object>,
+      type: Array<leaderboardData>,
       required: true,
     },
     username: {
@@ -17,6 +18,18 @@ const emit = defineEmits(['update-leaderboard'])
 
 // Refs
 const isLeaderboardOpen = ref(false)
+
+const styledGames = computed(()=> {
+  if(user){
+    return props.games.map((game) => {
+      if (game.username === props.username){
+        game.class = 'bg-primary-500/25'
+      }
+      return game
+    })
+  }
+  return props.games
+})
 
 // Constants
 const user = useCurrentUser()
@@ -57,7 +70,7 @@ const columns = [{
         </div>
       </template>
       <div>
-        <UTable :columns="columns" :rows="games" :ui="{
+        <UTable :columns="columns" :rows="styledGames" :ui="{
           wrapper: 'max-h-96 overflow-auto rounded-lg',
           thead: 'sticky top-0 z-10 bg-gray-50 dark:bg-gray-950',
         }" />
