@@ -6,6 +6,7 @@ import { dailyRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import type { UserStore } from "~/model/UserModel";
+import ShouldLoginView from "~/views/ShouldLoginView.vue";
 
 // Props
 const props = defineProps({
@@ -45,7 +46,7 @@ function checkStopInterval(over : boolean){
 </script>
 
 <template>
-  <div>
+  <div v-if="userModel.username != '' ">
     <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
@@ -81,5 +82,8 @@ function checkStopInterval(over : boolean){
       </div>
       
     </div>
+  </div>
+  <div v-else>
+    <ShouldLoginView/>
   </div>
 </template>
