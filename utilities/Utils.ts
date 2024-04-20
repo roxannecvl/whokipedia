@@ -168,6 +168,16 @@ export function getRandomNumber(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function dailyRandom(min: number, max: number): number {
+    let state = getCurrentDayTimestamp();
+    // Use the xorshift32 algorithm for pseudo-random number generation
+    state ^= state << 13;
+    state ^= state >> 17;
+    state ^= state << 5;
+    let factor = (state >>> 0) / 0xFFFFFFFF; // Convert to a float between 0 and 1
+    return Math.floor(factor * (max - min + 1)) + min;
+}
+
 /**
  * Get the current day timestamp.
  * @returns number - current day timestamp
