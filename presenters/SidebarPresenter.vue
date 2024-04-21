@@ -2,11 +2,10 @@
 
 import { type GameStore } from "~/model/GameModel";
 import SidebarView from "~/views/SidebarView.vue";
-import GameCenterView from "~/views/GameCenterView.vue";
 
 // Props
 const props = defineProps({
-  model: {
+  gameModel: {
     type: Object as () => GameStore,
     required: true,
   },
@@ -24,10 +23,27 @@ const props = defineProps({
   },
 })
 
+// Refs
+let trueSeconds = computed(() => {
+  if (props.gameModel.end && props.gameModel.time !== 0) return props.gameModel.time
+  else return props.timeSec
+} )
+
+
+// Function
+function updateCurrentTime() {
+  if(trueSeconds.value !== 0){
+    props.gameModel.time = trueSeconds.value
+  }
+}
+
+watch(props.gameModel.$state, updateCurrentTime)
+
 </script>
 
 <template>
   <SidebarView
-      @new-time-set="seconds => {model.time = seconds}"
-      :guessCount="model.nbGuesses" :totalGuesses="model.totalGuesses" :over="model.end" :seconds="timeSec" :showTime="showTime" :showRules="showRules"/>
+      @new-time-set="seconds => {gameModel.time = seconds}"
+      :guessCount="gameModel.nbGuesses" :totalGuesses="gameModel.totalGuesses" :over="gameModel.end" 
+      :seconds="trueSeconds" :showTime="showTime" :showRules="showRules"/>
 </template>

@@ -63,7 +63,7 @@ export const useGameStore = defineStore('game', {
             if (this.curGuess == this.name) {
                 this.end = true;
                 this.win = true;
-                this.imageUrl = this.images[this.images.length - 1].url;
+                this.imageUrl = this.updateImage();
             } else this.getNewHint();
             return true;
         },
@@ -92,7 +92,7 @@ export const useGameStore = defineStore('game', {
         },
         updateImage(): string {
             return this.images.length > 0 ?
-                this.images.filter((image: BlurHint) => image.revealed)
+                this.images.filter((image: BlurHint) => this.end || image.revealed)
                     .reduce((max, curr) =>  max.level > curr.level ? max : curr).url
                 : ""
         },

@@ -2,10 +2,11 @@
 
 import { type GameStore, useGameStore } from "~/model/GameModel";
 import { celebrities } from "~/model/CelebrityList";
-import { getRandom } from "~/utilities/Utils"
+import { dailyRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue";
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import type { UserStore } from "~/model/UserModel";
+import ShouldLoginView from "~/views/ShouldLoginView.vue";
 
 // Props
 const props = defineProps({
@@ -15,9 +16,8 @@ const props = defineProps({
   },
 })
 
-// TODO: retrieve celebrity name from persistence
 const store: GameStore = useGameStore()
-store.init(getRandom(celebrities))
+store.init(celebrities[dailyRandom(0, celebrities.length)])
 
 // Refs
 const elapsedTime = ref(0)
@@ -29,6 +29,7 @@ let timerInterval: NodeJS.Timeout | null = null;
 // Functions
 onMounted(() => {
   timerInterval = setInterval(() => {
+    if(store.time > elapsedTime.value) elapsedTime.value = store.time
     elapsedTime.value++;
   }, 1000);
 });
@@ -40,10 +41,12 @@ function checkStopInterval(over : boolean){
   }
   return elapsedTime.value;
 }
+
+
 </script>
 
 <template>
-  <div>
+  <div v-if="userModel.username != '' ">
     <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
@@ -51,7 +54,7 @@ function checkStopInterval(over : boolean){
 
       <div class="hidden lg:flex">
         <div class="w-1/6 p-2" style="max-height: 75vh; overflow-y:auto">
-          <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
+          <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
         </div>
         <div class="w-5/6 p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
       </div>
@@ -62,7 +65,7 @@ function checkStopInterval(over : boolean){
             <UButton label="See rules" size="xl" class="text-lg" @click="isRulesOpen = true"/>
           </div>
           <div class="w-4/5 inline-block">
-            <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="false"/>
+            <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="false"/>
           </div>
         </div>
         <USlideover v-model="isRulesOpen" title="Rules">
@@ -71,7 +74,7 @@ function checkStopInterval(over : boolean){
               <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
             </div>
             <div class="p-5 w-full box-border">
-              <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="false" :showRules="true"/>
+              <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="false" :showRules="true"/>
             </div>
           </UCard>
         </USlideover>
@@ -79,5 +82,8 @@ function checkStopInterval(over : boolean){
       </div>
       
     </div>
+  </div>
+  <div v-else>
+    <ShouldLoginView/>
   </div>
 </template>

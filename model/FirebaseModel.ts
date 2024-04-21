@@ -1,6 +1,7 @@
-import { ref as dbRef, set, update, get, Database } from "firebase/database";
+import { ref as dbRef, set, update, get, remove, Database } from "firebase/database";
 import type { UserStore } from "~/model/UserModel.js";
 import { getCurrentDayTimestamp } from "~/utilities/Utils";
+import type {GameStore} from "~/model/GameModel";
 
 let database: Database
 
@@ -21,6 +22,17 @@ export function saveUserToFirebase(store: UserStore, username: string, uid: stri
     store.updateUser(uid, username);
     const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
     set(dbRef(database, 'users/' + uid), persistence).then();
+}
+
+
+/**
+ * This method saves a local user model to persistence.
+ * @param store - Game model to push to persistence
+ * @param uid - ID to give to model in order to keep track in persistence
+ */
+export function saveCurrentGameToFirebase(store: GameStore, uid: string): void {
+    if(store.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then();
+    else set(dbRef(database, 'users/' + uid + '/currentGame'),store.$state).then();
 }
 
 /**
@@ -53,9 +65,9 @@ export function updateUserRankToFirebase(rank: number, uid: string): void {
     update(dbRef(database, 'users/' + uid + '/stats/' + getCurrentDayTimestamp()), { rank: rank }).then()
 }
 
-
 /**
  * This method updates a user averageRank
+ * @param diff - the difference in rank
  * @param uid - User ID to update
  */
 export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
@@ -76,6 +88,21 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
     return get(dbRef(database, 'users/' + uid)).then(snapshot => {
         if(snapshot.val()){
             persistenceToUserModel(store, snapshot.val());
+        }
+        return store;
+    });
+}
+
+
+/**
+ * This method fills local user model from persistence.
+ * @param store - Local model to fill
+ * @param uid - ID to give to model in order to keep track in persistence
+ */
+export async function readCurGameFromFirebase(store : GameStore, uid: string): Promise<GameStore> {
+    return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
+        if(snapshot.val()){
+            store.$state = snapshot.val()
         }
         return store;
     });
