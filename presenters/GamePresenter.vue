@@ -97,7 +97,7 @@ async function computeRank() {
 }
 
 function updateGameModel(){
-  let dailyStats : TimedStat[] = props.userModel.timedStats.filter((stat : TimedStat) => stat.date = getCurrentDayTimestamp())
+  let dailyStats : TimedStat[] = props.userModel.timedStats.filter((stat : TimedStat) => stat.date == getCurrentDayTimestamp())
   if(dailyStats.length !== 0){
     props.gameModel.end = true
     props.gameModel.win = true
