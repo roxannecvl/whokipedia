@@ -47,6 +47,7 @@ function guessAndCheck(name : string){
   }
 
   if(props.gameModel.end){
+
     computeRank().then((rank) => {
       if(user.value && rank) {
         props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, getCurrentDayTimestamp());
@@ -96,18 +97,17 @@ async function computeRank() {
     console.log(err);
   });
 }
-
 function updateGameModel(){
   ready.value = false
-  let dailyStats : TimedStat[] = props.userModel.timedStats.filter((stat : TimedStat) => stat.date == getCurrentDayTimestamp())
-  if(dailyStats.length !== 0){
+  let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == getCurrentDayTimestamp())
+  if (dailyStats.length !== 0) {
     props.gameModel.end = true
     props.gameModel.win = true
     props.gameModel.nbGuesses = dailyStats[0].guesses
     props.gameModel.time = dailyStats[0].time
     props.gameModel.imageUrl = props.gameModel.updateImage()
     ready.value = true
-  }else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => ready.value = true)
+  } else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => ready.value = true)
 }
 
 function updateCurrentGame() {
@@ -116,7 +116,7 @@ function updateCurrentGame() {
   }, 100)
 }
 
-watch(props.userModel, updateGameModel)
+//watch(props.userModel, updateGameModel)
 watch(props.gameModel.$state, updateCurrentGame)
 
 </script>

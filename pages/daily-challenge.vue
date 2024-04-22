@@ -17,7 +17,7 @@ const props = defineProps({
 })
 
 const store: GameStore = useGameStore()
-store.init(celebrities[dailyRandom(0, celebrities.length)])
+store.init(celebrities[dailyRandom(0, celebrities.length)], true)
 
 // Refs
 const elapsedTime = ref(0)
@@ -42,7 +42,6 @@ function startInterval(){
       elapsedTime.value = 0
     }
   }, 1000);
-
 }
 
 function checkStopInterval(over : boolean){
@@ -51,6 +50,7 @@ function checkStopInterval(over : boolean){
     timerInterval = null;
   }
   if(!over && timerInterval === null){
+    elapsedTime.value = 0
     startInterval()
   }
   return elapsedTime.value;

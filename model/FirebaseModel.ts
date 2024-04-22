@@ -73,7 +73,7 @@ export function updateUserRankToFirebase(rank: number, uid: string): void {
 export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
     get(dbRef(database, 'users/' + uid)).then(snapshot => {
         if(snapshot.val() && snapshot.val().averageRank){
-            let newAverage = snapshot.val().averageRank + diff / snapshot.val().gamesPlayed
+            let newAverage = snapshot.val().averageRank + (diff / snapshot.val().gamesPlayed)
             update(dbRef(database, 'users/' + uid), {averageRank : newAverage}).then()
         }
     });
@@ -102,8 +102,8 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
 export async function readCurGameFromFirebase(store : GameStore, uid: string): Promise<GameStore> {
     return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
         if(snapshot.val())store.$state = snapshot.val()
-        //reset
-        else if (store.nbGuesses > 0) store.init(store.name).then()
+        //reset daily challenge
+        else if (store.nbGuesses > 0) store.init(store.name, true).then()
         return store;
     });
 }
