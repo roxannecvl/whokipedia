@@ -51,22 +51,21 @@ whokipedia/                          #
 │   ├── Hint.ts                      # Declaration of Hint type (and method to create a list of hints from an object)
 │   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
 │   ├── FirebaseModel.ts             # Contains all logic for talking to our database
-│   └── ResolvePromise.ts            # Contains the logic for promise resolution
 ├── nuxt.config.ts                   #
 ├── package.json                     # All our dependencies 
 ├── pages/                           #
-│   ├── daily-challenge.vue           # with gamePresenter and sidebarPresenter together
-│   ├── index.vue                    # with welcomePagePresenter.vue
-│   ├── leaderboard.vue              # with leaderboardPresenter.vue
-│   ├── statistics.vue               # with statisticsPresenter.vue
-│   └── training.vue                 # with gamePresenter and sidebarPresenter together
+│   ├── daily-challenge.vue          # with GamePresenter and SidebarPresenter together
+│   ├── index.vue                    # with WelcomePagePresenter.vue
+│   ├── leaderboard.vue              # with LeaderboardPresenter.vue
+│   ├── statistics.vue               # with StatisticsPresenter.vue
+│   └── training.vue                 # with GamePresenter and SidebarPresenter together
 ├── presenters/                      #
-│   ├── GamePresenter.vue            # with gameCenterView.vue and infoboxView.vue
-│   ├── LeaderboardPresenter.vue     # with leaderboardView.vue
-│   ├── LoginSignupPresenter.vue     # with loginView.view and signupView.vue
-│   ├── SidebarPresenter.vue         # with sidebarView.vue
-│   ├── StatisticsPresenter.vue      # with statisticsView.vue
-│   └── WelcomePagePresenter.vue     # with welcomePageView.vue
+│   ├── GamePresenter.vue            # with GameCenterView.vue and InfoboxView.vue
+│   ├── LeaderboardPresenter.vue     # with LeaderboardView.vue
+│   ├── HeaderPresenter.vue          # with HeaderView.vue
+│   ├── SidebarPresenter.vue         # with SidebarView.vue
+│   ├── StatisticsPresenter.vue      # with StatisticsView.vue
+│   └── WelcomePagePresenter.vue     # with WelcomePageView.vue
 ├── tailwind.config.ts               #
 ├── tsconfig.json                    #
 ├── utilities/                       #

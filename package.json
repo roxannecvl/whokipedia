@@ -9,6 +9,7 @@
   "dependencies": {
     "@firebase/app-types": "^0.9.0",
     "@iconify-json/eos-icons": "^1.1.10",
+    "@iconify-json/material-symbols": "^1.1.78",
     "@iconify-json/simple-icons": "^1.1.95",
     "@nuxt/ui": "^2.14.2",
     "@pinia/nuxt": "^0.5.1",
