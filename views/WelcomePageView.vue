@@ -34,9 +34,18 @@ onMounted(() => {
         where each clue leads you closer to uncovering the celebrity behind the blur!
       </div>
 
-      <UButton to="/daily-challenge" size="xl" class="text-2xl" label="Play">
-           Play
-      </UButton>
+      <div class="flex flex-row">
+        <div class="p-2">
+          <UButton to="/daily-challenge" size="xl" class="text-xl" label="Play">
+            Daily Challenge
+          </UButton>
+        </div>
+        <div class="p-2">
+          <UButton to="/solo-mode" size="xl" class="text-xl" label="Play">
+            Play solo
+          </UButton>
+        </div>
+      </div>
 
       <div class="border border-primary border-solid rounded-lg p-4 mt-10">
           <p class="font-black text-xl">

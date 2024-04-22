@@ -20,7 +20,6 @@ export default defineNuxtConfig({
             storageBucket: "whokipedia-challenge.appspot.com",
             messagingSenderId: "797330362930",
             appId: "1:797330362930:web:ab6d37fbfa9273573d222b"
-            // there could be other properties depending on the project
         }
     },
 })

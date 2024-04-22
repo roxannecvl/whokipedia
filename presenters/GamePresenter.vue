@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { useCurrentUser } from 'vuefire'
 import { type GameStore } from "~/model/GameModel";
-import type { UserStore } from "~/model/UserModel";
+import type { TimedStat, UserStore } from "~/model/UserModel";
 import GameCenterView from "~/views/GameCenterView.vue";
 import SearchFieldView from "~/views/SearchFieldView.vue";
 import {
   updateUserToFirebase,
   getAllUserFromFirebase,
   updateUserRankToFirebase,
-  type UserPersistence
+  updateUserAVGRankToFirebase,
+  saveCurrentGameToFirebase,
+  readCurGameFromFirebase,
+  type UserPersistence,
 } from "~/model/FirebaseModel";
 import { getCurrentDayTimestamp } from "~/utilities/Utils";
 
@@ -30,6 +33,10 @@ const baseString = "https://en.wikipedia.org/wiki/";
 const validGuess = ref(true);
 const user = useCurrentUser()
 
+// Functions
+onMounted(() => {
+  updateGameModel()
+})
 function guessAndCheck(name : string){
   validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name);
   if(!validGuess.value) {
@@ -78,6 +85,7 @@ async function computeRank() {
             || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time))) {
           for (let i = index; i < sortedUserData.length; i++) {
             updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
+            updateUserAVGRankToFirebase(1, sortedUserData[i].uid)
           }
           return index + 1
       }
@@ -87,6 +95,26 @@ async function computeRank() {
     console.log(err);
   });
 }
+
+function updateGameModel(){
+  let dailyStats : TimedStat[] = props.userModel.timedStats.filter((stat : TimedStat) => stat.date == getCurrentDayTimestamp())
+  if(dailyStats.length !== 0){
+    props.gameModel.end = true
+    props.gameModel.win = true
+    props.gameModel.nbGuesses = dailyStats[0].guesses
+    props.gameModel.time = dailyStats[0].time
+    props.gameModel.imageUrl = props.gameModel.updateImage()
+  }else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid)
+}
+
+function updateCurrentGame() {
+  setTimeout(() => {
+    if(user.value) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
+  }, 1000)
+}
+
+watch(props.userModel, updateGameModel)
+watch(props.gameModel.$state, updateCurrentGame)
 
 </script>
 
