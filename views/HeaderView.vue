@@ -57,12 +57,6 @@ const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event
 
 // Constants
 const logoPath = '/img/logo-primary-filled.svg';
-const colorMode = useColorMode()
-const isDark = computed({
-  get: () => colorMode.value === 'dark',
-  set: () => colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-})
-
 // Functions
 function populateStats() {
   emit('populate-stats')
@@ -72,15 +66,20 @@ function populateStats() {
 
 <template>
   <div class="flex justify-between items-center " style="max-height: 3vh">
-    <div>
-      <ClientOnly>
-        <UTooltip :text="`Switch to ${isDark ? 'Light' : 'Dark'} Mode`">
-          <UButton
-              :icon="isDark ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'"
-              @click="isDark = !isDark"
-              color="white"/>
-        </UTooltip>
-      </ClientOnly>
+    <div class="flex gap-2">
+      <UTooltip text="Open on Github">
+        <UButton
+            :to="`https://github.com/roxannecvl/whokipedia`"
+            icon="i-simple-icons-github"
+            color="white"
+            target="_blank"/>
+      </UTooltip>
+      <UTooltip :text="`Switch to ${$colorMode.preference == 'light' ? 'dark' : 'light'} Mode`">
+        <UButton
+            :icon="$colorMode.preference == 'dark' ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'"
+            @click="$colorMode.preference = ($colorMode.preference == 'light' ? 'dark' : 'light')"
+            color="white"/>
+      </UTooltip>
     </div>
     <a href="/">
       <div class="flex">
@@ -88,44 +87,27 @@ function populateStats() {
         <p class="font-black text-3xl hidden sm:block select-none">Whokipedia</p>
       </div>
     </a>
-    <div class="flex justify-between items-center">
-      <div class="p-3">
-        <LeaderboardView
-            @update-leaderboard ="emit('update-leaderboard-bis')"
-            :games="gamesLV"
-            :username="usernameLV"
-        />
-      </div>
-      <div class="p-3">
-        <StatisticsView
-            @populate-stats="populateStats()"
-            :current-streak="currentStreakSV"
-            :max-streak="maxStreakSV"
-            :average-guesses="averageGuessesSV"
-            :average-rank="averageRankSV"
-            :win-rate="winRateSV"
-            :games-played="gamesPlayedSV"
-            :timed-stats="timedStatsSV"
-        />
-      </div>
-      <div class="p-3">
-        <LoginSignupView
-          @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
-          @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
-          @logout-event="emit('logout-event-bis')"
-          :close="closeLSV"  :error="errorLSV"/>
-      </div>
-      <div class="p-3">
-        <ClientOnly>
-          <UTooltip text="Open on Github">
-            <UButton
-                :to="`https://github.com/roxannecvl/whokipedia`"
-                icon="i-simple-icons-github"
-                color="white"
-                target="_blank"/>
-          </UTooltip>
-        </ClientOnly>
-      </div>
+    <div class="flex justify-between items-center gap-2">
+      <LeaderboardView
+          @update-leaderboard ="emit('update-leaderboard-bis')"
+          :games="gamesLV"
+          :username="usernameLV"
+      />
+      <StatisticsView
+          @populate-stats="populateStats()"
+          :current-streak="currentStreakSV"
+          :max-streak="maxStreakSV"
+          :average-guesses="averageGuessesSV"
+          :average-rank="averageRankSV"
+          :win-rate="winRateSV"
+          :games-played="gamesPlayedSV"
+          :timed-stats="timedStatsSV"
+      />
+      <LoginSignupView
+        @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
+        @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
+        @logout-event="emit('logout-event-bis')"
+        :close="closeLSV"  :error="errorLSV"/>
     </div>
   </div>
 </template>

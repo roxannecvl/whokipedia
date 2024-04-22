@@ -55,7 +55,9 @@ const columns = [{
 </script>
 
 <template>
-  <UButton label="Leaderboard" @click="() => {isLeaderboardOpen = true; emit('update-leaderboard') }"/>
+  <UButton icon="i-heroicons-trophy-16-solid" @click="() => {isLeaderboardOpen = true; emit('update-leaderboard') }">
+    <span class="hidden md:inline">Leaderboard</span>
+  </UButton>
   <UModal v-model="isLeaderboardOpen" :ui="{
     width: 'w-full sm:max-w-full sm:w-5/6',
   }">

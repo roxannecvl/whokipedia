@@ -61,18 +61,20 @@ function checkStopInterval(over : boolean){
         </div>
       </div>
 
-      <div class="h-full lg:hidden">
-        <div>
-          <div class="w-1/5 inline-block justify-center">
-            <UButton label="See rules" size="xl" class="text-lg" @click="isRulesOpen = true"/>
+      <div class="h-full flex flex-col gap-4 lg:hidden">
+        <div class="flex justify-between gap-4 items-center">
+          <div class="">
+            <UButton icon="i-material-symbols-help-rounded" size="xl" class="h-full text-2xl" @click="isRulesOpen = true">
+              <span class="hidden md:inline">Rules</span>
+            </UButton>
           </div>
-          <div class="w-4/5 inline-block">
+          <div class="flex-grow">
             <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="false"/>
           </div>
         </div>
         <USlideover v-model="isRulesOpen" title="Rules">
-          <UCard :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <div class="flex items-center justify-between">
+          <UCard :ui="{ body: { base: 'flex-1' }, ring: '', shadow: '', rounded: ''}">
+            <div class="flex items-center justify-end">
               <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
             </div>
             <div class="p-5 w-full box-border">

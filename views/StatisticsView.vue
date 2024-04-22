@@ -46,7 +46,9 @@ const user = useCurrentUser()
 </script>
 
 <template>
-  <UButton label="Statistics" @click="isStatOpen = true" :disabled="!user"/>
+  <UButton icon="i-heroicons-presentation-chart-line-16-solid" @click="isStatOpen = true" :disabled="!user">
+    <span class="hidden md:inline">Statistics</span>
+  </UButton>
   <UModal v-model="isStatOpen" :ui="{
     width: 'w-full sm:max-w-full sm:w-5/6',
   }">

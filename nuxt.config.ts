@@ -5,7 +5,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
     ],
     ui: {
-        icons: ['simple-icons', 'eos-icons']
+        icons: ['simple-icons', 'eos-icons', 'material-symbols']
     },
     vuefire: {
         auth: {
