@@ -54,7 +54,7 @@ function format(str: string) : string {
 </script>
 
 <template>
-  <div class="pt-3 px-2 text-justify">
+  <div class="p-2 text-justify">
     <div class="p-1 sm:ml-4 sm:float-right overflow-hidden">
       <InfoboxView
           :fields = "fields" :imageUrl="imageUrl"

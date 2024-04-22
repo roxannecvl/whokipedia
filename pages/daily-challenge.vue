@@ -61,7 +61,7 @@ function checkStopInterval(over : boolean){
         </div>
       </div>
 
-      <div class="lg:hidden">
+      <div class="h-full lg:hidden">
         <div>
           <div class="w-1/5 inline-block justify-center">
             <UButton label="See rules" size="xl" class="text-lg" @click="isRulesOpen = true"/>
@@ -80,7 +80,7 @@ function checkStopInterval(over : boolean){
             </div>
           </UCard>
         </USlideover>
-        <div class="h-full p-2">
+        <div class="h-full">
           <GamePresenter :userModel="userModel" :gameModel="store" />
         </div>
       </div>
