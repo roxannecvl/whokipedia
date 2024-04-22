@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import SignupView from "~/views/SignupView.vue";
 import LoginView from "~/views/LoginView.vue";
-import {readUserFromFirebase} from "~/model/FirebaseModel";
 
 //Props
 const props = defineProps({
@@ -51,8 +50,12 @@ watch(() => props.error, (newValue) => {
 
 <template>
   <div v-if="ready">
-    <UButton v-if="user" label="Log out" @click="emit('logout-event')"/>
-    <UButton v-else label="Log in" @click="isModalOpen = true" />
+    <UButton v-if="user" icon="i-heroicons-arrow-left-start-on-rectangle-16-solid" @click="emit('logout-event')">
+      <span class="hidden md:inline">Log out</span>
+    </UButton>
+    <UButton v-else icon="i-heroicons-arrow-right-end-on-rectangle-16-solid" @click="isModalOpen = true">
+      <span class="hidden md:inline">Log in</span>
+    </UButton>
     <UModal v-model="isModalOpen">
       <div class="p-4">
         <div class="flex justify-center">

@@ -59,31 +59,35 @@ function checkStopInterval(over : boolean){
 </script>
 
 <template>
-  <div v-if="userModel.username != '' ">
+  <div v-if="userModel.username != ''">
     <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
-    <div v-else>
-
-      <div class="hidden lg:flex">
-        <div class="w-1/6 p-2" style="max-height: 75vh; overflow-y:auto">
+    
+    <div v-else class="h-full">
+      <div class="h-full hidden lg:flex">
+        <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
           <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
         </div>
-        <div class="w-5/6 p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
+        <div class="w-5/6 p-2">
+          <GamePresenter :userModel="userModel" :gameModel="store" />
+        </div>
       </div>
 
-      <div class="lg:hidden">
-        <div>
-          <div class="w-1/5 inline-block justify-center">
-            <UButton label="See rules" size="xl" class="text-lg" @click="isRulesOpen = true"/>
+      <div class="h-full flex flex-col gap-4 lg:hidden">
+        <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
+          <div>
+            <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
+              <span class="hidden md:inline">Rules</span>
+            </UButton>
           </div>
-          <div class="w-4/5 inline-block">
+          <div class="flex-grow">
             <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="false"/>
           </div>
         </div>
         <USlideover v-model="isRulesOpen" title="Rules">
-          <UCard :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <div class="flex items-center justify-between">
+          <UCard :ui="{ body: { base: 'flex-1' }, ring: '', shadow: '', rounded: ''}">
+            <div class="flex items-center justify-end">
               <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
             </div>
             <div class="p-5 w-full box-border">
@@ -91,7 +95,9 @@ function checkStopInterval(over : boolean){
             </div>
           </UCard>
         </USlideover>
-        <div class="p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
+        <div class="h-full">
+          <GamePresenter :userModel="userModel" :gameModel="store" />
+        </div>
       </div>
       
     </div>

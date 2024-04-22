@@ -54,34 +54,41 @@ function showAndEmit(seconds : number, over : boolean){
 </script>
 
 <template>
-
   <div v-if="showTime">
     <div v-if="showRules">
       <UAlert
         :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
+        :ui="{
+            padding: 'p-4',
+            rounded: 'rounded-md'
+          }"
         color="primary"
         :variant="over ? 'subtle': 'outline'"
         :description="showAndEmit(seconds, over)"
         class="mb-8"
       />
     </div>
-    <div v-else class="flex flex-row">
-      <div class="w-1/2 pl-2 pr-2">
-        <UAlert
-            :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
-            color="primary"
-            :variant="over ? 'subtle': 'outline'"
-            class="mb-8"
-        />
-      </div>
-      <div class="w-1/2 pl-2 pr-2">
-        <UAlert
-            :title="showAndEmit(seconds, over)"
-            color="primary"
-            :variant="over ? 'subtle': 'outline'"
-            class="mb-8"
-        />
-      </div>
+    <div v-else class="flex flex-row gap-2">
+      <UAlert
+          :ui="{
+            padding: 'p-2',
+            rounded: 'rounded-md'
+          }"
+          :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
+          color="primary"
+          :variant="over ? 'subtle': 'outline'"
+          class="text-center"
+      />
+      <UAlert
+          :ui="{
+            padding: 'p-2',
+            rounded: 'rounded-md'
+          }"
+          :title="showAndEmit(seconds, over)"
+          color="primary"
+          :variant="over ? 'subtle': 'outline'"
+          class="text-center"
+      />
     </div>
   </div>
 

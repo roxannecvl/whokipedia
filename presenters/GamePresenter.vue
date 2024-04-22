@@ -122,12 +122,12 @@ watch(props.gameModel.$state, updateCurrentGame)
 </script>
 
 <template>
-  <div v-if="ready" class="flex flex-col" style="max-height: 80vh">
-    <SearchFieldView
-                    @new-name-set="selectedName => guessAndCheck(selectedName)"
-                    :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
+  <div v-if="ready" class="flex flex-col h-full">
+    <SearchFieldView class="px-2"
+        @new-name-set="selectedName => guessAndCheck(selectedName)"
+        :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
     />
-    <div style="overflow-y:auto; max-height: 70vh">
+    <div class="overflow-y-auto">
       <GameCenterView
           :intro="gameModel.intro" :over="gameModel.end" :name="gameModel.name" :win = "gameModel.win"
           :first-sentence="gameModel.firstSentence" :fields = "gameModel.infobox" :imageUrl="gameModel.imageUrl"
