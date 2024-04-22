@@ -17,7 +17,7 @@ const props = defineProps({
 })
 
 const store: GameStore = useGameStore()
-store.init(celebrities[dailyRandom(0, celebrities.length)])
+store.init(celebrities[dailyRandom(0, celebrities.length)], true)
 
 // Refs
 const elapsedTime = ref(0)
@@ -28,20 +28,33 @@ let timerInterval: NodeJS.Timeout | null = null;
 
 // Functions
 onMounted(() => {
-  timerInterval = setInterval(() => {
-    if(store.time > elapsedTime.value) elapsedTime.value = store.time
-    elapsedTime.value++;
-  }, 1000);
+  startInterval()
 });
+
+function startInterval(){
+  timerInterval = setInterval(() => {
+    if(store.time > elapsedTime.value){
+      elapsedTime.value = store.time
+    }
+    if(props.userModel.username !== "") {
+      elapsedTime.value++
+    }else{
+      elapsedTime.value = 0
+    }
+  }, 1000);
+}
 
 function checkStopInterval(over : boolean){
   if(over && timerInterval !== null){
     clearInterval(timerInterval);
     timerInterval = null;
   }
+  if(!over && timerInterval === null){
+    elapsedTime.value = 0
+    startInterval()
+  }
   return elapsedTime.value;
 }
-
 
 </script>
 
