@@ -58,6 +58,10 @@ function showAndEmit(seconds : number, over : boolean){
     <div v-if="showRules">
       <UAlert
         :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
+        :ui="{
+            padding: 'p-4',
+            rounded: 'rounded-md'
+          }"
         color="primary"
         :variant="over ? 'subtle': 'outline'"
         :description="showAndEmit(seconds, over)"
@@ -66,12 +70,20 @@ function showAndEmit(seconds : number, over : boolean){
     </div>
     <div v-else class="flex flex-row gap-2">
       <UAlert
+          :ui="{
+            padding: 'p-2',
+            rounded: 'rounded-md'
+          }"
           :title="'Guesses: ' + guessCount + ' / ' + totalGuesses"
           color="primary"
           :variant="over ? 'subtle': 'outline'"
           class="text-center"
       />
       <UAlert
+          :ui="{
+            padding: 'p-2',
+            rounded: 'rounded-md'
+          }"
           :title="showAndEmit(seconds, over)"
           color="primary"
           :variant="over ? 'subtle': 'outline'"

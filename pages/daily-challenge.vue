@@ -62,9 +62,9 @@ function checkStopInterval(over : boolean){
       </div>
 
       <div class="h-full flex flex-col gap-4 lg:hidden">
-        <div class="flex justify-between gap-4 items-center">
-          <div class="">
-            <UButton icon="i-material-symbols-help-rounded" size="xl" class="h-full text-2xl" @click="isRulesOpen = true">
+        <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
+          <div>
+            <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
               <span class="hidden md:inline">Rules</span>
             </UButton>
           </div>
