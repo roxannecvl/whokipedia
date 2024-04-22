@@ -101,9 +101,9 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
  */
 export async function readCurGameFromFirebase(store : GameStore, uid: string): Promise<GameStore> {
     return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
-        if(snapshot.val()){
-            store.$state = snapshot.val()
-        }
+        if(snapshot.val())store.$state = snapshot.val()
+        //reset
+        else if (store.nbGuesses > 0) store.init(store.name).then()
         return store;
     });
 }
@@ -162,12 +162,12 @@ function userStoreToPersistence(store: UserStore): any {
  */
 function persistenceToUserModel(store: UserStore, persistence: any): void {
     store.updateStats(
-        persistence.currentStreak,
-        persistence.maxStreak,
-        persistence.averageRank,
-        persistence.averageGuesses,
-        persistence.winRate,
-        persistence.gamesPlayed,
+        persistence.currentStreak || 0,
+        persistence.maxStreak || 0,
+        persistence.averageRank || 0,
+        persistence.averageGuesses ||0 ,
+        persistence.winRate || 0,
+        persistence.gamesPlayed || 0,
         // Workaround to Firebase saving empty arrays as undefined
         persistence.stats === undefined ? [] : Object.keys(persistence.stats).map(key => {
             return {

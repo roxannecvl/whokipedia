@@ -28,20 +28,33 @@ let timerInterval: NodeJS.Timeout | null = null;
 
 // Functions
 onMounted(() => {
-  timerInterval = setInterval(() => {
-    if(store.time > elapsedTime.value) elapsedTime.value = store.time
-    elapsedTime.value++;
-  }, 1000);
+  startInterval()
 });
+
+function startInterval(){
+  timerInterval = setInterval(() => {
+    if(store.time > elapsedTime.value){
+      elapsedTime.value = store.time
+    }
+    if(props.userModel.username !== "") {
+      elapsedTime.value++
+    }else{
+      elapsedTime.value = 0
+    }
+  }, 1000);
+
+}
 
 function checkStopInterval(over : boolean){
   if(over && timerInterval !== null){
     clearInterval(timerInterval);
     timerInterval = null;
   }
+  if(!over && timerInterval === null){
+    startInterval()
+  }
   return elapsedTime.value;
 }
-
 
 </script>
 

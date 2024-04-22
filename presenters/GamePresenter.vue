@@ -33,10 +33,11 @@ const baseString = "https://en.wikipedia.org/wiki/";
 const validGuess = ref(true);
 const user = useCurrentUser()
 
+// Refs
+const ready = ref(false)
+
 // Functions
-onMounted(() => {
-  updateGameModel()
-})
+onMounted(() => {updateGameModel()})
 function guessAndCheck(name : string){
   validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name);
   if(!validGuess.value) {
@@ -97,6 +98,7 @@ async function computeRank() {
 }
 
 function updateGameModel(){
+  ready.value = false
   let dailyStats : TimedStat[] = props.userModel.timedStats.filter((stat : TimedStat) => stat.date == getCurrentDayTimestamp())
   if(dailyStats.length !== 0){
     props.gameModel.end = true
@@ -104,13 +106,14 @@ function updateGameModel(){
     props.gameModel.nbGuesses = dailyStats[0].guesses
     props.gameModel.time = dailyStats[0].time
     props.gameModel.imageUrl = props.gameModel.updateImage()
-  }else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid)
+    ready.value = true
+  }else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => ready.value = true)
 }
 
 function updateCurrentGame() {
   setTimeout(() => {
-    if(user.value) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
-  }, 1000)
+    if (user.value && props.gameModel.nbGuesses > 0) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
+  }, 100)
 }
 
 watch(props.userModel, updateGameModel)
@@ -119,7 +122,7 @@ watch(props.gameModel.$state, updateCurrentGame)
 </script>
 
 <template>
-  <div class="flex flex-col" style="max-height: 80vh">
+  <div v-if="ready" class="flex flex-col" style="max-height: 80vh">
     <SearchFieldView
                     @new-name-set="selectedName => guessAndCheck(selectedName)"
                     :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
