@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { type InfoboxHint, compulsoryLabels } from "~/model/Hint";
-import { capitalize } from "~/utilities/Utils";
+import { type InfoboxHint, compulsoryLabels } from "~/model/Hint"
+import { capitalize } from "~/utilities/Utils"
 
 // Props
 const props = defineProps( {
@@ -54,7 +54,7 @@ const props = defineProps( {
           </tr>
         </table>
       </div>
-      <div v-if="over" style="display: flex; justify-content: center;">
+      <div v-if="over" style="display: flex; justify-content: center">
         <UButton :to="buttonLink" size="lg">Learn more</UButton>
       </div>
     </UCard>
@@ -63,21 +63,21 @@ const props = defineProps( {
 
 <style scoped>
 .v-enter-active {
-  animation: scale 1.5s ;
+  animation: scale 1.5s 
 }
 
 @keyframes scale {
   0% {
-    transform: scale(1);
+    transform: scale(1)
   }
 
   50% {
     transform: scale(1.3);
-    color: rgb(245, 158, 12);
+    color: rgb(245, 158, 12)
   }
 
   100% {
-    transform: scale(1);
+    transform: scale(1)
   }
 }
 

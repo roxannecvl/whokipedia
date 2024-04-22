@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import WelcomePagePresenter from "~/presenters/WelcomePagePresenter.vue";
+import WelcomePagePresenter from "~/presenters/WelcomePagePresenter.vue"
 </script>
 
 <template>

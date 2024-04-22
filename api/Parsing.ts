@@ -1,4 +1,4 @@
-import { removeTag, getAndPermutations, countries, months } from "~/utilities/Utils";
+import { removeTag, getAndPermutations, countries, months } from "~/utilities/Utils"
 
 /**
  * Function to parse the wikitext of the first section of a Wikipedia page.
@@ -8,65 +8,65 @@ import { removeTag, getAndPermutations, countries, months } from "~/utilities/Ut
 export function extractInfoboxFromWikitext(wikitext: string): {[key: string]: string} {
 
     // Remove introduction after infobox
-    wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"));
+    wikitext = wikitext.slice(0, wikitext.toUpperCase().indexOf("'''"))
 
     // Remove comments and remaining tags
-    wikitext = removeTag(wikitext, "<!--", "-->");
-    wikitext = removeTag(wikitext, "<ref", "</ref>", "/>");
+    wikitext = removeTag(wikitext, "<!--", "-->")
+    wikitext = removeTag(wikitext, "<ref", "</ref>", "/>")
 
-    let hints: {[key: string]: string } = {};
+    let hints: {[key: string]: string } = {}
 
     // Birthdate
-    let match = fieldMatchers.birthDate.exec(wikitext);
+    let match = fieldMatchers.birthDate.exec(wikitext)
     if (match) {
-        const [, birthYear, birthMonth, birthDay] = match;
-        hints["Born"] = `${birthDay} ${months[parseInt(birthMonth)]} ${birthYear}`;
+        const [, birthYear, birthMonth, birthDay] = match
+        hints["Born"] = `${birthDay} ${months[parseInt(birthMonth)]} ${birthYear}`
     }
 
     // Death date
-    match = fieldMatchers.deathDate.exec(wikitext);
+    match = fieldMatchers.deathDate.exec(wikitext)
     if (match) {
-        const [, deathYear, deathMonth, deathDay] = match;
-        hints["Died"] = `${deathDay} ${months[parseInt(deathMonth)]} ${deathYear}`;
+        const [, deathYear, deathMonth, deathDay] = match
+        hints["Died"] = `${deathDay} ${months[parseInt(deathMonth)]} ${deathYear}`
     } else {
-        hints["Status"] = "Alive";
+        hints["Status"] = "Alive"
     }
 
     // Description
-    match = fieldMatchers.description.exec(wikitext);
-    let description: string | undefined = match ? match[1] : undefined;
+    match = fieldMatchers.description.exec(wikitext)
+    let description: string | undefined = match ? match[1] : undefined
     if (description) {
-        const {citizenship, occupation} = extractInfoFromDescription(description);
-        if (citizenship !== undefined) hints["Citizenship"] = citizenship;
-        if (occupation !== undefined) hints["Occupation"] = occupation;
+        const {citizenship, occupation} = extractInfoFromDescription(description)
+        if (citizenship !== undefined) hints["Citizenship"] = citizenship
+        if (occupation !== undefined) hints["Occupation"] = occupation
     }
 
     // Spouses
-    let spouses: string[] | undefined = undefined;
+    let spouses: string[] | undefined = undefined
     while ((match = fieldMatchers.spouses.exec(wikitext)) !== null) {
-        spouses = spouses ? [...spouses, match[1]] : [match[1]];
-        hints["Spouses"] = spouses.join(', ');
+        spouses = spouses ? [...spouses, match[1]] : [match[1]]
+        hints["Spouses"] = spouses.join(', ')
     }
 
     // Genres
-    match = fieldMatchers.genres.exec(wikitext);
+    match = fieldMatchers.genres.exec(wikitext)
     if (match) {
-        hints["Genres"] = extractFromList(match);
+        hints["Genres"] = extractFromList(match)
     }
 
     // Instruments
-    match = fieldMatchers.instruments.exec(wikitext);
+    match = fieldMatchers.instruments.exec(wikitext)
     if (match) {
-        hints["Instruments"] = extractFromList(match);
+        hints["Instruments"] = extractFromList(match)
     }
 
     // Known for
-    match = fieldMatchers.known_for.exec(wikitext);
+    match = fieldMatchers.known_for.exec(wikitext)
     if (match) {
-        hints["Known for"] = extractFromList(match);
+        hints["Known for"] = extractFromList(match)
     }
 
-    return hints;
+    return hints
 }
 
 
@@ -83,39 +83,39 @@ function extractInfoFromDescription(description : string): {
     let res: {citizenship: string | undefined, occupation: string | undefined} = {
         citizenship: undefined,
         occupation: undefined
-    };
+    }
 
     // Check if nationality or country is contained in the description
     for (const country in countries) {
-        const nationality: string = countries[country];
-        let copy: string = description;
+        const nationality: string = countries[country]
+        let copy: string = description
         while (copy.includes(nationality) || copy.includes(country)) {
-            res.citizenship = res.citizenship !== undefined ? res.citizenship + " and " + nationality : nationality;
-            copy = copy.replace(nationality, "").replace(country, "");
+            res.citizenship = res.citizenship !== undefined ? res.citizenship + " and " + nationality : nationality
+            copy = copy.replace(nationality, "").replace(country, "")
         }
     }
 
     // Check if description matches a known occupation
     for (const possibleOccupation in occupationMatchers){
-        const matcher: RegExp = occupationMatchers[possibleOccupation];
+        const matcher: RegExp = occupationMatchers[possibleOccupation]
         if(description.match(matcher)){
-            res.occupation = possibleOccupation;
-            return res;
+            res.occupation = possibleOccupation
+            return res
         }
     }
 
     // If no occupation was found, occupation is description without citizenship
-    res.occupation = description;
+    res.occupation = description
     for (const permutation of getAndPermutations(res.citizenship || "")){
-        res.occupation = res.occupation.replace(permutation, "").trim();
+        res.occupation = res.occupation.replace(permutation, "").trim()
     }
 
     // Handle the `-born`case (i.e. Albert Einstein)
     if (res.citizenship &&
         description.includes("-born") &&
         (description.indexOf("-born") - description.indexOf(res.citizenship) === res.citizenship.length)) {
-        res.citizenship = res.citizenship + '-born';
-        res.occupation = res.occupation.replace("-born", "").trim();
+        res.citizenship = res.citizenship + '-born'
+        res.occupation = res.occupation.replace("-born", "").trim()
     }
 
     return res
@@ -133,19 +133,19 @@ function extractInfoFromDescription(description : string): {
  */
 function extractFromList(match : RegExpExecArray | null): string {
     match = match!
-    let text: string = match[0];
-    let array: string[] = [];
+    let text: string = match[0]
+    let array: string[] = []
     while ((match = fieldMatchers.lists.exec(text)) !== null) {
 
         // Extract the content from the matched item
-        const content = match[1] || match[2];
+        const content = match[1] || match[2]
         const cleanContent = content.split('|')[0]
                                            .replace("[[", "")
                                            .replace("]]", "")
                                            .trim()
-        array.push(cleanContent);
+        array.push(cleanContent)
     }
-    return array.join(", ");
+    return array.join(", ")
 }
 
 const fieldMatchers: {[key: string]: RegExp} = {
@@ -157,10 +157,10 @@ const fieldMatchers: {[key: string]: RegExp} = {
     instruments: /\|\s*instruments\s*=\s*\{\{\s*(?:flat|h)list\s*\|\s*(?:\n?\*?\s*\[\[([^\]]*)]]\|?|\n?\*\s*([^\n]*)\n*)*\s*/gi,
     known_for: /\|\s*known_for\s*=\s*\{\{([^{}]+)}}/g,
     lists: /\[\[([^[\]]+)]]|\*\s*([^\n]+)/gi,
-};
+}
 const occupationMatchers: {[key: string]: RegExp} = {
     "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
     "Politician": /^[\w\s]+of[\w\s]+(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
     "Activist": /\bactivist\b/i,
     "Musician": /\bmusician\b/i
-};
+}

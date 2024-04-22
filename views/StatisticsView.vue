@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type { TimedStat } from "~/model/UserModel";
+import type { TimedStat } from "~/model/UserModel"
 
 // Props
 const props = defineProps({
@@ -197,7 +197,7 @@ export default {
             displayColors: false,
             callbacks: {
               label: (tooltipItem): string | void | string[] => {
-                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString();
+                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString()
               }
             }
           },
@@ -259,7 +259,7 @@ export default {
             displayColors: false,
             callbacks: {
               label: (tooltipItem): string | void | string[] => {
-                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString();
+                return tooltipItem.dataset.data[tooltipItem.dataIndex]?.toString()
               }
             }
           },

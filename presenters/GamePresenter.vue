@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useCurrentUser } from 'vuefire'
-import { type GameStore } from "~/model/GameModel";
-import type { TimedStat, UserStore } from "~/model/UserModel";
-import GameCenterView from "~/views/GameCenterView.vue";
-import SearchFieldView from "~/views/SearchFieldView.vue";
+import { type GameStore } from "~/model/GameModel"
+import type { TimedStat, UserStore } from "~/model/UserModel"
+import GameCenterView from "~/views/GameCenterView.vue"
+import SearchFieldView from "~/views/SearchFieldView.vue"
 import {
   updateUserToFirebase,
   getAllUserFromFirebase,
@@ -12,8 +12,8 @@ import {
   saveCurrentGameToFirebase,
   readCurGameFromFirebase,
   type UserPersistence,
-} from "~/model/FirebaseModel";
-import { getCurrentDayTimestamp } from "~/utilities/Utils";
+} from "~/model/FirebaseModel"
+import { getCurrentDayTimestamp } from "~/utilities/Utils"
 
 // Props
 const props = defineProps({
@@ -29,8 +29,8 @@ const props = defineProps({
 })
 
 // Constants
-const baseString = "https://en.wikipedia.org/wiki/";
-const validGuess = ref(true);
+const baseString = "https://en.wikipedia.org/wiki/"
+const validGuess = ref(true)
 const user = useCurrentUser()
 
 // Functions
@@ -38,21 +38,21 @@ onMounted(() => {
   updateGameModel()
 })
 function guessAndCheck(name : string){
-  validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name);
+  validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name)
   if(!validGuess.value) {
     setTimeout(() => {
-      validGuess.value = true;
-    }, 2500);
+      validGuess.value = true
+    }, 2500)
   }
 
   if(props.gameModel.end){
     computeRank().then((rank) => {
       if(user.value && rank) {
-        props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, getCurrentDayTimestamp());
-        updateUserToFirebase(props.userModel, user.value.uid);
+        props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, getCurrentDayTimestamp())
+        updateUserToFirebase(props.userModel, user.value.uid)
       }
     }).catch((err) => {
-      console.log(err);
+      console.log(err)
     })
   }
 }
@@ -60,23 +60,22 @@ function guessAndCheck(name : string){
 async function computeRank() {
   return getAllUserFromFirebase().then((data: UserPersistence[]) => {
     const filteredUserData = data.filter((item: UserPersistence) => {
-      return item.stats !== undefined
-          && item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      return item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
           && item.uid !== user.value?.uid
     })
 
     // Sort by number of guesses or time if number of guesses is equal
     const sortedUserData = filteredUserData.sort((a, b) => {
-      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
-      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp());
+      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
       if (aStats && bStats) {
         if (aStats.guesses === bStats.guesses) {
-          return aStats.time - bStats.time;
+          return aStats.time - bStats.time
         }
-        return aStats.guesses - bStats.guesses;
+        return aStats.guesses - bStats.guesses
       }
-      return 0;
-    });
+      return 0
+    })
 
     for (let index = 0; index < sortedUserData.length; index++) {
       const item = sortedUserData[index]
@@ -90,10 +89,10 @@ async function computeRank() {
           return index + 1
       }
     }
-    return sortedUserData.length + 1;
+    return sortedUserData.length + 1
   }).catch((err) => {
-    console.log(err);
-  });
+    console.log(err)
+  })
 }
 
 function updateGameModel(){

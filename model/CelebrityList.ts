@@ -1,4 +1,4 @@
-import Fuse from "fuse.js";
+import Fuse from "fuse.js"
 
 /**
  * This functions takes a string as parameter and returns all celebrities from our list whose name is close
@@ -9,10 +9,10 @@ import Fuse from "fuse.js";
 export function getAutocompleteSuggestions(query: string): string[] {
     const fuseOptions: Fuse.IFuseOptions<string> = {
         threshold: 0.4,
-    };
+    }
     // Initialize Fuse with the celebrity data and options and perform search
-    const fuse = new Fuse(celebrities, fuseOptions);
-    return fuse.search(query).map(result => result.item);
+    const fuse = new Fuse(celebrities, fuseOptions)
+    return fuse.search(query).map(result => result.item)
 }
 
 export const celebrities: string[] = [
@@ -123,4 +123,4 @@ export const celebrities: string[] = [
     "Joe Biden",
     "Greta Thunberg",
     "John von Neumann"
-];
+]

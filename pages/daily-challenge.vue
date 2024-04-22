@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import { type GameStore, useGameStore } from "~/model/GameModel";
-import { celebrities } from "~/model/CelebrityList";
+import { type GameStore, useGameStore } from "~/model/GameModel"
+import { celebrities } from "~/model/CelebrityList"
 import { dailyRandom } from "~/utilities/Utils"
-import GamePresenter from "~/presenters/GamePresenter.vue";
+import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
-import type { UserStore } from "~/model/UserModel";
-import ShouldLoginView from "~/views/ShouldLoginView.vue";
+import type { UserStore } from "~/model/UserModel"
+import ShouldLoginView from "~/views/ShouldLoginView.vue"
 
 // Props
 const props = defineProps({
@@ -24,22 +24,22 @@ const elapsedTime = ref(0)
 const isRulesOpen = ref(false)
 
 // Computed
-let timerInterval: NodeJS.Timeout | null = null;
+let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
 onMounted(() => {
   timerInterval = setInterval(() => {
     if(store.time > elapsedTime.value) elapsedTime.value = store.time
-    elapsedTime.value++;
-  }, 1000);
-});
+    elapsedTime.value++
+  }, 1000)
+})
 
 function checkStopInterval(over : boolean){
   if(over && timerInterval !== null){
-    clearInterval(timerInterval);
-    timerInterval = null;
+    clearInterval(timerInterval)
+    timerInterval = null
   }
-  return elapsedTime.value;
+  return elapsedTime.value
 }
 
 

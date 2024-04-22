@@ -1,4 +1,4 @@
-import { type TimedStat } from "~/model/UserModel";
+import { type TimedStat } from "~/model/UserModel"
 
 // --------------------------------- String utilities  --------------------------------- //
 
@@ -8,7 +8,7 @@ import { type TimedStat } from "~/model/UserModel";
  */
 export function capitalize(str: string): string {
     const s = str.trim()
-    return s.charAt(0).toUpperCase() + s.slice(1);
+    return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 /**
@@ -16,14 +16,14 @@ export function capitalize(str: string): string {
  * @param name - name we want the initials of
  */
 export function getInitials(name: string): string {
-    const words: string[] = name.split(' ');
-    let initials: string = '';
+    const words: string[] = name.split(' ')
+    let initials: string = ''
     for (const word of words) {
         if (word.length > 0) {
-            initials += word[0].toUpperCase() + ". ";
+            initials += word[0].toUpperCase() + ". "
         }
     }
-    return initials;
+    return initials
 }
 
 // --------------------------------- String cleaning utilities --------------------------------- //
@@ -35,9 +35,9 @@ export function getInitials(name: string): string {
  * @param closings - all the possible closing tag
  */
 export function removeTag(text: string, opening: string, ...closings: string[]): string {
-    const regexStr = `${opening}[^]*?(${closings.join('|')})`;
-    const regex = new RegExp(regexStr, 'g');
-    return text.replace(regex, '');
+    const regexStr = `${opening}[^]*?(${closings.join('|')})`
+    const regex = new RegExp(regexStr, 'g')
+    return text.replace(regex, '')
 }
 
 /**
@@ -52,8 +52,8 @@ export function removeNameOccurrences(text: string, name: string): string {
         ...name.split(" ").map(n => n.trim()), name
     ]
     names.forEach(n => {
-        const regex = new RegExp(n + '(?![a-zA-Z])', 'gi');
-        text = text.replace(regex, "???");
+        const regex = new RegExp(n + '(?![a-zA-Z])', 'gi')
+        text = text.replace(regex, "???")
     })
     return text
 }
@@ -76,8 +76,8 @@ export function blurHTML(str: string): string {
  * @returns any - element from the given list
  */
 export function getRandom(list: any[]): any {
-    if (list.length == 0) return null;
-    return list[Math.floor(Math.random() * list.length)];
+    if (list.length == 0) return null
+    return list[Math.floor(Math.random() * list.length)]
 }
 
 /**
@@ -85,18 +85,18 @@ export function getRandom(list: any[]): any {
  * @param text - text to encrypt
  */
 export function getEncryptedString(text : string) : string {
-    let encrypted : string = "";
-    for(let i = 0 ; i < text.length; ++i) {
+    let encrypted : string = ""
+    for(let i = 0; i < text.length; ++i) {
         // Checks whether char is letter or number
         if(/^[a-zA-Z]$/.test(text[i]) || /^[0-9]$/.test(text[i])){
-            const randomChar: number = Math.floor(Math.random() * (122 - 65 + 1)) + 65;
+            const randomChar: number = Math.floor(Math.random() * (122 - 65 + 1)) + 65
             encrypted = encrypted +  String.fromCharCode(randomChar)
         } else {
             // Keep spaces or new lines
-            encrypted = encrypted + text[i];
+            encrypted = encrypted + text[i]
         }
     }
-    return encrypted;
+    return encrypted
 }
 
 /**
@@ -105,29 +105,29 @@ export function getEncryptedString(text : string) : string {
  * @param input - a sentence of words separated by "and"
  */
 export function getAndPermutations(input: string): string[] {
-    const words = input.split(" and ").map(word => word.trim());
+    const words = input.split(" and ").map(word => word.trim())
 
     function generatePermutations(arr: string[], index: number) {
         if (index === arr.length - 1) {
-            return [arr.slice()];
+            return [arr.slice()]
         }
 
-        const result: string[][] = [];
+        const result: string[][] = []
         for (let i = index; i < arr.length; i++) {
             [arr[index], arr[i]] = [arr[i], arr[index]]; // Swap
             result.push(...generatePermutations(arr, index + 1));
             [arr[index], arr[i]] = [arr[i], arr[index]]; // Restore
         }
-        return result;
+        return result
     }
 
-    const permutations: string[] = [];
-    const permutedArrays = generatePermutations(words, 0);
+    const permutations: string[] = []
+    const permutedArrays = generatePermutations(words, 0)
     for (const permutedArray of permutedArrays) {
-        permutations.push(permutedArray.join(" and "));
+        permutations.push(permutedArray.join(" and "))
     }
 
-    return permutations;
+    return permutations
 }
 
 /**
@@ -137,25 +137,25 @@ export function getAndPermutations(input: string): string[] {
  */
 export function splitIntoEqualSentenceParts(text: string, num: number): string[] {
     // Split the text into sentences
-    const sentences = text.match(/[^.!?]+[.!?]+/g);
-    if (!sentences) return [text];
+    const sentences = text.match(/[^.!?]+[.!?]+/g)
+    if (!sentences) return [text]
 
-    const totalSentences = sentences.length;
-    const sentencesPerPart = Math.floor(totalSentences / num); // Number of sentences per part
-    const parts: string[] = [];
+    const totalSentences = sentences.length
+    const sentencesPerPart = Math.floor(totalSentences / num) // Number of sentences per part
+    const parts: string[] = []
 
     // Distribute sentences evenly across the three parts
-    let start = 0;
+    let start = 0
     for (let i = 0; i < num - 1; i++) {
-        const end = start + sentencesPerPart;
-        parts.push(sentences.slice(start, end).join(''));
-        start = end;
+        const end = start + sentencesPerPart
+        parts.push(sentences.slice(start, end).join(''))
+        start = end
     }
 
     // Add the remaining sentences to the last part
-    parts.push(sentences.slice(start).join(''));
+    parts.push(sentences.slice(start).join(''))
 
-    return parts;
+    return parts
 }
 
 /**
@@ -165,17 +165,17 @@ export function splitIntoEqualSentenceParts(text: string, num: number): string[]
  * @returns number - random number in the given range
  */
 export function getRandomNumber(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export function dailyRandom(min: number, max: number): number {
-    let state = getCurrentDayTimestamp();
+    let state = getCurrentDayTimestamp()
     // Use the xorshift32 algorithm for pseudo-random number generation
-    state ^= state << 13;
-    state ^= state >> 17;
-    state ^= state << 5;
-    let factor = (state >>> 0) / 0xFFFFFFFF; // Convert to a float between 0 and 1
-    return Math.floor(factor * (max - min + 1)) + min;
+    state ^= state << 13
+    state ^= state >> 17
+    state ^= state << 5
+    let factor = (state >>> 0) / 0xFFFFFFFF // Convert to a float between 0 and 1
+    return Math.floor(factor * (max - min + 1)) + min
 }
 
 /**
@@ -245,7 +245,7 @@ export const months: {[key: number]: string} = {
     12: "December"
 }
 
-export const passwordMinimalLength: number = 6;
+export const passwordMinimalLength: number = 6
 
 export const countries: {[key: string]: string} = {
     "Afghanistan": "Afghan",

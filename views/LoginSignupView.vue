@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import SignupView from "~/views/SignupView.vue";
-import LoginView from "~/views/LoginView.vue";
+import SignupView from "~/views/SignupView.vue"
+import LoginView from "~/views/LoginView.vue"
 
 //Props
 const props = defineProps({
@@ -19,7 +19,7 @@ const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event']
 
 // Refs
 const ready = ref(false)
-const isModalOpen = ref(false);
+const isModalOpen = ref(false)
 
 // Constants
 const user = useCurrentUser()
@@ -41,11 +41,11 @@ function displayErrorNotification(description: string) {
 //watchers
 watch(() => props.close, () => {
   if(props.close) isModalOpen.value = false
-});
+})
 
 watch(() => props.error, (newValue) => {
   if(newValue !== "") displayErrorNotification(newValue)
-});
+})
 </script>
 
 <template>

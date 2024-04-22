@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
 import { getRandom } from "~/utilities/Utils"
@@ -56,16 +56,16 @@ export const useGameStore = defineStore('game', {
             }
         },
         makeAGuess(newGuess: string): boolean {
-            if (this.prevGuesses.includes(newGuess)) return false;
-            this.prevGuesses.push(newGuess);
-            this.curGuess = newGuess;
-            this.nbGuesses++;
+            if (this.prevGuesses.includes(newGuess)) return false
+            this.prevGuesses.push(newGuess)
+            this.curGuess = newGuess
+            this.nbGuesses++
             if (this.curGuess == this.name) {
-                this.end = true;
-                this.win = true;
-                this.imageUrl = this.updateImage();
-            } else this.getNewHint();
-            return true;
+                this.end = true
+                this.win = true
+                this.imageUrl = this.updateImage()
+            } else this.getNewHint()
+            return true
         },
         getNewHint(): void {
             if (this.infobox.length !== 0 && this.images.length !== 0 && this.paragraphs.length !== 0) {
@@ -79,13 +79,13 @@ export const useGameStore = defineStore('game', {
 
                 if (levelHintsLeft.length == 0) {
                     if (this.hintLevel >= 3) {
-                        this.end = true;
-                        return;
+                        this.end = true
+                        return
                     }
-                    this.hintLevel ++;
+                    this.hintLevel ++
                     this.getNewHint()
                 } else {
-                    getRandom(levelHintsLeft).revealed = true;
+                    getRandom(levelHintsLeft).revealed = true
                     this.imageUrl = this.updateImage()
                 }
             }

@@ -2,9 +2,9 @@ import {
     splitIntoEqualSentenceParts,
     removeNameOccurrences,
     getInitials,
-} from "~/utilities/Utils";
+} from "~/utilities/Utils"
 import { type InfoboxHint, type ParagraphHint, type BlurHint, fieldsOf, paragraphsOf, imagesOf } from "~/model/Hint"
-import { extractInfoboxFromWikitext } from "~/api/Parsing";
+import { extractInfoboxFromWikitext } from "~/api/Parsing"
 
 /**
  * Fetch and return the introduction as plain text of the Wikipedia page of the given celebrity.
@@ -23,26 +23,26 @@ export async function fetchIntro(celebrityName: string): Promise<ParagraphHint[]
         origin: "*"
     }
 
-    const queryParams: string = new URLSearchParams(searchParams).toString();
-    const url: string = BASE_URL + ENDPOINT + queryParams;
+    const queryParams: string = new URLSearchParams(searchParams).toString()
+    const url: string = BASE_URL + ENDPOINT + queryParams
 
     return fetch(url)
         .then(response => response.json())
         .then(data => {
             if ('query' in data && 'pages' in data.query) {
-                const pages = data.query.pages;
-                const pageIds: string[] = Object.keys(pages);
+                const pages = data.query.pages
+                const pageIds: string[] = Object.keys(pages)
                 if (pageIds.length === 1 && pageIds[0] !== '-1') {
                     const pageId: number = Number.parseInt(pageIds[0])
                     let paragraphs: string[] = splitIntoEqualSentenceParts(pages[pageId].extract, NUM_PARAGRAPHS)
                     return paragraphsOf(paragraphs)
                 }
             }
-            throw new Error(`Page with title ${celebrityName} was not found.`);
+            throw new Error(`Page with title ${celebrityName} was not found.`)
         })
         .catch(error => {
-            console.error('Error fetching introduction of Wikipedia page : ', error);
-            throw error;
+            console.error('Error fetching introduction of Wikipedia page : ', error)
+            throw error
         })
 }
 
@@ -62,19 +62,19 @@ export async function fetchImage(celebrityName: string, thumbSize: number): Prom
         piprop: "thumbnail",
         pithumbsize: thumbSize.toString(),
         origin: "*",
-    };
+    }
 
-    const queryParams: string = new URLSearchParams(searchParams).toString();
-    const url: string = BASE_URL + ENDPOINT + queryParams;
+    const queryParams: string = new URLSearchParams(searchParams).toString()
+    const url: string = BASE_URL + ENDPOINT + queryParams
 
    return fetch(url)
        .then(response => response.json())
        .then(data => {
            if ('query' in data && 'pages' in data.query) {
-               const pages = data.query.pages;
-               const pageIds: string[] = Object.keys(pages);
+               const pages = data.query.pages
+               const pageIds: string[] = Object.keys(pages)
                if (pageIds.length === 1 && pageIds[0] !== '-1') {
-                   const pageId: number = Number.parseInt(pageIds[0]);
+                   const pageId: number = Number.parseInt(pageIds[0])
                    if ('thumbnail' in pages[pageId]) {
                        return imagesOf(pages[pageId].thumbnail.source)
                    }
@@ -83,8 +83,8 @@ export async function fetchImage(celebrityName: string, thumbSize: number): Prom
            throw new Error(`Image for page with title ${celebrityName} was not found.`)
         })
        .catch(error => {
-           console.error('Error fetching image URL of Wikipedia page : ', error);
-           throw error;
+           console.error('Error fetching image URL of Wikipedia page : ', error)
+           throw error
        })
 }
 
@@ -103,20 +103,20 @@ export async function fetchInfoBox(celebrityName: string): Promise<InfoboxHint[]
         rvprop: "content",
         rvsection: "0",
         origin: "*"
-    };
+    }
 
-    const queryParams: string = new URLSearchParams(searchParams).toString();
-    const url: string = BASE_URL + ENDPOINT + queryParams;
+    const queryParams: string = new URLSearchParams(searchParams).toString()
+    const url: string = BASE_URL + ENDPOINT + queryParams
 
     return fetch(url)
         .then(response => response.json())
         .then(data => {
             if ('query' in data && 'pages' in data.query) {
-                let pages = data.query.pages;
-                let wikitext: string = "";
+                let pages = data.query.pages
+                let wikitext: string = ""
                 for (const key in pages) {
                     if (pages.hasOwnProperty(key)) {
-                        wikitext = wikitext.concat(pages[key].revisions[0]["*"]);
+                        wikitext = wikitext.concat(pages[key].revisions[0]["*"])
                     }
                 }
                 return fieldsOf({Initials: getInitials(celebrityName), ...extractInfoboxFromWikitext(wikitext)})
@@ -124,11 +124,11 @@ export async function fetchInfoBox(celebrityName: string): Promise<InfoboxHint[]
             throw new Error(`Infobox for page ${celebrityName} was not found.`)
         })
         .catch(error => {
-            console.error(`Error fetching infobox of Wikipedia page : `, error);
-            throw error;
+            console.error(`Error fetching infobox of Wikipedia page : `, error)
+            throw error
         })
 }
 
-const BASE_URL: string = "https://en.wikipedia.org";
-const ENDPOINT: string = "/w/api.php?";
-const NUM_PARAGRAPHS: number = 3;
+const BASE_URL: string = "https://en.wikipedia.org"
+const ENDPOINT: string = "/w/api.php?"
+const NUM_PARAGRAPHS: number = 3

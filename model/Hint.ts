@@ -36,9 +36,9 @@ export type BlurHint = Omit<Hint, 'label' | 'value' | 'number'>
  * @param obj - the infobox fields
  */
 export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
-    let compulsoryFields: InfoboxHint[] = [];
-    let arbitraryFields: InfoboxHint[] = [];
-    const filteredLabels : string[] = Object.keys(compulsoryLabels).filter(label => compulsoryLabels[label] === 1);
+    let compulsoryFields: InfoboxHint[] = []
+    let arbitraryFields: InfoboxHint[] = []
+    const filteredLabels : string[] = Object.keys(compulsoryLabels).filter(label => compulsoryLabels[label] === 1)
     let randomFirst : string = getRandom(filteredLabels)
     Object.entries(obj).forEach(([key, value]) => {
         if (arbitraryLabels.hasOwnProperty(key)) {
@@ -66,7 +66,7 @@ export function fieldsOf(obj: {[key: string]:  string}): InfoboxHint[] {
  * @param arr - the intro paragraphs in order
  */
 export function paragraphsOf(arr: string[]): ParagraphHint[] {
-    let paragraphs: ParagraphHint[] = [];
+    let paragraphs: ParagraphHint[] = []
     paragraphs.push({
         number: 1,
         level: 3,
