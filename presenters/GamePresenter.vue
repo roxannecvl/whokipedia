@@ -91,7 +91,7 @@ async function computeRank() {
 </script>
 
 <template>
-  <div class="flex flex-col h-fit">
+  <div class="flex flex-col h-full">
     <SearchFieldView class="px-2"
                     @new-name-set="selectedName => guessAndCheck(selectedName)"
                     :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"

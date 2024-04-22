@@ -47,13 +47,14 @@ function checkStopInterval(over : boolean){
     <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
-    <div v-else>
-
-      <div class="hidden lg:flex">
-        <div class="w-1/6 p-2" style="max-height: 75vh; overflow-y:auto">
+    <div v-else class="h-full">
+      <div class="h-full hidden lg:flex">
+        <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
           <SidebarPresenter :model="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
         </div>
-        <div class="w-5/6 p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
+        <div class="w-5/6 p-2">
+          <GamePresenter :userModel="userModel" :gameModel="store" />
+        </div>
       </div>
 
       <div class="lg:hidden">
@@ -75,7 +76,9 @@ function checkStopInterval(over : boolean){
             </div>
           </UCard>
         </USlideover>
-        <div class="p-2"><GamePresenter :userModel="userModel" :gameModel="store" /></div>
+        <div class="h-full p-2">
+          <GamePresenter :userModel="userModel" :gameModel="store" />
+        </div>
       </div>
       
     </div>

@@ -14,15 +14,14 @@ const store: UserStore = useUserStore()
         base: 'flex flex-col h-full',
         rounded: 'rounded-none sm:rounded-lg',
         body: {
-          base: 'h-full overflow-auto',
+          base: 'h-full overflow-clip',
         }
       }"
-      class="h-full"
     >
       <template #header>
         <HeaderPresenter :model="store"/>
       </template>
-      <main>
+       <main class="flex h-full">
         <NuxtPage :userModel="store"/>
       </main>
       <UNotifications />
