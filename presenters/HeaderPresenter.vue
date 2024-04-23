@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth";
-import { useCurrentUser, useFirebaseAuth } from "vuefire";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth"
+import { useCurrentUser, useFirebaseAuth } from "vuefire"
 import {
   getAllUserFromFirebase,
   initializeFirebase,
@@ -9,10 +9,10 @@ import {
   saveUserToFirebase,
   updateUserToFirebase,
   type UserPersistence,
-} from "~/model/FirebaseModel";
-import { type UserStore } from "~/model/UserModel";
-import { getCurrentDayTimestamp, getRandomNumber, getRandomTimedStats } from "~/utilities/Utils";
-import HeaderView from "~/views/HeaderView.vue";
+} from "~/model/FirebaseModel"
+import { type UserStore } from "~/model/UserModel"
+import { getCurrentDayTimestamp, getRandomNumber, getRandomTimedStats } from "~/utilities/Utils"
+import HeaderView from "~/views/HeaderView.vue"
 
 // Props
 const props = defineProps({
@@ -53,7 +53,7 @@ onMounted(() => {
       closeModal.value = true
       setTimeout(() => {
         closeModal.value = false
-      }, 1000);
+      }, 1000)
     }
   })
 })
@@ -73,7 +73,7 @@ function login(username: string, password: string): void {
         errorMessage.value = message
         setTimeout(() => {
           errorMessage.value = ""
-        }, 300);
+        }, 300)
       })
 }
 
@@ -86,7 +86,7 @@ function login(username: string, password: string): void {
 function signup(email: string, username: string, password: string): void {
   createUserWithEmailAndPassword(auth, email, password)
       .then((credentials: UserCredential) => {
-        saveUserToFirebase(props.model, username, credentials.user?.uid);
+        saveUserToFirebase(props.model, username, credentials.user?.uid)
       })
       .catch((error) => {
         const message: string = "Failed to sign up : " + error
@@ -94,7 +94,7 @@ function signup(email: string, username: string, password: string): void {
         errorMessage.value = message
         setTimeout(() => {
           errorMessage.value = ""
-        }, 300);
+        }, 300)
       })
 }
 
@@ -109,7 +109,7 @@ function logout(): void {
         errorMessage.value = message
         setTimeout(() => {
           errorMessage.value = ""
-        }, 300);
+        }, 300)
       })
 }
 
@@ -141,11 +141,11 @@ function updateLeaderboard(){
       const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
       if (aStats && bStats) {
         if (aStats.guesses === bStats.guesses) {
-          return aStats.time - bStats.time;
+          return aStats.time - bStats.time
         }
-        return aStats.guesses - bStats.guesses;
+        return aStats.guesses - bStats.guesses
       }
-      return 0;
+      return 0
     })
 
     // Keep only information relevant to the leaderboard

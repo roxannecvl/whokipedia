@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import LoginSignupView from "~/views/LoginSignupView.vue";
-import StatisticsView from "~/views/StatisticsView.vue";
-import LeaderboardView from "~/views/LeaderboardView.vue";
-import type { TimedStat } from "~/model/UserModel";
+import LoginSignupView from "~/views/LoginSignupView.vue"
+import StatisticsView from "~/views/StatisticsView.vue"
+import LeaderboardView from "~/views/LeaderboardView.vue"
+import type { TimedStat } from "~/model/UserModel"
 
 // Props
 const props = defineProps({
@@ -56,7 +56,7 @@ const props = defineProps({
 const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis', 'populate-stats', 'update-leaderboard-bis'])
 
 // Constants
-const logoPath = '/img/logo-primary-filled.svg';
+const logoPath = '/img/logo-primary-filled.svg'
 // Functions
 function populateStats() {
   emit('populate-stats')

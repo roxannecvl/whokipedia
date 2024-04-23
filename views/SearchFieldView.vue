@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import { getAutocompleteSuggestions } from "~/model/CelebrityList"
 
 // Props
 const props = defineProps( {
@@ -21,28 +21,28 @@ const props = defineProps( {
 const emit = defineEmits(['new-name-set'])
 
 // Refs
-const selectedName = ref("");
-const tremble = ref(false);
+const selectedName = ref("")
+const tremble = ref(false)
 
 // Constants
-const mode = useColorMode();
-const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6');
-const toast = useToast();
-const errTitle = "Already guessed!";
-const errDescription = "This guess doesn't count as a new guess, try again :)";
+const mode = useColorMode()
+const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6')
+const toast = useToast()
+const errTitle = "Already guessed!"
+const errDescription = "This guess doesn't count as a new guess, try again :)"
 
 // Watchers
 watch(selectedName, newName)
 
 // Functions
 function newName(): void {
-  if (selectedName.value === "") return;
-  emit("new-name-set", selectedName.value);
-  tremble.value = true;
+  if (selectedName.value === "") return
+  emit("new-name-set", selectedName.value)
+  tremble.value = true
   setTimeout(() => {
-    selectedName.value = "";
-    tremble.value = false;
-  }, 300);
+    selectedName.value = ""
+    tremble.value = false
+  }, 300)
   setTimeout(() => {
     if(props.alert){
       toast.add({
@@ -53,19 +53,13 @@ function newName(): void {
         timeout: 2500
       })
     }
-  }, 50);
-}
-
-function setAlert() : void {
-  if(props.alert){
-
-  }
+  }, 50)
 }
 </script>
 
 
 <template>
-  <div v-if="!over" class="pl-2.5 sm:pl-1 pr-2.5">
+  <div v-if="!over" class="pl-2.5 sm:pl-1 pr-2.5 px-2">
     <UInputMenu
         v-model="selectedName"
         :search="getAutocompleteSuggestions"
@@ -87,14 +81,14 @@ function setAlert() : void {
 <style>
 
 @keyframes tremble {
-  0% { transform: translate(0); }
-  25% { transform: translate(-15px, 0px); }
-  50% { transform: translate(15px, 0px); }
-  75% { transform: translate(-15px, 0px); }
-  100% { transform: translate(0); }
+  0% { transform: translate(0) }
+  25% { transform: translate(-15px, 0px) }
+  50% { transform: translate(15px, 0px) }
+  75% { transform: translate(-15px, 0px) }
+  100% { transform: translate(0) }
 }
 
 .tremble {
-  animation: tremble 0.3s ease-in-out 1;
+  animation: tremble 0.3s ease-in-out 1
 }
 </style>

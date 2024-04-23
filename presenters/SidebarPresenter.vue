@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import { type GameStore } from "~/model/GameModel";
-import SidebarView from "~/views/SidebarView.vue";
+import { type GameStore } from "~/model/GameModel"
+import SidebarView from "~/views/SidebarView.vue"
 
 // Props
 const props = defineProps({

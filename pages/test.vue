@@ -1,19 +1,19 @@
 <script setup lang="ts">
 
-import { ref } from 'vue';
-import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource";
-import { getAutocompleteSuggestions } from "~/model/CelebrityList";
+import { ref } from 'vue'
+import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
+import { getAutocompleteSuggestions } from "~/model/CelebrityList"
 
 const isOpen = ref(false)
-const selectedName = ref();
-const intro = ref();
-const imageUrl = ref();
-const infoBox = ref();
+const selectedName = ref()
+const intro = ref()
+const imageUrl = ref()
+const infoBox = ref()
 
 const getData = async () => {
-  intro.value = await fetchIntro(selectedName.value);
-  imageUrl.value = await fetchImage(selectedName.value, 100);
-  infoBox.value = await fetchInfoBox(selectedName.value);
+  intro.value = await fetchIntro(selectedName.value)
+  imageUrl.value = await fetchImage(selectedName.value, 100)
+  infoBox.value = await fetchInfoBox(selectedName.value)
 }
 
 watch(selectedName, getData)

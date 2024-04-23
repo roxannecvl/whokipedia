@@ -1,26 +1,26 @@
 <script setup lang="ts">
 
-const logoPath = ref('');
+const logoPath = ref('')
 
 // Constants
-const logoDark = '/img/dark-community-logo.svg';
-const logoLight = '/img/light-community-logo.svg';
-const mode = useColorMode();
+const logoDark = '/img/dark-community-logo.svg'
+const logoLight = '/img/light-community-logo.svg'
+const mode = useColorMode()
 
 // Watchers
 watch(mode, (newMode) => {
-  logoPath.value = newMode.value === 'dark' ? logoDark : logoLight;
-});
+  logoPath.value = newMode.value === 'dark' ? logoDark : logoLight
+})
 
 // Computed
 onMounted(() => {
-  logoPath.value = mode.value === 'dark' ? logoDark : logoLight;
-});
+  logoPath.value = mode.value === 'dark' ? logoDark : logoLight
+})
 
 </script>
 
 <template>
-  <div class="relative" style="min-height: 70vh;">
+  <div class="relative" style="min-height: 70vh">
     <div class="absolute inset-0 pointer-events-none bg-no-repeat bg-right blur-sm"
          :style="{ backgroundImage: `url(${logoPath})`, backgroundSize: '55%'}">
     </div>

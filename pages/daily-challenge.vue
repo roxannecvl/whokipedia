@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import { type GameStore, useGameStore } from "~/model/GameModel";
-import { celebrities } from "~/model/CelebrityList";
+import { type GameStore, useGameStore } from "~/model/GameModel"
+import { celebrities } from "~/model/CelebrityList"
 import { dailyRandom } from "~/utilities/Utils"
-import GamePresenter from "~/presenters/GamePresenter.vue";
+import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
-import type { UserStore } from "~/model/UserModel";
-import ShouldLoginView from "~/views/ShouldLoginView.vue";
+import type { UserStore } from "~/model/UserModel"
+import ShouldLoginView from "~/views/ShouldLoginView.vue"
 
 // Props
 const props = defineProps({
@@ -22,32 +22,34 @@ store.init(celebrities[dailyRandom(0, celebrities.length)], true)
 // Refs
 const elapsedTime = ref(0)
 const isRulesOpen = ref(false)
+const lastUser = ref("")
 
 // Computed
-let timerInterval: NodeJS.Timeout | null = null;
+let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
 onMounted(() => {
-  startInterval()
+  lastUser.value = props.userModel.username
+  if(store.time > elapsedTime.value) elapsedTime.value = store.time
+  if(timerInterval === null) startInterval()
 });
 
 function startInterval(){
   timerInterval = setInterval(() => {
-    if(store.time > elapsedTime.value){
-      elapsedTime.value = store.time
-    }
-    if(props.userModel.username !== "") {
-      elapsedTime.value++
-    }else{
-      elapsedTime.value = 0
-    }
-  }, 1000);
+    elapsedTime.value++
+  }, 1000)
 }
 
 function checkStopInterval(over : boolean){
+  if(store.time > elapsedTime.value) elapsedTime.value = store.time
+  if(props.userModel.username !== lastUser.value && timerInterval !== null) {
+    lastUser.value = props.userModel.username
+    clearInterval(timerInterval)
+    timerInterval = null
+  }
   if(over && timerInterval !== null){
-    clearInterval(timerInterval);
-    timerInterval = null;
+    clearInterval(timerInterval)
+    timerInterval = null
   }
   if(!over && timerInterval === null){
     elapsedTime.value = 0
@@ -63,7 +65,7 @@ function checkStopInterval(over : boolean){
     <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
-    
+
     <div v-else class="h-full">
       <div class="h-full hidden lg:flex">
         <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">

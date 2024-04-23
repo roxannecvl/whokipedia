@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {leaderboardData} from "~/presenters/HeaderPresenter.vue";
+import type {leaderboardData} from "~/presenters/HeaderPresenter.vue"
 
 // Props
 const props = defineProps({
@@ -55,7 +55,7 @@ const columns = [{
 </script>
 
 <template>
-  <UButton icon="i-heroicons-trophy-16-solid" @click="() => {isLeaderboardOpen = true; emit('update-leaderboard') }">
+  <UButton icon="i-heroicons-trophy-16-solid" @click="() => { isLeaderboardOpen = true; emit('update-leaderboard') }">
     <span class="hidden md:inline">Leaderboard</span>
   </UButton>
   <UModal v-model="isLeaderboardOpen" :ui="{

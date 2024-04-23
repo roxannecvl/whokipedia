@@ -1,7 +1,7 @@
-import { ref as dbRef, set, update, get, remove, Database } from "firebase/database";
-import type { UserStore } from "~/model/UserModel.js";
-import { getCurrentDayTimestamp } from "~/utilities/Utils";
-import type {GameStore} from "~/model/GameModel";
+import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
+import type { UserStore } from "~/model/UserModel.js"
+import { getCurrentDayTimestamp } from "~/utilities/Utils"
+import type {GameStore} from "~/model/GameModel"
 
 let database: Database
 
@@ -9,7 +9,7 @@ let database: Database
  * This method initializes Firebase database.
  */
 export function initializeFirebase(): void {
-    database = useDatabase();
+    database = useDatabase()
 }
 
 /**
@@ -19,9 +19,9 @@ export function initializeFirebase(): void {
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export function saveUserToFirebase(store: UserStore, username: string, uid: string): void {
-    store.updateUser(uid, username);
-    const persistence: {[key: string]: string | number} = userStoreToPersistence(store);
-    set(dbRef(database, 'users/' + uid), persistence).then();
+    store.updateUser(uid, username)
+    const persistence: {[key: string]: string | number} = userStoreToPersistence(store)
+    set(dbRef(database, 'users/' + uid), persistence).then()
 }
 
 
@@ -31,8 +31,8 @@ export function saveUserToFirebase(store: UserStore, username: string, uid: stri
  * @param uid - ID to give to model in order to keep track in persistence
  */
 export function saveCurrentGameToFirebase(store: GameStore, uid: string): void {
-    if(store.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then();
-    else set(dbRef(database, 'users/' + uid + '/currentGame'),store.$state).then();
+    if(store.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
+    else set(dbRef(database, 'users/' + uid + '/currentGame'),store.$state).then()
 }
 
 /**
@@ -76,7 +76,7 @@ export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
             let newAverage = snapshot.val().averageRank + (diff / snapshot.val().gamesPlayed)
             update(dbRef(database, 'users/' + uid), {averageRank : newAverage}).then()
         }
-    });
+    })
 }
 
 /**
@@ -87,10 +87,10 @@ export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
 export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
     return get(dbRef(database, 'users/' + uid)).then(snapshot => {
         if(snapshot.val()){
-            persistenceToUserModel(store, snapshot.val());
+            persistenceToUserModel(store, snapshot.val())
         }
-        return store;
-    });
+        return store
+    })
 }
 
 
@@ -104,8 +104,8 @@ export async function readCurGameFromFirebase(store : GameStore, uid: string): P
         if(snapshot.val())store.$state = snapshot.val()
         //reset daily challenge
         else if (store.nbGuesses > 0) store.init(store.name, true).then()
-        return store;
-    });
+        return store
+    })
 }
 
 /**
@@ -113,7 +113,7 @@ export async function readCurGameFromFirebase(store : GameStore, uid: string): P
  */
 export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
     return get(dbRef(database, 'users')).then(snapshot => {
-        const usersData: UserPersistence[] = [];
+        const usersData: UserPersistence[] = []
         snapshot.forEach((child) => {
             usersData.push({
                 uid: child.key,
@@ -132,10 +132,10 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
                         time: child.val().stats[key].time
                     }
                 })
-            });
-        });
-        return usersData;
-    });
+            })
+        })
+        return usersData
+    })
 }
 
 /**
@@ -177,8 +177,8 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
                 time: persistence.stats[key].time
             }
         })
-    );
-    store.updateUser(persistence.uid, persistence.username);
+    )
+    store.updateUser(persistence.uid, persistence.username)
 }
 
 export type UserPersistence = {
