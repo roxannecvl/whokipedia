@@ -18,23 +18,18 @@ Finally, once the game is done and the celebrity revealed, a link to the wikiped
 Here is the list of our already implemented features 
 - Api Calls
 - Part of the parsing the response from fetchInfobox
-- Login form (view)
-- Signup form (view)
-- Statistics view (v1)
+- Login and Signup views and logic
+- Statistics 
+- Leaderboard
 - Search field with auto-complete and suggestion
 - GameModel
 - UserModel 
+- Daily Challenge page (view, presenter and page)
+- Training Page (view, presenter and page)
+- First page with the logo, rules and login (view, presenter and page)
 
-### To be done 
-- Daily Challenge page (view, presenter and page) 
-- Training Page (view, presenter and page) 
-- First page with the logo, rules and login (view, presenter and page) 
+### To be done
 - Finish the parsing of the response from fetchInfobox
-- Final version of the statisctics page
-- Leaderboard page (view, presenter and page)
-- SignupLoginPresenter
-- Statistics page (page and presenter and view v2)
-- app.vue (update it with SignupLoginPresenter) 
 
 ### File structure 
 ```
@@ -54,31 +49,33 @@ whokipedia/                          #
 ├── nuxt.config.ts                   #
 ├── package.json                     # All our dependencies 
 ├── pages/                           #
-│   ├── daily-challenge.vue          # with GamePresenter and SidebarPresenter together
+│   ├── daily-challenge.vue          # with GamePresenter, SidebarPresenter and PlayAgainPresenter together
 │   ├── index.vue                    # with WelcomePagePresenter.vue
-│   ├── leaderboard.vue              # with LeaderboardPresenter.vue
-│   ├── statistics.vue               # with StatisticsPresenter.vue
-│   └── training.vue                 # with GamePresenter and SidebarPresenter together
+│   └── solo-mode.vue                # with GamePresenter, SidebarPresenter and PlayAgainPresenter together
 ├── presenters/                      #
 │   ├── GamePresenter.vue            # with GameCenterView.vue and InfoboxView.vue
-│   ├── LeaderboardPresenter.vue     # with LeaderboardView.vue
 │   ├── HeaderPresenter.vue          # with HeaderView.vue
+│   ├── PlayAgainPresenter.vue       # with PlayAgainView.vue
 │   ├── SidebarPresenter.vue         # with SidebarView.vue
-│   ├── StatisticsPresenter.vue      # with StatisticsView.vue
 │   └── WelcomePagePresenter.vue     # with WelcomePageView.vue
 ├── tailwind.config.ts               #
 ├── tsconfig.json                    #
 ├── utilities/                       #
 │   └── Utils.ts                     # utilities function, like getAverage(), getRandom(),  ...
 └── views/                           #
-    ├── GameCenterView.vue           # contains the search bar and the intro paragraph of the celebrity 
+    ├── GameCenterView.vue           # contains intro paragraph of the celebrity and InfoboxView
+    ├── HeaderView.vue                # contains the UI of the Header, internally calls LoginSignupView LeaderboardView and StatisticsView which all are modals
     ├── InfoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
-    ├── LeaderboardView.vue          # contains the leadedboard (if  logged in) 
+    ├── LeaderboardView.vue          # contains the leaderboard as a modal
+    ├── LoginSignupView.vue          # puts LoginView and SignupView together as a modal
     ├── LoginView.vue                # log in form 
+    ├── PlayAgainView.vue            # buttons to play again
+    ├── SearchFieldView.vue          # the place where the user inputs their guesses
+    ├── ShouldLoginView.vue          # A view to invite the current player to log in 
     ├── SidebarView.vue              # rules, login button, logo (train and leaderboard button if done) 
     ├── SignupView.vue               # sign up form 
-    ├── StatisticsView.vue           # statistics of the user (if loged in) 
-    └── WelcomePageView.vue          # One play button, the rules and the logo
+    ├── StatisticsView.vue           # statistics of the user (if loged in) as a modal
+    └── WelcomePageView.vue          # two play buttons, the rules and the logo
 ```
 
 ### Tools used 

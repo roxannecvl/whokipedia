@@ -101,9 +101,18 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
  */
 export async function readCurGameFromFirebase(store : GameStore, uid: string): Promise<GameStore> {
     return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
-        if(snapshot.val())store.$state = snapshot.val()
-        //reset daily challenge
-        else if (store.nbGuesses > 0) store.init(store.name, true).then()
+        if(snapshot.val()){
+            //make sure we don't get an old gameState
+            if(snapshot.val().name == store.name) {
+                store.$state = snapshot.val()
+                return store
+            }else{
+                //remove old game
+                remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
+            }
+        }
+        //reset daily challenge if needed
+        if (store.nbGuesses > 0) store.init(store.name, true).then()
         return store
     })
 }

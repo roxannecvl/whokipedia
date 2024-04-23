@@ -24,7 +24,11 @@ const props = defineProps({
   userModel: {
       type: Object as () => UserStore,
       required: true,
-  }
+  },
+  dailyChallenge: {
+    type: Boolean,
+    required: true,
+  },
 })
 
 // Constants
@@ -36,7 +40,13 @@ const user = useCurrentUser()
 const ready = ref(false)
 
 // Functions
-onMounted(() => {updateGameModel()})
+onMounted(() => {
+  if(props.dailyChallenge){
+    updateGameModel()
+  }else{
+    ready.value = true
+  }
+})
 function guessAndCheck(name : string){
   validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name)
   if(!validGuess.value) {
@@ -45,8 +55,7 @@ function guessAndCheck(name : string){
     }, 2500)
   }
 
-  if(props.gameModel.end){
-
+  if(props.gameModel.end && props.dailyChallenge){
     computeRank().then((rank) => {
       if(user.value && rank) {
         props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, getCurrentDayTimestamp())
@@ -58,6 +67,7 @@ function guessAndCheck(name : string){
   }
 }
 
+// Only used in daily challenge mode
 async function computeRank() {
   return getAllUserFromFirebase().then((data: UserPersistence[]) => {
     const filteredUserData = data.filter((item: UserPersistence) => {
@@ -95,6 +105,8 @@ async function computeRank() {
     console.log(err)
   })
 }
+
+// Only used in daily challenge mode
 function updateGameModel(){
   ready.value = false
   let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == getCurrentDayTimestamp())
@@ -108,14 +120,14 @@ function updateGameModel(){
   } else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => ready.value = true)
 }
 
+// Only used in daily challenge mode
 function updateCurrentGame() {
   setTimeout(() => {
     if (user.value && props.gameModel.nbGuesses > 0) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
   }, 1000)
 }
 
-//watch(props.userModel, updateGameModel)
-watch(props.gameModel.$state, updateCurrentGame)
+if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
 
 </script>
 
