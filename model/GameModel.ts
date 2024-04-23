@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
-import { getRandom } from "~/utilities/Utils"
+import { getCurrentDayTimestamp, shuffle } from "~/utilities/Utils"
 
 export const useGameStore = defineStore('game', {
     state: () => ({
@@ -10,7 +10,7 @@ export const useGameStore = defineStore('game', {
         imageUrl: "" as string,
         paragraphs: [] as ParagraphHint[],
         infobox: [] as InfoboxHint[],
-        hintLevel: 1 as number,
+        hintList : [] as (InfoboxHint | ParagraphHint | BlurHint)[],
         nbGuesses: 0 as number,
         totalGuesses: 1 as number,
         time: 0 as number,
@@ -33,7 +33,7 @@ export const useGameStore = defineStore('game', {
         }
     },
     actions: {
-        async init (name: string): Promise<void> {
+        async init (name: string, isDaily : boolean = false): Promise<void> {
             this.$reset()
             this.name = name
             try {
@@ -49,6 +49,17 @@ export const useGameStore = defineStore('game', {
                 this.paragraphs = paragraphs
                 if (this.intro) this.totalGuesses += this.intro.length
                 this.imageUrl = this.updateImage()
+                let hintLV1 = [...this.images, ...this.infobox, ...this.paragraphs]
+                    .filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == 1)
+                let hintLV2 = [...this.images, ...this.infobox, ...this.paragraphs]
+                    .filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == 2)
+                let hintLV3 = [...this.images, ...this.infobox, ...this.paragraphs]
+                    .filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == 3)
+                let seed = 0
+                let date = new Date()
+                if(isDaily) seed = (date.getMonth() + date.getDate()) / 42
+                this.hintList = [...shuffle(hintLV1, seed), ...shuffle(hintLV2, seed), ...shuffle(hintLV3, seed)]
+                this.getNewHint()
             } catch (error) {
                 console.error("'Error initializing new game : ', error")
             } finally {
@@ -68,27 +79,12 @@ export const useGameStore = defineStore('game', {
             return true
         },
         getNewHint(): void {
-            if (this.infobox.length !== 0 && this.images.length !== 0 && this.paragraphs.length !== 0) {
-                const levelHintsLeft: (InfoboxHint | ParagraphHint | BlurHint)[] = [
-                    ...this.images,
-                    ...this.infobox,
-                    ...this.paragraphs.filter(paragraph =>
-                        paragraph.value !== "" && paragraph.value !== this.firstSentence
-                     ),
-                ].filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == this.hintLevel)
-
-                if (levelHintsLeft.length == 0) {
-                    if (this.hintLevel >= 3) {
-                        this.end = true
-                        return
-                    }
-                    this.hintLevel ++
-                    this.getNewHint()
-                } else {
-                    getRandom(levelHintsLeft).revealed = true
-                    this.imageUrl = this.updateImage()
-                }
+            if(this.nbGuesses >= this.hintList.length){
+                this.end = true
+                this.win = false
             }
+            else this.hintList[this.nbGuesses].revealed = true
+            this.imageUrl = this.updateImage()
         },
         updateImage(): string {
             return this.images.length > 0 ?

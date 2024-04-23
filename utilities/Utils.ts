@@ -168,6 +168,11 @@ export function getRandomNumber(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+/**
+ * Get a random name between max and min dependent on a seed representing the current day
+ * @param min - the minimum number returned
+ * @param max - the maximum number returned
+ */
 export function dailyRandom(min: number, max: number): number {
     let state = getCurrentDayTimestamp()
     // Use the xorshift32 algorithm for pseudo-random number generation
@@ -176,6 +181,30 @@ export function dailyRandom(min: number, max: number): number {
     state ^= state << 5
     let factor = (state >>> 0) / 0xFFFFFFFF // Convert to a float between 0 and 1
     return Math.floor(factor * (max - min + 1)) + min
+}
+
+/**
+ * Suffles a list pseudo-randomly
+ * @param lst - the list to be shuffled
+ * @param seed - a non-compulsory seed for the random calculations
+ */
+export function shuffle<T>(lst: T[], seed: number = 0): T[] {
+    if(seed === 0) seed = Math.random()
+    const shuffledList = lst.slice();
+    const random = (seed: number) => {
+        let x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    };
+    for (let i = shuffledList.length - 1; i > 0; i--) {
+        const j = Math.floor(random(seed) * (i + 1));
+        seed += i;
+        [shuffledList[i], shuffledList[j]] = [shuffledList[j], shuffledList[i]];
+    }
+    for (let i = 0; i < lst.length; i++) {
+        console.log(shuffledList[i] === lst[i])
+    }
+
+    return shuffledList;
 }
 
 /**
