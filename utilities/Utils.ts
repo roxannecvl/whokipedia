@@ -184,28 +184,29 @@ export function dailyRandom(min: number, max: number): number {
 }
 
 /**
- * Suffles a list pseudo-randomly
- * @param lst - the list to be shuffled
+ * Get a random permutation of number between min and max (both inclusive) pseudo-randomly
+ * @param min - the min number
+ * @param max - the max number
  * @param seed - a non-compulsory seed for the random calculations
  */
-export function shuffle<T>(lst: T[], seed: number = 0): T[] {
+export function randomPermutation(min: number, max: number, seed : number = 0): number[] {
     if(seed === 0) seed = Math.random()
-    const shuffledList = lst.slice();
+    const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min); // Generate numbers from min to max
+    const permutation: number[] = [];
+
     const random = (seed: number) => {
         let x = Math.sin(seed++) * 10000;
         return x - Math.floor(x);
     };
-    for (let i = shuffledList.length - 1; i > 0; i--) {
-        const j = Math.floor(random(seed) * (i + 1));
-        seed += i;
-        [shuffledList[i], shuffledList[j]] = [shuffledList[j], shuffledList[i]];
-    }
-    for (let i = 0; i < lst.length; i++) {
-        console.log(shuffledList[i] === lst[i])
+
+    while (numbers.length > 0) {
+        const randomIndex = Math.floor(random(seed) * numbers.length);
+        permutation.push(numbers.splice(randomIndex, 1)[0]);
     }
 
-    return shuffledList;
+    return permutation;
 }
+
 
 /**
  * Get the current day timestamp.

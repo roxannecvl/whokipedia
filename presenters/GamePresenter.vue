@@ -24,8 +24,7 @@ const props = defineProps({
   userModel: {
       type: Object as () => UserStore,
       required: true,
-  },
-
+  }
 })
 
 // Constants
@@ -112,7 +111,7 @@ function updateGameModel(){
 function updateCurrentGame() {
   setTimeout(() => {
     if (user.value && props.gameModel.nbGuesses > 0) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
-  }, 100)
+  }, 1000)
 }
 
 //watch(props.userModel, updateGameModel)
@@ -122,7 +121,7 @@ watch(props.gameModel.$state, updateCurrentGame)
 
 <template>
   <div v-if="ready" class="flex flex-col h-full">
-    <SearchFieldView class="px-2"
+    <SearchFieldView
         @new-name-set="selectedName => guessAndCheck(selectedName)"
         :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
     />
@@ -134,6 +133,7 @@ watch(props.gameModel.$state, updateCurrentGame)
       />
     </div>
   </div>
+  <div v-else><UIcon name="i-eos-icons-loading"/></div>
 
 </template>
 
