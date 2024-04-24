@@ -30,10 +30,10 @@ export const useUserStore = defineStore('user', {
         },
         endGame(win: boolean, rank: number, guesses: number, time: number, date: number): void {
             if (win) {
-                this.updateStreak()
                 this.winRate = (this.winRate * this.gamesPlayed + 1) / (this.gamesPlayed+1)
                 if(this.timedStats === undefined) this.timedStats = new Array<TimedStat>()
                 this.timedStats.push({date, guesses, rank, time})
+                this.updateStreak()
                 this.averageRank = (this.averageRank * this.gamesPlayed + rank) / (this.gamesPlayed+1)
                 this.averageGuesses = (this.averageGuesses * this.gamesPlayed + guesses) / (this.gamesPlayed+1)
             }else {
@@ -47,7 +47,14 @@ export const useUserStore = defineStore('user', {
             this.username = username
         },
         updateStreak(): void {
+            const millisecondsInADay : number = 86400000
             this.currentStreak++
+            const lstLength = this.timedStats.length
+            // reset streak to 1 if the time difference between the two last games isn't 24 hours 
+            if(lstLength >= 2 &&
+                this.timedStats[lstLength - 2].date - this.timedStats[lstLength - 3].date !== millisecondsInADay){
+                this.currentStreak = 1
+            }
             if (this.currentStreak > this.maxStreak) this.maxStreak = this.currentStreak
         },
         resetStreak(): void {
