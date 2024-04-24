@@ -61,6 +61,27 @@ export function removeNameOccurrences(text: string, name: string): string {
 // --------------------------------- Miscellaneous --------------------------------- //
 
 /**
+ * This function takes a number of seconds as input and outputs a string
+ * formatting it in a xx hr xx min xx sec or (if simple = true) xx h xx m xx s way
+ * @param seconds - the number of seconds
+ * @param simple - by default false, if set to true outputs a simpler format
+ * @return string - a string showing the number of hours / minutes / seconds
+ */
+export function formatTime(seconds : number, simple : boolean = false){
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds
+    if(minutes >= 60){
+        const hours = Math.floor(minutes / 60)
+        const remainingMinutes = minutes % 60
+        if(simple) return `${hours} h ${remainingMinutes} m ${formattedSeconds} s`
+        return `${hours} hr ${remainingMinutes} min ${formattedSeconds} sec`
+    }
+    if(simple) return `${minutes} m ${formattedSeconds} s`
+    return `${minutes} min ${formattedSeconds} sec`
+}
+
+/**
  * This method blurs all occurrences of "???" in the given text by HTML-formatting
  * it and adding a blurred <span> tag.
  * @param str - text which contains occurrences to blur

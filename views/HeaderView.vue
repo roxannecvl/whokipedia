@@ -53,14 +53,11 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis', 'populate-stats', 'update-leaderboard-bis'])
+const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis', 'update-leaderboard-bis'])
 
 // Constants
 const logoPath = '/img/logo-primary-filled.svg'
-// Functions
-function populateStats() {
-  emit('populate-stats')
-}
+
 
 </script>
 
@@ -94,7 +91,6 @@ function populateStats() {
           :username="usernameLV"
       />
       <StatisticsView
-          @populate-stats="populateStats()"
           :current-streak="currentStreakSV"
           :max-streak="maxStreakSV"
           :average-guesses="averageGuessesSV"

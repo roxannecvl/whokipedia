@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatTime } from "~/utilities/Utils";
 
 // Props
 const props = defineProps({
@@ -40,15 +41,7 @@ function showAndEmit(seconds : number, over : boolean){
     once = false
     emit("new-time-set", seconds)
   }
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds
-  if(minutes >= 60){
-    const hours = Math.floor(minutes / 60)
-    const remainingMinutes = minutes % 60
-    return `${hours} hr ${remainingMinutes} min ${formattedSeconds} sec`
-  }
-  return `${minutes} min ${formattedSeconds} sec`
+  return formatTime(seconds)
 }
 
 </script>
