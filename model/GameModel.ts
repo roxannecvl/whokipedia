@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
-import {getCurrentDayTimestamp, randomPermutation} from "~/utilities/Utils"
+import { getCurrentDayTimestamp, randomPermutation } from "~/utilities/Utils"
 
 export const useGameStore = defineStore('game', {
     state: () => ({
