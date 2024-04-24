@@ -6,7 +6,6 @@ import {dailyRandom, getRandomNumber} from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import type { UserStore } from "~/model/UserModel"
-import ShouldLoginView from "~/views/ShouldLoginView.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue";
 
 // Props
@@ -64,19 +63,17 @@ function checkStopInterval(over : boolean){
     <!-- FOR BIG SCREENS-->
     <div class="h-full hidden lg:flex">
       <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
-        <div class="mb-5">
-          <PlayAgainPresenter :dailyChallenge="false" :gameModel="store"/>
-        </div>
         <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end)" :showTime="true" :showRules="true"/>
       </div>
-      <div class="w-5/6 p-2">
+      <div class="h-full flex flex-col w-5/6 p-2">
+        <PlayAgainPresenter :dailyChallenge="false" :gameModel="store"/>
         <GamePresenter :userModel="userModel" :gameModel="store" :dailyChallenge="false"/>
       </div>
     </div>
 
     <!-- FOR SMALL SCREENS-->
     <div class="h-full flex flex-col gap-4 lg:hidden">
-      <PlayAgainPresenter :daily-challenge="false" :gameModel="store"></PlayAgainPresenter>
+      <PlayAgainPresenter :daily-challenge="false" :gameModel="store"/>
       <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
         <div>
           <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">

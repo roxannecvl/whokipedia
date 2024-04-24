@@ -68,15 +68,14 @@ function checkStopInterval(over : boolean, name : string){
     <div v-if="store.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
-
     <div v-else class="h-full">
       <div class="h-full hidden lg:flex">
         <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
-          <PlayAgainPresenter :daily-challenge="true" :gameModel="store"/>
           <SidebarPresenter :gameModel="store" :timeSec="checkStopInterval(store.end, userModel.username)" :showTime="true" :showRules="true"/>
         </div>
-        <div class="w-5/6 p-2">
-          <GamePresenter :userModel="userModel" :gameModel="store" :dailyChallenge="true"/>
+        <div class="h-full flex flex-col w-5/6 p-2">
+          <PlayAgainPresenter :dailyChallenge="true" :gameModel="store"/>
+          <GamePresenter :userModel="userModel" :gameModel="store" :dailyChallenge="true" class="overflow-y-auto"/>
         </div>
       </div>
 
@@ -106,7 +105,6 @@ function checkStopInterval(over : boolean, name : string){
           <GamePresenter :userModel="userModel" :gameModel="store" :dailyChallenge="true"/>
         </div>
       </div>
-      
     </div>
   </div>
   <div v-else>
