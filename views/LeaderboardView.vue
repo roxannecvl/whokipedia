@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {leaderboardData} from "~/presenters/HeaderPresenter.vue"
+import {getColor} from "~/utilities/Utils";
 
 // Props
 const props = defineProps({
@@ -55,6 +56,7 @@ const columns = [{
   label: 'Average Rank',
   sortable: true
 }]
+let color = 'FF1000'
 
 </script>
 
