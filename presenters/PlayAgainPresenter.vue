@@ -18,10 +18,11 @@ const props = defineProps({
 })
 
 // Function
-function initGame() {
+async function initGame() {
   //random celebrity but not the current daily challenge
+  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
-  if(randomIndex >= dailyRandom(0, celebrities.length - 1)) randomIndex +=1
+  if(randomIndex >= dailyRdm) randomIndex +=1
   props.gameModel.init(celebrities[randomIndex], true)
 }
 
