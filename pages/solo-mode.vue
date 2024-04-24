@@ -34,8 +34,7 @@ onMounted(async () => {
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   if(randomIndex >= dailyRdm) randomIndex +=1
   await store.init(celebrities[randomIndex], true)
-  if(store.time > elapsedTime.value) elapsedTime.value = store.time
-  if(timerInterval === null) startInterval()
+  startInterval()
 });
 
 function startInterval(){

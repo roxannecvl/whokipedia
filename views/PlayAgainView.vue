@@ -34,7 +34,7 @@ const emit = defineEmits(['new-game'])
             { variant: 'solid', color: 'primary', label: 'PLAY AGAIN', click: () => { emit('new-game') }},
             { variant: 'soft', color: 'primary', label: 'DAILY CHALLENGE', click: () => { navigateTo('/daily-challenge') }},
           ]"
-          title="More?"
+          title="More ?"
           :ui="{
             shadow: 'shadow-md',
           }"
