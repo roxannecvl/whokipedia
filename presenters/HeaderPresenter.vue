@@ -27,6 +27,10 @@ initializeFirebase()
 // Constants
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
+const date : Date = new Date()
+date.setHours(0,0,0,0)
+
+let timeStamp = date.getTime()
 
 // Refs
 const closeModal = ref(false)
@@ -42,7 +46,8 @@ export interface leaderboardData {
 }
 
 // Watchers
-onMounted(() => {
+onMounted(async () => {
+  timeStamp = await getCurrentDayTimestamp()
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
       // User logged out
@@ -118,12 +123,12 @@ function updateLeaderboard(){
 
     // Keep only players of the day
     let filteredUserData : UserPersistence[] = data.filter((item: UserPersistence) =>
-        item.stats && item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp()))
+        item.stats && item.stats.find((stat: any) => parseInt(stat.date) === timeStamp))
 
     // Sort by number of guesses or time if number of guesses is equal
     let rankedData : UserPersistence []  = filteredUserData.sort((a: UserPersistence, b: UserPersistence) => {
-      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
-      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
+      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
       if (aStats && bStats) {
         if (aStats.guesses === bStats.guesses) {
           return aStats.time - bStats.time
@@ -135,7 +140,7 @@ function updateLeaderboard(){
 
     // Keep only information relevant to the leaderboard
     usersData.value = rankedData.map((val : UserPersistence) => {
-      const stats = val.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      const stats = val.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
       if(stats) return {
         rank: stats.rank,
         username : val.username,
