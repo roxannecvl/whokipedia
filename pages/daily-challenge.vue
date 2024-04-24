@@ -30,7 +30,7 @@ let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
 onMounted(async () => {
-  let dailyRdm = await dailyRandom(0, celebrities.length -1)
+  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   await store.init(celebrities[dailyRdm], true)
   curUsername.value = props.userModel.username
   if(store.time > elapsedTime.value) elapsedTime.value = store.time
