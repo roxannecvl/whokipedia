@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import type { TimedStat } from "~/model/UserModel"
+import { getColor } from "~/utilities/Utils";
 
 // Props
 const props = defineProps({
@@ -39,6 +40,11 @@ const isStatOpen = ref(false)
 
 // Constants
 const user = useCurrentUser()
+const currentStreakColor = computed(() => getColor(props.currentStreak))
+const maxStreakColor = computed(() => getColor(props.maxStreak))
+
+// Function
+
 
 </script>
 
@@ -87,13 +93,15 @@ const user = useCurrentUser()
               </div>
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ currentStreak }}
+                  {{ currentStreak + " " }}
+                  <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + currentStreakColor +']'"/>
                 </div>
                 <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
               </div>
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ maxStreak }}
+                  {{ maxStreak + " "}}
+                  <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + maxStreakColor +']'"/>
                 </div>
                 <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
               </div>

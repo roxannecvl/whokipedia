@@ -35,6 +35,7 @@ const usersData = ref([] as leaderboardData[])
 export interface leaderboardData {
   readonly rank: number,
   readonly username: string,
+  readonly streak : number,
   readonly guesses: number,
   readonly time: string,
   readonly averageRank: number,
@@ -138,12 +139,14 @@ function updateLeaderboard(){
       if(stats) return {
         rank: stats.rank,
         username : val.username,
+        streak : val.currentStreak,
         guesses : stats.guesses,
         time : formatTime(stats.time, true),
         averageRank : Math.round(val.averageRank)}
       else return {
         rank :filteredUserData.length + 1,
         username : val.username,
+        streak : 0,
         guesses : 1000,
         time : " - ",
         averageRank : val.averageRank}

@@ -61,6 +61,20 @@ export function removeNameOccurrences(text: string, name: string): string {
 // --------------------------------- Miscellaneous --------------------------------- //
 
 /**
+ * This function outputs a color depending on the number of streak
+ * @param streak - the number of followed games played
+ */
+export function getColor(streak : number) : string {
+    if(streak <= 1) return '#FFF75D'
+    if(streak <= 3) return '#FFC11F'
+    if(streak <= 7) return '#FE650D'
+    if(streak <= 14) return '#F33C04'
+    if(streak <= 30) return '#DA1F05'
+    else return '#A10100'
+
+}
+
+/**
  * This function takes a number of seconds as input and outputs a string
  * formatting it in a xx hr xx min xx sec or (if simple = true) xx h xx m xx s way
  * @param seconds - the number of seconds
