@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 // Props
 const props = defineProps({
   over: {
@@ -11,18 +12,43 @@ const props = defineProps({
   },
 })
 
+const color = ref('[#FF0000]')
+
 // Emits
 const emit = defineEmits(['new-game'])
 
 </script>
 
 <template>
-  <div v-if="over" class="m-1">
-      <div class="h-full flex flex-row gap-2 text-xl font-medium lg:flex-col">
-        Play Again :
-        <!-- first button goes to /solo-mode or if already there emits 'new-game' -->
-        <UButton variant="outline" size="md" to="/solo-mode" @click="emit('new-game')"> Solo Mode</UButton>
-        <UButton v-if="!challenge" variant="outline" size="md" to="/daily-challenge"> Daily Challenge </UButton>
-      </div>
-  </div>
+  <transition
+      enter-active-class="transform ease-in-out duration-500 transition"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+  >
+    <div
+        v-if="over"
+        class="px-2.5 py-1 sm:pl-1 lg:pb-3 lg:py-0">
+      <UAlert
+          v-if="!challenge"
+          :actions="[
+            { variant: 'solid', color: 'primary', label: 'PLAY AGAIN', click: () => { emit('new-game') }},
+            { variant: 'soft', color: 'primary', label: 'DAILY CHALLENGE', click: () => { navigateTo('/daily-challenge') }},
+          ]"
+          title="More?"
+          :ui="{
+            shadow: 'shadow-md',
+          }"
+      />
+      <UAlert
+          v-else
+          :actions="[
+            { variant: 'solid', color: 'primary', label: 'TRY SOLO MODE', click: () => { navigateTo('/solo-mode') }},
+          ]"
+          title="Play again ?"
+          :ui="{
+            shadow: 'shadow-md',
+          }"
+      />
+    </div>
+  </transition>
 </template>

@@ -59,7 +59,7 @@ function newName(): void {
 
 
 <template>
-  <div v-if="!over" class="pl-2.5 sm:pl-1 pr-2.5 px-2">
+  <div v-if="!over" class="pl-2.5 sm:pl-1 pr-2.5 px-2 pt-1 lg:pt-0">
     <UInputMenu
         v-model="selectedName"
         :search="getAutocompleteSuggestions"

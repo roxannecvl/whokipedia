@@ -41,7 +41,6 @@ const columns = [{
 }, {
   key: 'username',
   label: 'Username',
-  icon: 'i-heroicons-fire-20-solid'
 }, {
   key: 'streak',
   label: 'Streak',
