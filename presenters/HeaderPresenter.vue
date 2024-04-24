@@ -10,7 +10,7 @@ import {
   type UserPersistence,
 } from "~/model/FirebaseModel"
 import { type UserStore } from "~/model/UserModel"
-import {formatTime, getCurrentDayTimestamp} from "~/utilities/Utils"
+import { formatTime, getCurrentDayTimestamp } from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
 
 // Props
