@@ -22,7 +22,7 @@ const props = defineProps({
     required: true
   },
   winRate: {
-    type: Number,
+    type: String,
     required: true
   },
   gamesPlayed: {

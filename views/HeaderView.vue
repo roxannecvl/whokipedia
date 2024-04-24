@@ -31,7 +31,7 @@ const props = defineProps({
     required: true
   },
   winRateSV: {
-    type: Number,
+    type: String,
     required: true
   },
   gamesPlayedSV: {

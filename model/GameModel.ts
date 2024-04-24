@@ -22,6 +22,7 @@ export const useGameStore = defineStore('game', {
     }),
     getters: {
         intro(state): ParagraphHint[] {
+            if(this.paragraphs.length === 0) return []
             let intro: ParagraphHint[] = state.paragraphs.slice()
             intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
             return intro.filter(paragraph => paragraph.value !== "")
@@ -85,6 +86,8 @@ export const useGameStore = defineStore('game', {
             if(this.nbGuesses >= this.order.length){
                 this.end = true
                 this.win = false
+                this.imageUrl = this.updateImage()
+                return
             }
             let index = this.order[this.nbGuesses]
             const hints: (InfoboxHint | ParagraphHint | BlurHint)[] = [
