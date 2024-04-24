@@ -85,8 +85,8 @@ let color = 'FF1000'
         }" >
           <template #streak-data="{ row }">
             <span class="align-baseline"> {{ row.streak + " "}} </span>
-            <span v-if="row.streak <= 1" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#FFF75D]"/>
-            <span v-else-if="row.streak <= 3" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#FFC11F]"/>
+            <span v-if="row.streak <= 1" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#FFC11F]"/>
+            <span v-else-if="row.streak <= 3" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#FF9316]"/>
             <span v-else-if="row.streak <= 7" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#FE650D]"/>
             <span v-else-if="row.streak <= 14" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#F33C04]"/>
             <span v-else-if="row.streak <= 30" class="i-heroicons-fire-16-solid text-xl align-middle bg-[#DA1F05]"/>
