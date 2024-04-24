@@ -97,7 +97,7 @@ function checkStopInterval(over : boolean){
           </div>
         </UCard>
       </USlideover>
-      <div class="h-full">
+      <div class="h-full overflow-y-auto">
         <GamePresenter :userModel="userModel" :gameModel="store" :dailyChallenge="false"/>
       </div>
     </div>
