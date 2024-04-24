@@ -8,7 +8,8 @@ export const useGameStore = defineStore('game', {
         name: "" as string,
         images: [] as BlurHint[],
         imageUrl: "" as string,
-        paragraphs: [] as ParagraphHint[],
+        firstSentence : "" as string,
+        intro: [] as ParagraphHint[],
         infobox: [] as InfoboxHint[],
         order : [] as number[],
         nbGuesses: 0 as number,
@@ -20,19 +21,6 @@ export const useGameStore = defineStore('game', {
         win: false as boolean,
         loading: false as boolean,
     }),
-    getters: {
-        intro(state): ParagraphHint[] {
-            if(this.paragraphs.length === 0) return []
-            let intro: ParagraphHint[] = state.paragraphs.slice()
-            intro[0] = {...intro[0], value: intro[0].value.replace(this.firstSentence, "")}
-            return intro.filter(paragraph => paragraph.value !== "")
-        },
-        firstSentence(state): string {
-            if(state.paragraphs.length === 0) return ""
-            const match: RegExpMatchArray | null = state.paragraphs[0].value.match(/[^.!?]+[.!?]+/g)
-            return match ? match[0] : state.paragraphs[0].value
-        }
-    },
     actions: {
         async init (name: string, isDaily : boolean = false): Promise<void> {
             this.$reset()
@@ -47,7 +35,12 @@ export const useGameStore = defineStore('game', {
                 this.images = images
                 this.infobox = infobox
                 this.totalGuesses += infobox.length + images.length - 2
-                this.paragraphs = paragraphs
+                this.intro = paragraphs.slice()
+                if(this.intro.length !== 0){
+                    const match: RegExpMatchArray | null = paragraphs[0].value.match(/[^.!?]+[.!?]+/g)
+                    this.firstSentence =  match ? match[0] : paragraphs[0].value
+                    this.intro[0] = {...this.intro[0], value: this.intro[0].value.replace(this.firstSentence, "")}
+                }
                 if (this.intro) this.totalGuesses += this.intro.length
                 this.imageUrl = this.updateImage()
                 let nbHintLV1 = [...this.images, ...this.infobox, ...this.intro]

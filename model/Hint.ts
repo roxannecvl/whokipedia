@@ -100,7 +100,7 @@ export async function imagesOf(url: string): Promise<BlurHint[]> {
         method: 'POST',
         body: JSON.stringify({
             url: url,
-            blur: 10
+            blur: 8
         })
     })
 
