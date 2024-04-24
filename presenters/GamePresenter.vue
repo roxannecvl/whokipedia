@@ -35,12 +35,17 @@ const props = defineProps({
 const baseString = "https://en.wikipedia.org/wiki/"
 const validGuess = ref(true)
 const user = useCurrentUser()
+const date : Date = new Date()
+date.setHours(0,0,0,0)
+
+let timeStamp = date.getTime()
 
 // Refs
 const ready = ref(false)
 
 // Functions
-onMounted(() => {
+onMounted(async () => {
+  timeStamp = await getCurrentDayTimestamp()
   if(props.dailyChallenge){
     updateGameModel()
   }else{
@@ -58,7 +63,7 @@ function guessAndCheck(name : string){
   if(props.gameModel.end && props.dailyChallenge){
     computeRank().then((rank) => {
       if(user.value && rank) {
-        props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, getCurrentDayTimestamp())
+        props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, timeStamp)
         updateUserToFirebase(props.userModel, user.value.uid)
       }
     }).catch((err) => {
@@ -71,14 +76,14 @@ function guessAndCheck(name : string){
 async function computeRank() {
   return getAllUserFromFirebase().then((data: UserPersistence[]) => {
     const filteredUserData = data.filter((item: UserPersistence) => {
-      return item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      return item.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
           && item.uid !== user.value?.uid
     })
 
     // Sort by number of guesses or time if number of guesses is equal
     const sortedUserData = filteredUserData.sort((a, b) => {
-      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
-      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
+      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
       if (aStats && bStats) {
         if (aStats.guesses === bStats.guesses) {
           return aStats.time - bStats.time
@@ -90,7 +95,7 @@ async function computeRank() {
 
     for (let index = 0; index < sortedUserData.length; index++) {
       const item = sortedUserData[index]
-      const stat = item.stats.find((stat: any) => parseInt(stat.date) === getCurrentDayTimestamp())
+      const stat = item.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
         if (stat && (props.gameModel.nbGuesses < stat.guesses
             || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time))) {
           for (let i = index; i < sortedUserData.length; i++) {
@@ -109,7 +114,7 @@ async function computeRank() {
 // Only used in daily challenge mode
 function updateGameModel(){
   ready.value = false
-  let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == getCurrentDayTimestamp())
+  let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
   if (dailyStats.length !== 0) {
     props.gameModel.end = true
     props.gameModel.win = true

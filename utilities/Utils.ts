@@ -173,8 +173,8 @@ export function getRandomNumber(min: number, max: number) {
  * @param min - the minimum number returned
  * @param max - the maximum number returned
  */
-export function dailyRandom(min: number, max: number): number {
-    let state = getCurrentDayTimestamp()
+export async function dailyRandom(min: number, max: number): Promise<number> {
+    let state = await getCurrentDayTimestamp()
     // Use the xorshift32 algorithm for pseudo-random number generation
     state ^= state << 13
     state ^= state >> 17
@@ -212,10 +212,17 @@ export function randomPermutation(min: number, max: number, seed : number = 0): 
  * Get the current day timestamp.
  * @returns number - current day timestamp
  */
-export function getCurrentDayTimestamp(): number {
-    const currentDate: Date = new Date()
-    currentDate.setHours(0, 0, 0, 0)
-    return currentDate.getTime()
+export async function getCurrentDayTimestamp(): Promise<number> {
+    try {
+        const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Zurich')
+        const data = await response.json()
+        const currentDate = new Date(data.datetime)
+        currentDate.setHours(0, 0, 0, 0)
+        return currentDate.getTime()
+    } catch (error) {
+        console.error('Error fetching current time:', error)
+        throw error
+    }
 }
 
 /**

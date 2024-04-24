@@ -62,7 +62,9 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
  * @param uid - User ID to update
  */
 export function updateUserRankToFirebase(rank: number, uid: string): void {
-    update(dbRef(database, 'users/' + uid + '/stats/' + getCurrentDayTimestamp()), { rank: rank }).then()
+    getCurrentDayTimestamp().then(timestamp => {
+        update(dbRef(database, 'users/' + uid + '/stats/' + timestamp), { rank: rank }).then()
+    })
 }
 
 /**
