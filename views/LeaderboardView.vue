@@ -55,7 +55,6 @@ const columns = [{
   label: 'Average Rank',
   sortable: true
 }]
-let color = 'FF1000'
 
 </script>
 
