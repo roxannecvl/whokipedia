@@ -7,11 +7,10 @@ import {
   initializeFirebase,
   readUserFromFirebase,
   saveUserToFirebase,
-  updateUserToFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
 import { type UserStore } from "~/model/UserModel"
-import { getCurrentDayTimestamp, getRandomNumber, getRandomTimedStats } from "~/utilities/Utils"
+import {formatTime, getCurrentDayTimestamp} from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
 
 // Props
@@ -40,8 +39,9 @@ const usersData = ref([] as leaderboardData[])
 export interface leaderboardData {
   readonly rank: number,
   readonly username: string,
+  readonly streak : number,
   readonly guesses: number,
-  readonly time: number,
+  readonly time: string,
   readonly averageRank: number,
 }
 
@@ -118,21 +118,6 @@ function logout(): void {
       })
 }
 
-function populateStats () {
-  if(user.value) {
-    props.model.updateStats(
-        getRandomNumber(1, 10),
-        getRandomNumber(1, 10),
-        getRandomNumber(1, 10),
-        getRandomNumber(1, 10),
-        getRandomNumber(1, 10),
-        getRandomNumber(1, 10),
-        getRandomTimedStats(10)
-    )
-    updateUserToFirebase(props.model, user.value.uid)
-  }
-}
-
 function updateLeaderboard(){
   getAllUserFromFirebase().then(data => {
 
@@ -159,14 +144,16 @@ function updateLeaderboard(){
       if(stats) return {
         rank: stats.rank,
         username : val.username,
+        streak : val.currentStreak,
         guesses : stats.guesses,
-        time : stats.time,
+        time : formatTime(stats.time, true),
         averageRank : Math.round(val.averageRank)}
       else return {
         rank :filteredUserData.length + 1,
         username : val.username,
+        streak : 0,
         guesses : 1000,
-        time : 1000,
+        time : " - ",
         averageRank : val.averageRank}
     })
   })
@@ -179,15 +166,14 @@ function updateLeaderboard(){
       @login-event-tris="login"
       @signup-event-tris="signup"
       @logout-event-bis="logout"
-      @populate-stats="populateStats"
       @update-leaderboard-bis="updateLeaderboard"
       :closeLSV="closeModal"
       :errorLSV="errorMessage"
       :currentStreakSV="model.currentStreak"
       :maxStreakSV="model.maxStreak"
-      :averageRankSV="model.averageRank"
-      :averageGuessesSV="model.averageGuesses"
-      :winRateSV="model.winRate"
+      :averageRankSV="Math.round(model.averageRank * 100) / 100"
+      :averageGuessesSV="Math.round(model.averageGuesses * 100) / 100"
+      :winRateSV="Math.round(model.winRate * 100) + '%'"
       :gamesPlayedSV="model.gamesPlayed"
       :timedStatsSV="model.timedStats"
       :gamesLV="usersData"

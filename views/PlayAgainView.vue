@@ -32,9 +32,9 @@ const emit = defineEmits(['new-game'])
           v-if="!challenge"
           :actions="[
             { variant: 'solid', color: 'primary', label: 'PLAY AGAIN', click: () => { emit('new-game') }},
-            { variant: 'soft', color: 'primary', label: `TRY DAILY CHALLENGE`, click: () => { navigateTo('/daily-challenge') }},
+            { variant: 'soft', color: 'primary', label: 'DAILY CHALLENGE', click: () => { navigateTo('/daily-challenge') }},
           ]"
-          title="Play again ?"
+          title="More?"
           :ui="{
             shadow: 'shadow-md',
           }"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import type { TimedStat } from "~/model/UserModel"
+import { getColor } from "~/utilities/Utils";
 
 // Props
 const props = defineProps({
@@ -34,14 +35,16 @@ const props = defineProps({
   },
 })
 
-// Emits
-const emit = defineEmits(['populate-stats'])
-
 // Refs
 const isStatOpen = ref(false)
 
 // Constants
 const user = useCurrentUser()
+const currentStreakColor = computed(() => getColor(props.currentStreak))
+const maxStreakColor = computed(() => getColor(props.maxStreak))
+
+// Function
+
 
 </script>
 
@@ -60,31 +63,8 @@ const user = useCurrentUser()
         </div>
       </template>
         <div style="max-height: 80vh; overflow-y: auto">
-          <div class="flex flex-col items-center mb-10">
-            <UButton @click="emit('populate-stats')" class="text-center">Populate stats</UButton>
-          </div>
           <div class="flex flex-col md:flex-row justify-around mt-3">
             <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ currentStreak }}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ maxStreak }}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ averageRank }}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
-              </div>
-            </div>
-            <div class="flex justify-around w-full md:w-1/2">
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
                   {{ averageGuesses }}
@@ -93,15 +73,37 @@ const user = useCurrentUser()
               </div>
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ winRate }}
+                  {{ averageRank }}
                 </div>
-                <p class="mt-3 text-sm text-gray-500">Win Rate</p>
+                <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
               </div>
               <div class="flex flex-col items-center">
                 <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ gamesPlayed }}
+                  {{ winRate  }}
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Win Rate</p>
+              </div>
+            </div>
+            <div class="flex justify-around w-full md:w-1/2">
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ gamesPlayed}}
                 </div>
                 <p class="mt-3 text-sm text-gray-500">Games Played</p>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ currentStreak + " " }}
+                  <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + currentStreakColor +']'"/>
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+                  {{ maxStreak + " "}}
+                  <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + maxStreakColor +']'"/>
+                </div>
+                <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
               </div>
             </div>
           </div>
