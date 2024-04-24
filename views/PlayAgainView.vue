@@ -12,43 +12,43 @@ const props = defineProps({
   },
 })
 
+const color = ref('[#FF0000]')
+
 // Emits
 const emit = defineEmits(['new-game'])
 
 </script>
 
 <template>
-  <div
-      v-if="over"
-      class="md:mb-2 p-1">
-    <!--      <div class="h-full flex flex-row gap-2 text-xl font-medium lg:flex-col">-->
-    <!--        Play Again :-->
-    <!--        &lt;!&ndash; first button goes to /solo-mode or if already there emits 'new-game' &ndash;&gt;-->
-    <!--        <UButton variant="outline" size="md" to="/solo-mode" @click="emit('new-game')"> Solo Mode</UButton>-->
-    <!--        <UButton v-if="!challenge" variant="outline" size="md" to="/daily-challenge"> Daily Challenge </UButton>-->
-    <!--      </div>-->
-
-    <UAlert
-        v-if="!challenge"
-        :actions="[
-          { variant: 'solid', color: 'primary', label: 'SOLO', click: () => { emit('new-game') }},
-          { variant: 'soft', color: 'primary', label: 'TRY DAILY CHALLENGE', click: () => { navigateTo('/daily-challenge') }},
-        ]"
-        title="Play again ?"
-        :ui="{
-          shadow: 'shadow-lg',
-        }"
-    />
-    <UAlert
-        v-else
-        :actions="[
-          { variant: 'solid', color: 'primary', label: 'SOLO MODE', click: () => { navigateTo('/solo-mode') }},
-        ]"
-        title="Play again ?"
-        :ui="{
-          shadow: 'shadow-lg',
-        }"
-    />
-
-  </div>
+  <transition
+      enter-active-class="transform ease-in-out duration-500 transition"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+  >
+    <div
+        v-if="over"
+        class="px-2.5 py-1 sm:pl-1 lg:pb-3 lg:py-0">
+      <UAlert
+          v-if="!challenge"
+          :actions="[
+            { variant: 'solid', color: 'primary', label: 'PLAY AGAIN', click: () => { emit('new-game') }},
+            { variant: 'soft', color: 'primary', label: `TRY DAILY CHALLENGE`, click: () => { navigateTo('/daily-challenge') }},
+          ]"
+          title="Play again ?"
+          :ui="{
+            shadow: 'shadow-md',
+          }"
+      />
+      <UAlert
+          v-else
+          :actions="[
+            { variant: 'solid', color: 'primary', label: 'TRY SOLO MODE', click: () => { navigateTo('/solo-mode') }},
+          ]"
+          title="Play again ?"
+          :ui="{
+            shadow: 'shadow-md',
+          }"
+      />
+    </div>
+  </transition>
 </template>
