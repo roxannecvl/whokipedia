@@ -18,7 +18,7 @@ const props = defineProps({
 })
 
 const store: GameStore = useGameStore()
-store.init(celebrities[dailyRandom(0, celebrities.length -1)], true)
+
 
 // Refs
 const elapsedTime = ref(0)
@@ -29,7 +29,9 @@ const curUsername = ref("")
 let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
-onMounted(() => {
+onMounted(async () => {
+  let dailyRdm = await dailyRandom(0, celebrities.length -1)
+  await store.init(celebrities[dailyRdm], true)
   curUsername.value = props.userModel.username
   if(store.time > elapsedTime.value) elapsedTime.value = store.time
   if(timerInterval === null) startInterval()

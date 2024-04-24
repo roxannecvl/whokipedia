@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import type { InfoboxHint, ParagraphHint, BlurHint } from "~/model/Hint"
-import { randomPermutation } from "~/utilities/Utils"
+import {getCurrentDayTimestamp, randomPermutation} from "~/utilities/Utils"
 
 export const useGameStore = defineStore('game', {
     state: () => ({
@@ -56,7 +56,8 @@ export const useGameStore = defineStore('game', {
                 let nbHintLV3 = [...this.images, ...this.infobox, ...this.intro]
                     .filter((hint: InfoboxHint | ParagraphHint | BlurHint) => !hint.revealed && hint.level == 3).length
                 let seed = 0
-                let date = new Date()
+                let timestamp = await getCurrentDayTimestamp()
+                let date = new Date(timestamp)
                 if(isDaily) seed = (date.getMonth() + date.getDate()) / 42
                 this.order = [...randomPermutation(1,nbHintLV1, seed),
                     ...randomPermutation(nbHintLV1 + 1, nbHintLV1 + nbHintLV2, seed),
