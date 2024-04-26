@@ -17,6 +17,7 @@ export default defineEventHandler(async (event): Promise<string> => {
             statusMessage: data.error.message
         })
     }
+    
     const { url, blur } = data.data
     const response: Response = await fetch(url)
 
