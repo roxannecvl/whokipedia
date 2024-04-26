@@ -17,13 +17,6 @@ export default defineEventHandler(async (event): Promise<string> => {
             statusMessage: data.error.message
         })
     }
-    if (!event.context || !event.context.params) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: "Missing parameter"
-        })
-    }
-
     const { url, blur } = data.data
     const response: Response = await fetch(url)
 
