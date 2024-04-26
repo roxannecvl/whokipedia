@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import type { TimedStat } from "~/model/UserModel"
+import type { LeaderboardData } from "~/presenters/HeaderPresenter.vue";
 import LoginSignupView from "~/views/LoginSignupView.vue"
 import StatisticsView from "~/views/StatisticsView.vue"
 import LeaderboardView from "~/views/LeaderboardView.vue"
-import type { TimedStat } from "~/model/UserModel"
 
 // Props
 const props = defineProps({
@@ -43,7 +44,7 @@ const props = defineProps({
     required: true
   },
   gamesLV : {
-    type: Array<Object>,
+    type: Array<LeaderboardData>,
     required: true,
   },
   usernameLV: {
