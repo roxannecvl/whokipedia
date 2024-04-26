@@ -40,6 +40,7 @@ let timeStamp = date.getTime()
 
 // Refs
 const validGuess = ref(true)
+const ready = ref(false)
 
 // Functions
 
@@ -94,7 +95,7 @@ async function computeRank(): Promise<number | void> {
  * This function is used to update the game model with the user's stats if the user has already played the game today.
  */
 function updateGameModel(): void {
-  props.gameModel.loading = true
+  ready.value = false
   let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
   if (dailyStats.length !== 0) {
     props.gameModel.end = true
@@ -102,10 +103,8 @@ function updateGameModel(): void {
     props.gameModel.nbGuesses = dailyStats[0].guesses
     props.gameModel.time = dailyStats[0].time
     props.gameModel.imageUrl = props.gameModel.updateImage()
-    props.gameModel.loading = false
-  } else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => {
-    props.gameModel.loading = false
-  })
+    ready.value = true
+  } else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => ready.value = true)
 }
 
 /**
@@ -122,6 +121,8 @@ onMounted(async () => {
   timeStamp = await getCurrentDayTimestamp()
   if (props.dailyChallenge) {
     updateGameModel()
+  } else {
+    ready.value = true
   }
 })
 
@@ -129,6 +130,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
 </script>
 
 <template>
+  <div v-if="ready">
     <SearchFieldView
         @new-name-set="selectedName => guessAndCheck(selectedName)"
         :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
@@ -140,5 +142,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
           :buttonLink="baseString + gameModel.name"
       />
     </div>
+  </div>
+  <div v-else><UIcon name="i-eos-icons-loading"/></div>
 </template>
 

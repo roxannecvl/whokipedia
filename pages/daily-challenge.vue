@@ -21,9 +21,6 @@ const curUsername = ref("")
 // Computed
 let timerInterval: NodeJS.Timeout | null = null
 
-// Constants
-const user = useCurrentUser()
-
 // Functions
 function startInterval(){
   timerInterval = setInterval(() => {
@@ -61,7 +58,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="user">
+  <div v-if="userStore.username != ''">
     <div v-if="gameStore.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>

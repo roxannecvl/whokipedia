@@ -19,7 +19,7 @@ export const useGameStore = defineStore('game', {
         prevGuesses: [] as string[],
         end: false as boolean,
         win: false as boolean,
-        loading: true as boolean,
+        loading: false as boolean,
     }),
     actions: {
         async init (name: string, isDaily : boolean = false): Promise<void> {
