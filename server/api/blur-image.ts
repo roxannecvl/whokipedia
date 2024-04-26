@@ -39,9 +39,11 @@ export default defineEventHandler(async (event) => {
     const blob = await response.blob()
     const image = await Jimp.read(Buffer.from(await blob.arrayBuffer()))
 
-    if (blur >= 0) {
+    if (blur > 0) {
         image.blur(blur)
     }
 
     return await image.getBase64Async(Jimp.MIME_JPEG)
+
+    // return `<img src="${await image.getBase64Async(Jimp.MIME_JPEG)}" />`
 })

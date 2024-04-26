@@ -20,7 +20,7 @@ const store: UserStore = useUserStore()
       <template #header>
         <HeaderPresenter :userModel="store"/>
       </template>
-       <main class="flex sm:h-full overflow-y-auto justify-center">
+       <main class="flex sm:h-full sm:overflow-y-auto justify-center">
         <NuxtPage/>
       </main>
       <UNotifications />

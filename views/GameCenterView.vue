@@ -39,6 +39,10 @@ const props = defineProps( {
       type : String,
       required: true,
     },
+    size: {
+      type: String,
+      required: true,
+    }
 })
 
 // Constants
@@ -51,11 +55,21 @@ function format(str: string) : string {
   return blurHTML(removeNameOccurrences(str, props.name))
 }
 
+function scrollToParagraph(index: number, size: string, over: boolean) {
+  if (over) return
+  const element = document.getElementById(`p-${size}-${index}`)
+  if (element) {
+    if (element.checkVisibility()) {
+      element.scrollIntoView({ behavior: "smooth", block: "center"})
+    }
+  }
+}
+
 </script>
 
 <template>
   <div class="p-2 text-justify">
-    <div class="p-1 sm:ml-4 sm:float-right overflow-hidden">
+    <div class="p-1 sm:ml-4 sm:float-right">
       <InfoboxView
           :fields = "fields" :imageUrl="imageUrl"
           :over="over" :buttonLink="buttonLink"
@@ -64,10 +78,27 @@ function format(str: string) : string {
 
     <span v-if="over">{{ firstSentence }}</span>
     <div v-for="(paragraph, index) in intro" :key="index" class="inline">
-      <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)"></span>
-      <span v-else-if="over">{{ paragraph.value }}</span>
-      <span v-else class="blur-sm">{{ encrypted[index] }}</span>
+      <Transition
+          name="reveal"
+          @enter="scrollToParagraph(index, size, over)"
+      >
+        <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)" :id="`p-${size}-${index}`"></span>
+        <span v-else-if="over" :id="`p-${size}-${index}`">{{ paragraph.value }}</span>
+        <span v-else class="blur-sm" :id="`p-${size}-${index}`">{{ encrypted[index] }}</span>
+      </Transition>
     </div>
   </div>
 </template>
+
+<style scoped>
+  .reveal-enter-active {
+    animation: fade-color 1.2s
+  }
+
+  @keyframes fade-color {
+    50% {
+      color: rgb(245, 158, 12)
+    }
+  }
+</style>
 
