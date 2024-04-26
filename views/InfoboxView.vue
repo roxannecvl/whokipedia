@@ -58,7 +58,7 @@ const props = defineProps( {
         </table>
       </div>
       <div v-if="over" style="display: flex; justify-content: center">
-        <UButton :to="buttonLink" size="lg">Learn more</UButton>
+        <UButton :to="buttonLink" target="_blank" size="lg" color="gray" icon="i-heroicons-document-magnifying-glass">Learn more</UButton>
       </div>
     </UCard>
   </div>
