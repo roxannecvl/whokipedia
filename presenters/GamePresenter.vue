@@ -130,7 +130,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
 </script>
 
 <template>
-  <div v-if="ready">
+  <div v-if="ready" class="flex flex-col h-full">
     <SearchFieldView
         @new-name-set="selectedName => guessAndCheck(selectedName)"
         :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"

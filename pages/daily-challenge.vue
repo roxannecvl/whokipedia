@@ -70,12 +70,12 @@ onMounted(async () => {
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
           <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore"/>
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true"/>
+          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" class="overflow-y-auto"/>
         </div>
       </div>
 
       <!-- FOR SMALL SCREENS-->
-      <div class="h-full flex flex-col gap-4 lg:hidden">
+      <div class="h-full flex flex-col gap-3 lg:hidden">
         <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore"/>
         <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
           <div>
