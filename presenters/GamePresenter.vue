@@ -40,27 +40,23 @@ date.setHours(0,0,0,0)
 
 let timeStamp = date.getTime()
 
-// Refs
-const ready = ref(false)
-
 // Functions
 onMounted(async () => {
   timeStamp = await getCurrentDayTimestamp()
-  if(props.dailyChallenge){
-    updateGameModel()
-  }else{
-    ready.value = true
+  if (props.dailyChallenge) {
+    await updateGameModel()
   }
 })
-function guessAndCheck(name : string){
+
+function guessAndCheck(name : string) {
   validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name)
-  if(!validGuess.value) {
+  if (!validGuess.value) {
     setTimeout(() => {
       validGuess.value = true
     }, 2500)
   }
 
-  if(props.gameModel.end && props.dailyChallenge){
+  if (props.gameModel.end && props.dailyChallenge) {
     computeRank().then((rank) => {
       if(user.value && rank) {
         props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, timeStamp)
@@ -112,8 +108,7 @@ async function computeRank() {
 }
 
 // Only used in daily challenge mode
-function updateGameModel(){
-  ready.value = false
+async function updateGameModel(){
   let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
   if (dailyStats.length !== 0) {
     props.gameModel.end = true
@@ -121,8 +116,9 @@ function updateGameModel(){
     props.gameModel.nbGuesses = dailyStats[0].guesses
     props.gameModel.time = dailyStats[0].time
     props.gameModel.imageUrl = props.gameModel.updateImage()
-    ready.value = true
-  } else if (user.value) readCurGameFromFirebase(props.gameModel, user.value.uid).then(() => ready.value = true)
+  } else if (user.value) {
+    await readCurGameFromFirebase(props.gameModel, user.value.uid)
+  }
 }
 
 // Only used in daily challenge mode
@@ -137,7 +133,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
 </script>
 
 <template>
-  <div v-if="ready" class="flex flex-col h-full">
+  <div class="flex flex-col h-full">
     <SearchFieldView
         @new-name-set="selectedName => guessAndCheck(selectedName)"
         :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
@@ -150,7 +146,5 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
       />
     </div>
   </div>
-  <div v-else><UIcon name="i-eos-icons-loading"/></div>
-
 </template>
 

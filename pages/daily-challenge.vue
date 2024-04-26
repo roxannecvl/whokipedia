@@ -29,13 +29,18 @@ const curUsername = ref("")
 let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
-onMounted(async () => {
+onMounted(() => {
+  if(timerInterval === null) startInterval()
+});
+
+await startGame()
+
+async function startGame(){
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   await store.init(celebrities[dailyRdm], true)
   curUsername.value = props.userModel.username
-  if(store.time > elapsedTime.value) elapsedTime.value = store.time
-  if(timerInterval === null) startInterval()
-});
+  if (store.time > elapsedTime.value) elapsedTime.value = store.time
+}
 
 function startInterval(){
   timerInterval = setInterval(() => {

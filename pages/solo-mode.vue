@@ -18,8 +18,6 @@ const props = defineProps({
 
 const store: GameStore = useGameStore()
 
-
-
 // Refs
 const elapsedTime = ref(0)
 const isRulesOpen = ref(false)
@@ -27,16 +25,19 @@ const isRulesOpen = ref(false)
 // Computed
 let timerInterval: NodeJS.Timeout | null = null
 
-// Functions
-onMounted(async () => {
-  //random celebrity but not the current daily challenge
+onMounted(() => {
+  if(timerInterval === null) startInterval()
+})
+
+await startGame()
+
+async function startGame(){
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
-  if(randomIndex >= dailyRdm) randomIndex +=1
+  if(randomIndex >= dailyRdm) randomIndex += 1
   await store.init(celebrities[randomIndex], true)
   if(store.time > elapsedTime.value) elapsedTime.value = store.time
-  if(timerInterval === null) startInterval()
-});
+}
 
 function startInterval(){
   timerInterval = setInterval(() => {

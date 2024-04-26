@@ -7,6 +7,7 @@ const store: UserStore = useUserStore()
 </script>
 
 <template>
+  <NuxtLoadingIndicator/>
   <Body class="bg-gray-50 dark:bg-gray-950">
   <UContainer class="p-0 sm:py-5 h-screen">
     <UCard
