@@ -16,13 +16,12 @@ const store: UserStore = useUserStore()
         body: {
           base: 'h-full overflow-clip',
         }
-      }"
-    >
+      }">
       <template #header>
-        <HeaderPresenter :model="store"/>
+        <HeaderPresenter :userModel="store"/>
       </template>
        <main class="flex h-full overflow-y-auto justify-center">
-        <NuxtPage :userModel="store"/>
+        <NuxtPage/>
       </main>
       <UNotifications />
     </UCard>
