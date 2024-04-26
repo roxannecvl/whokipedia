@@ -21,11 +21,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative">
-    <div class="absolute inset-0 pointer-events-none bg-no-repeat bg-right blur"
-         :style="{ backgroundImage: `url(${logoPath})`, backgroundSize: '47%'}">
-    </div>
-
     <div class="inset-0 flex flex-col items-start px-4 mt-10">
       <div class="text-5xl font-bold mb-2 text-primary">Whokipedia</div>
       <div class="text-3xl font-bold mb-4">The ultimate guessing game!</div>
@@ -62,8 +57,6 @@ onMounted(() => {
           </ul>
       </div>
     </div>
-
-  </div>
 </template>
 
 
