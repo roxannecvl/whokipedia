@@ -2,7 +2,7 @@
 import SignupView from "~/views/SignupView.vue"
 import LoginView from "~/views/LoginView.vue"
 
-//Props
+// Props
 const props = defineProps({
   close: {
     type : Boolean,
@@ -25,12 +25,11 @@ const isModalOpen = ref(false)
 const user = useCurrentUser()
 const toast = useToast()
 
-// Functions
-onMounted(() => { ready.value = true })
+// Lifecycle hooks
+onMounted(() => ready.value = true)
 
 /**
- * Displays an error notification
- *
+ * Displays an error notification.
  * @param description - The description of the error
  */
 function displayErrorNotification(description: string) {
@@ -43,8 +42,8 @@ watch(() => props.close, () => {
   if(props.close) isModalOpen.value = false
 })
 
-watch(() => props.error, (newValue) => {
-  if(newValue !== "") displayErrorNotification(newValue)
+watch(() => props.error, (newValue: string) => {
+  if (newValue !== "") displayErrorNotification(newValue)
 })
 </script>
 

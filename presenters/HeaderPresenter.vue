@@ -72,9 +72,8 @@ onMounted(async () => {
 function login(username: string, password: string): void {
   signInWithEmailAndPassword(auth, username, password)
       .catch((error) => {
-        const message: string = "Failed to log in : " + error
-        console.error(message)
-        errorMessage.value = message
+        console.error(error)
+        errorMessage.value = "Failed to log in. Your credentials may be wrong."
         setTimeout(() => {
           errorMessage.value = ""
         }, 300)
@@ -93,9 +92,8 @@ function signup(email: string, username: string, password: string): void {
         saveUserToFirebase(props.userModel, username, credentials.user?.uid)
       })
       .catch((error) => {
-        const message: string = "Failed to sign up : " + error
-        console.error(message)
-        errorMessage.value = message
+        console.error(error)
+        errorMessage.value = "Failed to sign up."
         setTimeout(() => {
           errorMessage.value = ""
         }, 300)
@@ -108,9 +106,8 @@ function signup(email: string, username: string, password: string): void {
 function logout(): void {
   signOut(auth)
       .catch((error) => {
-        const message = "Failed to log out : " + error
-        console.error(message)
-        errorMessage.value = message
+        console.error(error)
+        errorMessage.value = "Failed to log out."
         setTimeout(() => {
           errorMessage.value = ""
         }, 300)
