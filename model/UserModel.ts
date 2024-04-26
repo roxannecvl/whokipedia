@@ -49,10 +49,10 @@ export const useUserStore = defineStore('user', {
         updateStreak(): void {
             const millisecondsInADay : number = 86400000
             this.currentStreak++
-            const lstLength = this.timedStats.length
+            const lstLength: number = this.timedStats.length
             // reset streak to 1 if the time difference between the two last games isn't 24 hours 
-            if(lstLength >= 2 &&
-                this.timedStats[lstLength - 2].date - this.timedStats[lstLength - 3].date !== millisecondsInADay){
+            if(lstLength >= 2
+                && this.timedStats[lstLength - 1].date - this.timedStats[lstLength - 2].date !== millisecondsInADay) {
                 this.currentStreak = 1
             }
             if (this.currentStreak > this.maxStreak) this.maxStreak = this.currentStreak

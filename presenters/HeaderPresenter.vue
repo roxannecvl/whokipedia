@@ -9,27 +9,26 @@ import {
   saveUserToFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
-import { type UserStore } from "~/model/UserModel"
-import { formatTime, getCurrentDayTimestamp } from "~/utilities/Utils"
+import { type TimedStat, type UserStore } from "~/model/UserModel"
+import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
+
+// Set up authentication
+initializeFirebase()
 
 // Props
 const props = defineProps({
-  model: {
+  userModel: {
       type: Object as () => UserStore,
       required: true,
   },
 })
-
-// Set up authentication
-initializeFirebase()
 
 // Constants
 const auth = useFirebaseAuth()!
 const user = useCurrentUser()
 const date : Date = new Date()
 date.setHours(0,0,0,0)
-
 let timeStamp = date.getTime()
 
 // Refs
@@ -45,16 +44,16 @@ export interface leaderboardData {
   readonly averageRank: number,
 }
 
-// Watchers
+// Lifecycle hooks
 onMounted(async () => {
   timeStamp = await getCurrentDayTimestamp()
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
       // User logged out
-      props.model.$reset()
+      props.userModel.$reset()
     } else if (user) {
       // User logged in
-      readUserFromFirebase(props.model, user.uid)
+      readUserFromFirebase(props.userModel, user.uid)
       closeModal.value = true
       setTimeout(() => {
         closeModal.value = false
@@ -73,9 +72,8 @@ onMounted(async () => {
 function login(username: string, password: string): void {
   signInWithEmailAndPassword(auth, username, password)
       .catch((error) => {
-        const message: string = "Failed to log in : " + error
-        console.error(message)
-        errorMessage.value = message
+        console.error(error)
+        errorMessage.value = "Failed to log in. Your credentials may be wrong."
         setTimeout(() => {
           errorMessage.value = ""
         }, 300)
@@ -91,12 +89,11 @@ function login(username: string, password: string): void {
 function signup(email: string, username: string, password: string): void {
   createUserWithEmailAndPassword(auth, email, password)
       .then((credentials: UserCredential) => {
-        saveUserToFirebase(props.model, username, credentials.user?.uid)
+        saveUserToFirebase(props.userModel, username, credentials.user?.uid)
       })
       .catch((error) => {
-        const message: string = "Failed to sign up : " + error
-        console.error(message)
-        errorMessage.value = message
+        console.error(error)
+        errorMessage.value = "Failed to sign up."
         setTimeout(() => {
           errorMessage.value = ""
         }, 300)
@@ -109,56 +106,43 @@ function signup(email: string, username: string, password: string): void {
 function logout(): void {
   signOut(auth)
       .catch((error) => {
-        const message = "Failed to log out : " + error
-        console.error(message)
-        errorMessage.value = message
+        console.error(error)
+        errorMessage.value = "Failed to log out."
         setTimeout(() => {
           errorMessage.value = ""
         }, 300)
       })
 }
 
-function updateLeaderboard(){
+/**
+ * Method to update the leaderboard.
+ */
+function updateLeaderboard(): void {
   getAllUserFromFirebase().then(data => {
-
-    // Keep only players of the day
-    let filteredUserData : UserPersistence[] = data.filter((item: UserPersistence) =>
-        item.stats && item.stats.find((stat: any) => parseInt(stat.date) === timeStamp))
-
-    // Sort by number of guesses or time if number of guesses is equal
-    let rankedData : UserPersistence []  = filteredUserData.sort((a: UserPersistence, b: UserPersistence) => {
-      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-      if (aStats && bStats) {
-        if (aStats.guesses === bStats.guesses) {
-          return aStats.time - bStats.time
-        }
-        return aStats.guesses - bStats.guesses
-      }
-      return 0
-    })
+    const rankedData = sortTodayChallengers(data, timeStamp)
 
     // Keep only information relevant to the leaderboard
     usersData.value = rankedData.map((val : UserPersistence) => {
-      const stats = val.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-      if(stats) return {
+      const stats = val.stats.find((stat: TimedStat) => stat.date === timeStamp)
+      if (stats) return {
         rank: stats.rank,
         username : val.username,
         streak : val.currentStreak,
         guesses : stats.guesses,
         time : formatTime(stats.time, true),
-        averageRank : Math.round(val.averageRank)}
+        averageRank : Math.round(val.averageRank)
+      }
       else return {
-        rank :filteredUserData.length + 1,
+        rank :rankedData.length + 1,
         username : val.username,
         streak : 0,
-        guesses : 1000,
+        guesses : NaN,
         time : " - ",
-        averageRank : val.averageRank}
+        averageRank : val.averageRank
+      }
     })
   })
 }
-
 </script>
 
 <template>
@@ -169,14 +153,14 @@ function updateLeaderboard(){
       @update-leaderboard-bis="updateLeaderboard"
       :closeLSV="closeModal"
       :errorLSV="errorMessage"
-      :currentStreakSV="model.currentStreak"
-      :maxStreakSV="model.maxStreak"
-      :averageRankSV="Math.round(model.averageRank * 100) / 100"
-      :averageGuessesSV="Math.round(model.averageGuesses * 100) / 100"
-      :winRateSV="Math.round(model.winRate * 100) + '%'"
-      :gamesPlayedSV="model.gamesPlayed"
-      :timedStatsSV="model.timedStats"
+      :currentStreakSV="userModel.currentStreak"
+      :maxStreakSV="userModel.maxStreak"
+      :averageRankSV="Math.round(userModel.averageRank * 100) / 100"
+      :averageGuessesSV="Math.round(userModel.averageGuesses * 100) / 100"
+      :winRateSV="Math.round(userModel.winRate * 100) + '%'"
+      :gamesPlayedSV="userModel.gamesPlayed"
+      :timedStatsSV="userModel.timedStats"
       :gamesLV="usersData"
-      :usernameLV="model.username"
+      :usernameLV="userModel.username"
   />
 </template>

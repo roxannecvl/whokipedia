@@ -17,10 +17,10 @@ const props = defineProps({
   },
 })
 
-// Function
+// Functions
 async function initGame() {
   if (props.dailyChallenge) return
-  //random celebrity but not the current daily challenge
+  // Random celebrity but not the current daily challenge
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   if(randomIndex >= dailyRdm) randomIndex +=1
