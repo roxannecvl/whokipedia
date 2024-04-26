@@ -8,19 +8,19 @@ const store: UserStore = useUserStore()
 
 <template>
   <Body class="bg-gray-50 dark:bg-gray-950">
-  <UContainer class="p-0 sm:py-5 h-screen">
+  <UContainer class="p-0 sm:py-5 sm:h-screen">
     <UCard
       :ui="{
         base: 'flex flex-col h-full',
         rounded: 'rounded-none sm:rounded-lg',
         body: {
-          base: 'h-full overflow-clip',
+          base: 'h-full sm:overflow-clip',
         }
       }">
       <template #header>
         <HeaderPresenter :userModel="store"/>
       </template>
-       <main class="flex h-full overflow-y-auto justify-center">
+       <main class="flex sm:h-full overflow-y-auto justify-center">
         <NuxtPage/>
       </main>
       <UNotifications />
