@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type {leaderboardData} from "~/presenters/HeaderPresenter.vue"
-import {getColor} from "~/utilities/Utils";
+import type { LeaderboardData } from "~/presenters/HeaderPresenter.vue"
 
 // Props
 const props = defineProps({
     games : {
-      type: Array<leaderboardData>,
+      type: Array<LeaderboardData>,
       required: true,
     },
     username: {

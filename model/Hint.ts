@@ -86,7 +86,7 @@ export function paragraphsOf(arr: string[]): ParagraphHint[] {
  */
 export async function imagesOf(url: string): Promise<BlurHint[]> {
 
-    const urlBlur1 = await $fetch('/api/blur-image', {
+    const urlBlur1: string = await $fetch('/api/blur-image', {
         method: 'POST',
         body: JSON.stringify({
             url: url,
@@ -94,7 +94,7 @@ export async function imagesOf(url: string): Promise<BlurHint[]> {
         })
     })
 
-    const urlBlur2 = await $fetch('/api/blur-image', {
+    const urlBlur2: string = await $fetch('/api/blur-image', {
         method: 'POST',
         body: JSON.stringify({
             url: url,
@@ -102,7 +102,7 @@ export async function imagesOf(url: string): Promise<BlurHint[]> {
         })
     })
 
-    const urlBlur3 = await $fetch('/api/blur-image', {
+    const urlBlur3: string = await $fetch('/api/blur-image', {
         method: 'POST',
         body: JSON.stringify({
             url: url,
@@ -114,13 +114,11 @@ export async function imagesOf(url: string): Promise<BlurHint[]> {
             url: urlBlur1,
             level: 0,
             revealed: true
-        },
-        {
+        }, {
             url: urlBlur2,
             level: 2,
             revealed: false
-        },
-        {
+        }, {
             url: urlBlur3,
             level: 3,
             revealed: false

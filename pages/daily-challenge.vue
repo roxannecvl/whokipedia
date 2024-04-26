@@ -70,7 +70,7 @@ onMounted(async () => {
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
           <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore"/>
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" class="overflow-y-auto"/>
+          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" size="big" class="overflow-y-auto"/>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ onMounted(async () => {
           </UCard>
         </USlideover>
         <div class="h-full overflow-y-auto">
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true"/>
+          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" size="small"/>
         </div>
       </div>
     </div>
