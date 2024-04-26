@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { type GameStore, useGameStore } from "~/model/GameModel"
-import { type UserStore, useUserStore} from "~/model/UserModel"
+import { type UserStore, useUserStore } from "~/model/UserModel"
 import { celebrities } from "~/model/CelebrityList"
 import { dailyRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
@@ -20,6 +20,9 @@ const curUsername = ref("")
 
 // Computed
 let timerInterval: NodeJS.Timeout | null = null
+
+// Constants
+const user = useCurrentUser()
 
 // Functions
 function startInterval(){
@@ -58,11 +61,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="userStore.username != ''">
+  <div v-if="user">
     <div v-if="gameStore.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
     <div v-else class="h-full">
+      <!-- FOR BIG SCREENS-->
       <div class="h-full hidden lg:flex">
         <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
           <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userStore.username)" :showTime="true" :showRules="true"/>
@@ -73,6 +77,7 @@ onMounted(async () => {
         </div>
       </div>
 
+      <!-- FOR SMALL SCREENS-->
       <div class="h-full flex flex-col gap-4 lg:hidden">
         <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore"/>
         <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
@@ -101,7 +106,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div v-else>
+  <div v-else class="h-full flex justify-center items-center">
     <ShouldLoginView/>
   </div>
 </template>

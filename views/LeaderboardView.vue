@@ -14,18 +14,18 @@ const props = defineProps({
     },
 })
 
+
 // Emits
 const emit = defineEmits(['update-leaderboard'])
 
 // Refs
 const isLeaderboardOpen = ref(false)
 
+// Computed
 const styledGames = computed(()=> {
-  if(user){
+  if (user) {
     return props.games.map((game) => {
-      if (game.username === props.username){
-        game.class = 'bg-primary-500/25'
-      }
+      if (game.username === props.username) game.class = 'bg-primary-500/25'
       return game
     })
   }
@@ -56,8 +56,6 @@ const columns = [{
   label: 'Average Rank',
   sortable: true
 }]
-let color = 'FF1000'
-
 </script>
 
 <template>

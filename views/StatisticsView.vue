@@ -43,9 +43,6 @@ const user = useCurrentUser()
 const currentStreakColor = computed(() => getColor(props.currentStreak))
 const maxStreakColor = computed(() => getColor(props.maxStreak))
 
-// Function
-
-
 </script>
 
 <template>

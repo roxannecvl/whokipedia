@@ -20,15 +20,6 @@ const isRulesOpen = ref(false)
 let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
-onMounted(async () => {
-  //random celebrity but not the current daily challenge
-  let randomIndex = getRandomNumber(0, celebrities.length - 2)
-  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
-  if(randomIndex >= dailyRdm) randomIndex +=1
-  await gameStore.init(celebrities[randomIndex], true)
-  startInterval()
-});
-
 function startInterval(){
   timerInterval = setInterval(() => {
     elapsedTime.value++
@@ -42,6 +33,16 @@ function checkStopInterval(over : boolean){
   }
   return elapsedTime.value;
 }
+
+// Lifecycle hooks
+onMounted(async () => {
+  // Random celebrity but not the current daily challenge
+  let randomIndex = getRandomNumber(0, celebrities.length - 2)
+  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
+  if(randomIndex >= dailyRdm) randomIndex +=1
+  await gameStore.init(celebrities[randomIndex], true)
+  startInterval()
+});
 
 </script>
 
