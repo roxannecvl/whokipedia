@@ -39,6 +39,10 @@ const props = defineProps( {
       type : String,
       required: true,
     },
+    size: {
+      type: String,
+      required: true,
+    }
 })
 
 // Constants
@@ -51,12 +55,13 @@ function format(str: string) : string {
   return blurHTML(removeNameOccurrences(str, props.name))
 }
 
-function scrollToParagraph(index: number, over: boolean) {
+function scrollToParagraph(index: number, size: string, over: boolean) {
   if (over) return
-  const element = document.getElementById(`p${index}`)
+  const element = document.getElementById(`p-${size}-${index}`)
   if (element) {
-    console.log("Scrolling to paragraph", index)
-    element.scrollIntoView({ behavior: "smooth", block: "center" })
+    if (element.checkVisibility()) {
+      element.scrollIntoView({ behavior: "smooth", block: "center"})
+    }
   }
 }
 
@@ -75,11 +80,11 @@ function scrollToParagraph(index: number, over: boolean) {
     <div v-for="(paragraph, index) in intro" :key="index" class="inline">
       <Transition
           name="reveal"
-          @enter="scrollToParagraph(index, over)"
+          @enter="scrollToParagraph(index, size, over)"
       >
-        <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)" :id="`p${index}`"></span>
-        <span v-else-if="over" :id="`p${index}`">{{ paragraph.value }}</span>
-        <span v-else class="blur-sm" :id="`p${index}`">{{ encrypted[index] }}</span>
+        <span v-if="paragraph.revealed && !over" v-html="format(paragraph.value)" :id="`p-${size}-${index}`"></span>
+        <span v-else-if="over" :id="`p-${size}-${index}`">{{ paragraph.value }}</span>
+        <span v-else class="blur-sm" :id="`p-${size}-${index}`">{{ encrypted[index] }}</span>
       </Transition>
     </div>
   </div>
