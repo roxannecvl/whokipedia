@@ -57,14 +57,14 @@ onMounted(async () => {
         <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end)" :showTime="true" :showRules="true"/>
       </div>
       <div class="h-full flex flex-col w-5/6 p-2">
-        <PlayAgainPresenter :dailyChallenge="false" :gameModel="gameStore"/>
+        <PlayAgainPresenter :dailyChallenge="false" :gameModel="gameStore" :userModel="userStore"/>
         <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="false"/>
       </div>
     </div>
 
     <!-- FOR SMALL SCREENS-->
     <div class="h-full flex flex-col gap-4 lg:hidden">
-      <PlayAgainPresenter :daily-challenge="false" :gameModel="gameStore"/>
+      <PlayAgainPresenter :daily-challenge="false" :gameModel="gameStore" :userModel="userStore"/>
       <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
         <div>
           <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">

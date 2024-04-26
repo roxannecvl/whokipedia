@@ -10,10 +10,6 @@ const props = defineProps({
     type : Boolean,
     required : true,
   },
-  errorLSV:{
-    type : String,
-    required :true,
-  },
   currentStreakSV: {
     type: Number,
     required: true
@@ -103,7 +99,7 @@ const logoPath = '/img/logo-primary-filled.svg'
         @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
         @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
         @logout-event="emit('logout-event-bis')"
-        :close="closeLSV"  :error="errorLSV"/>
+        :close="closeLSV"/>
     </div>
   </div>
 </template>

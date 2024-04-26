@@ -9,9 +9,15 @@ import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue"
 import ShouldLoginView from "~/views/ShouldLoginView.vue"
 
+
+// Page meta
+definePageMeta({
+  middleware: "auth"
+})
+
 // Stores
-const gameStore: GameStore = useGameStore()
 const userStore: UserStore = useUserStore()
+const gameStore: GameStore = useGameStore()
 
 // Refs
 const elapsedTime = ref(0)
@@ -69,14 +75,14 @@ onMounted(async () => {
           <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userStore.username)" :showTime="true" :showRules="true"/>
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
-          <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore"/>
+          <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore" :userModel="userStore"/>
           <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true"/>
         </div>
       </div>
 
       <!-- FOR SMALL SCREENS-->
       <div class="h-full flex flex-col gap-4 lg:hidden">
-        <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore"/>
+        <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore" :userModel="userStore"/>
         <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
           <div>
             <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
@@ -102,8 +108,5 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-  </div>
-  <div v-else class="h-full flex justify-center items-center">
-    <ShouldLoginView/>
   </div>
 </template>

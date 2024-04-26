@@ -1,17 +1,15 @@
 <script setup lang="ts">
-
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth"
 import { useCurrentUser, useFirebaseAuth } from "vuefire"
 import {
   getAllUserFromFirebase,
   initializeFirebase,
   readUserFromFirebase,
-  saveUserToFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
 import { type TimedStat, type UserStore } from "~/model/UserModel"
 import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
+import { login, logout, signup } from "~/utilities/auth"
 
 // Set up authentication
 initializeFirebase()
@@ -25,11 +23,12 @@ const props = defineProps({
 })
 
 // Constants
-const auth = useFirebaseAuth()!
 const user = useCurrentUser()
 const date : Date = new Date()
 date.setHours(0,0,0,0)
 let timeStamp = date.getTime()
+const auth = useFirebaseAuth()!
+const toast = useToast()
 
 // Refs
 const closeModal = ref(false)
@@ -62,58 +61,7 @@ onMounted(async () => {
   })
 })
 
-
 // Functions
-/**
- * Method to log in the user.
- * @param username - Username used for login
- * @param password - Password used for login
- */
-function login(username: string, password: string): void {
-  signInWithEmailAndPassword(auth, username, password)
-      .catch((error) => {
-        console.error(error)
-        errorMessage.value = "Failed to log in. Your credentials may be wrong."
-        setTimeout(() => {
-          errorMessage.value = ""
-        }, 300)
-      })
-}
-
-/**
- * Method to sign up the user.
- * @param username - Username used for signup
- * @param email - Email used for signup
- * @param password - Password used for signup
- */
-function signup(email: string, username: string, password: string): void {
-  createUserWithEmailAndPassword(auth, email, password)
-      .then((credentials: UserCredential) => {
-        saveUserToFirebase(props.userModel, username, credentials.user?.uid)
-      })
-      .catch((error) => {
-        console.error(error)
-        errorMessage.value = "Failed to sign up."
-        setTimeout(() => {
-          errorMessage.value = ""
-        }, 300)
-      })
-}
-
-/**
- * Method to log out the user.
- */
-function logout(): void {
-  signOut(auth)
-      .catch((error) => {
-        console.error(error)
-        errorMessage.value = "Failed to log out."
-        setTimeout(() => {
-          errorMessage.value = ""
-        }, 300)
-      })
-}
-
 /**
  * Method to update the leaderboard.
  */
@@ -147,12 +95,11 @@ function updateLeaderboard(): void {
 
 <template>
   <HeaderView
-      @login-event-tris="login"
-      @signup-event-tris="signup"
-      @logout-event-bis="logout"
+      @login-event-tris="(username: string, password: string) => login(username, password, auth, toast)"
+      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, auth, toast)"
+      @logout-event-bis="logout(auth, toast)"
       @update-leaderboard-bis="updateLeaderboard"
       :closeLSV="closeModal"
-      :errorLSV="errorMessage"
       :currentStreakSV="userModel.currentStreak"
       :maxStreakSV="userModel.maxStreak"
       :averageRankSV="Math.round(userModel.averageRank * 100) / 100"
