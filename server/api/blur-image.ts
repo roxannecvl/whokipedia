@@ -24,7 +24,7 @@ export default defineEventHandler(async (event): Promise<string> => {
         })
     }
 
-    const { url, blur} = data.data
+    const { url, blur } = data.data
     const response: Response = await fetch(url)
 
     if (!response.ok) {
