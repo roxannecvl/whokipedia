@@ -73,7 +73,7 @@ onMounted(async () => {
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
           <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore"/>
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" class="overflow-y-auto"/>
+          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true"/>
         </div>
       </div>
 

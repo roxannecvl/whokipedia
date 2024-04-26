@@ -50,7 +50,6 @@ onMounted(async () => {
   <div v-if="gameStore.loading" class="w-full flex justify-center items-center">
     <UIcon name="i-eos-icons-loading"/>
   </div>
-
   <div v-else class="h-full">
     <!-- FOR BIG SCREENS-->
     <div class="h-full hidden lg:flex">
