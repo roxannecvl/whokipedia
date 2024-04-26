@@ -92,21 +92,12 @@ function scrollToParagraph(index: number, size: string, over: boolean) {
 
 <style scoped>
   .reveal-enter-active {
-    animation: scale-text 1.2s
+    animation: fade-color 1.2s
   }
 
-  @keyframes scale-text {
-    0% {
-      transform: scale(1)
-    }
-
+  @keyframes fade-color {
     50% {
-      transform: scale(1.3);
       color: rgb(245, 158, 12)
-    }
-
-    100% {
-      transform: scale(1)
     }
   }
 </style>
