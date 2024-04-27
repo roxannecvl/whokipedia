@@ -29,6 +29,10 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  size: {
+    type: String,
+    required: true,
+  }
 })
 
 // Constants
@@ -130,7 +134,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
 </script>
 
 <template>
-  <div v-if="ready">
+  <div v-if="ready" class="flex flex-col h-full">
     <SearchFieldView
         @new-name-set="selectedName => guessAndCheck(selectedName)"
         :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
@@ -139,7 +143,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
       <GameCenterView
           :intro="gameModel.intro" :over="gameModel.end" :name="gameModel.name" :win = "gameModel.win"
           :first-sentence="gameModel.firstSentence" :fields = "gameModel.infobox" :imageUrl="gameModel.imageUrl"
-          :buttonLink="baseString + gameModel.name"
+          :buttonLink="baseString + gameModel.name" :size="size"
       />
     </div>
   </div>

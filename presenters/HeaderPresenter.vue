@@ -33,8 +33,8 @@ const toast = useToast()
 // Refs
 const closeModal = ref(false)
 const errorMessage = ref("")
-const usersData = ref([] as leaderboardData[])
-export interface leaderboardData {
+const usersData = ref([] as LeaderboardData[])
+export interface LeaderboardData {
   readonly rank: number,
   readonly username: string,
   readonly streak : number,

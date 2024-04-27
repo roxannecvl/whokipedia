@@ -1,5 +1,3 @@
-import { getRandom } from "~/utilities/Utils"
-
 /**
  * This interface represents a Hint for the game, and all its possible attributes.
  * Its purpose is to be extended with types that omit certain attributes.
@@ -88,7 +86,7 @@ export function paragraphsOf(arr: string[]): ParagraphHint[] {
  */
 export async function imagesOf(url: string): Promise<BlurHint[]> {
 
-    const urlBlur1 = await $fetch('/api/blur-image', {
+    const urlBlur1: string = await $fetch('/api/blur-image', {
         method: 'POST',
         body: JSON.stringify({
             url: url,
@@ -96,7 +94,7 @@ export async function imagesOf(url: string): Promise<BlurHint[]> {
         })
     })
 
-    const urlBlur2 = await $fetch('/api/blur-image', {
+    const urlBlur2: string = await $fetch('/api/blur-image', {
         method: 'POST',
         body: JSON.stringify({
             url: url,
@@ -104,18 +102,24 @@ export async function imagesOf(url: string): Promise<BlurHint[]> {
         })
     })
 
+    const urlBlur3: string = await $fetch('/api/blur-image', {
+        method: 'POST',
+        body: JSON.stringify({
+            url: url,
+            blur: 0
+        })
+    })
+
     return [{
             url: urlBlur1,
             level: 0,
             revealed: true
-        },
-        {
+        }, {
             url: urlBlur2,
             level: 2,
             revealed: false
-        },
-        {
-            url: url,
+        }, {
+            url: urlBlur3,
             level: 3,
             revealed: false
         }]

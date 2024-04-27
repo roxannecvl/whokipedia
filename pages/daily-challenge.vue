@@ -7,7 +7,6 @@ import { dailyRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue"
-import ShouldLoginView from "~/views/ShouldLoginView.vue"
 
 
 // Page meta
@@ -76,12 +75,12 @@ onMounted(async () => {
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
           <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore" :userModel="userStore"/>
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true"/>
+          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" size="big" class="overflow-y-auto"/>
         </div>
       </div>
 
       <!-- FOR SMALL SCREENS-->
-      <div class="h-full flex flex-col gap-4 lg:hidden">
+      <div class="h-full flex flex-col gap-3 lg:hidden">
         <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore" :userModel="userStore"/>
         <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
           <div>
@@ -104,7 +103,7 @@ onMounted(async () => {
           </UCard>
         </USlideover>
         <div class="h-full overflow-y-auto">
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true"/>
+          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" size="small"/>
         </div>
       </div>
     </div>
