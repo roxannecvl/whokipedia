@@ -40,13 +40,12 @@ onMounted(async () => {
 });
 
 await startGame()
-
 async function startGame() {
   // Random celebrity but not the current daily challenge
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   if(randomIndex >= dailyRdm) randomIndex +=1
-  await gameStore.init(celebrities[randomIndex], true)
+  await gameStore.init(celebrities[randomIndex])
 }
 
 </script>

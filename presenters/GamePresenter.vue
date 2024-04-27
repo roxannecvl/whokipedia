@@ -99,15 +99,17 @@ async function computeRank(): Promise<number | void> {
  * This function is used to update the game model with the user's stats if the user has already played the game today.
  */
 async function updateGameModel(): Promise<void> {
-  let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
-  if (dailyStats.length !== 0) {
-    props.gameModel.end = true
-    props.gameModel.win = true
-    props.gameModel.nbGuesses = dailyStats[0].guesses
-    props.gameModel.time = dailyStats[0].time
-    props.gameModel.imageUrl = props.gameModel.updateImage()
-  } else if (user.value) {
-    await readCurGameFromFirebase(props.gameModel, user.value.uid)
+  if(props.gameModel?.isDaily) {
+    let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
+    if (dailyStats.length !== 0) {
+      props.gameModel.end = true
+      props.gameModel.win = true
+      props.gameModel.nbGuesses = dailyStats[0].guesses
+      props.gameModel.time = dailyStats[0].time
+      props.gameModel.imageUrl = props.gameModel.updateImage()
+    } else if (user.value) {
+      await readCurGameFromFirebase(props.gameModel, user.value.uid)
+    }
   }
 }
 
