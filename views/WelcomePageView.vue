@@ -1,6 +1,18 @@
 <script setup lang="ts">
+// Props
+const props = defineProps({
+  closeLSV: {
+    type : Boolean,
+    required : true,
+  },
+})
+
+// Emits
+const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis'])
 
 // Refs
+import LoginSignupView from "~/views/LoginSignupView.vue";
+
 const logoPath = ref('')
 
 // Constants
@@ -35,11 +47,11 @@ onMounted(() => {
       </div>
 
       <div class="flex flex-row">
-        <div class="p-2">
-          <UButton to="/daily-challenge" size="xl" class="text-xl" label="Play">
-            Daily Challenge
-          </UButton>
-        </div>
+        <LoginSignupView
+            @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
+            @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
+            @logout-event="emit('logout-event-bis')"
+            :close="closeLSV" :welcome="true"/>
         <div class="p-2">
           <UButton to="/solo-mode" size="xl" class="text-xl" label="Play">
             Play solo

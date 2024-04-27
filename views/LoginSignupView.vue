@@ -8,10 +8,9 @@ const props = defineProps({
     type : Boolean,
     required : true,
   },
-  error:{
-    type : String,
-    required :true,
-  }
+  welcome:{
+    type : Boolean
+  },
 })
 
 // Emits
@@ -22,51 +21,62 @@ const isModalOpen = ref(false)
 
 // Constants
 const user = useCurrentUser()
-const toast = useToast()
-
-/**
- * Displays an error notification.
- * @param description - The description of the error
- */
-function displayErrorNotification(description: string) {
-  toast.remove('any')
-  toast.add({ id:'any', title: 'Error', description: description, icon: 'i-heroicons-x-circle', color:"red"})
-}
 
 //watchers
 watch(() => props.close, () => {
   if(props.close) isModalOpen.value = false
 })
-
-watch(() => props.error, (newValue: string) => {
-  if (newValue !== "") displayErrorNotification(newValue)
-})
 </script>
 
 <template>
-  <UButton v-if="user" icon="i-heroicons-arrow-left-start-on-rectangle-16-solid" @click="emit('logout-event')">
-    <span class="hidden md:inline">Log out</span>
-  </UButton>
-  <UButton v-else icon="i-heroicons-arrow-right-end-on-rectangle-16-solid" @click="isModalOpen = true">
-    <span class="hidden md:inline">Log in</span>
-  </UButton>
+  <div v-if="welcome">
+    <div  v-if="user" class="p-2">
+      <UButton to="/daily-challenge" size="xl" class="text-xl" label="Play">
+        Daily Challenge
+      </UButton>
+    </div>
+    <div v-else class="p-2">
+      <UButton @click="isModalOpen = true" size="xl" class="text-xl" label="Play">
+        Daily Challenge
+      </UButton>
+    </div>
+  </div>
+
+  <div v-else>
+    <UButton v-if="user" icon="i-heroicons-arrow-left-start-on-rectangle-16-solid" @click="emit('logout-event')">
+      <span class="hidden md:inline">Log out</span>
+    </UButton>
+    <UButton v-else icon="i-heroicons-arrow-right-end-on-rectangle-16-solid" @click="isModalOpen = true">
+      <span class="hidden md:inline">Log in</span>
+    </UButton>
+  </div>
   <UModal v-model="isModalOpen">
-    <div class="p-4">
-      <div class="flex justify-center">
-        <div class="w-60 ">
+    <UCard :ui="{ ring: '' }">
+      <template #header v-if="welcome">
+        <div class="flex items-center justify-between">
+          <div class="text-lg">
+            Sign in to unlock the Daily Challenge
+          </div>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isModalOpen = false" />
+        </div>
+      </template>
+      <div class="flex">
+        <div class="w-full ">
           <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
             <template #item="{ item }">
-              <div v-if="item.key === 'login'">
-                <LoginView @login-event="(email, password) => emit('login-event-bis', email, password)"/>
+              <div v-if="item.key === 'login'" class="pt-4">
+                <LoginView @login-event="(email, password) => emit('login-event-bis', email, password)"
+                :welcome="welcome"/>
               </div>
-              <div v-else-if="item.key === 'signup'">
+              <div v-else-if="item.key === 'signup'" class="pt-4">
                 <SignupView @signup-event="
-                (email, username, password) => emit('signup-event-bis', email, username, password)"/>
+                (email, username, password) => emit('signup-event-bis', email, username, password)"
+                :welcome="welcome"/>
               </div>
             </template>
           </UTabs>
         </div>
       </div>
-    </div>
+    </UCard>
   </UModal>
 </template>
