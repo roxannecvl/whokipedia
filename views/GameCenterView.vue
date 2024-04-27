@@ -67,7 +67,9 @@ function scrollToParagraph(index: number, size: string, over: boolean): void {
   if (over) return
   const element = document.getElementById(`p-${size}-${index}`)
   if (element) {
-    if (element.checkVisibility()) {
+    // According to https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+    // offsetParent is null if the element or any of its parents is display: none
+    if (element.offsetParent) {
       element.scrollIntoView({ behavior: "smooth", block: "center"})
     }
   }
