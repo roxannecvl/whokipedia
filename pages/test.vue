@@ -4,7 +4,6 @@ import { ref } from 'vue'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
 import { getAutocompleteSuggestions } from "~/model/CelebrityList"
 
-const isOpen = ref(false)
 const selectedName = ref()
 const intro = ref()
 const imageUrl = ref()

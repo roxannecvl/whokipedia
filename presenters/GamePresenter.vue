@@ -2,8 +2,6 @@
 import { useCurrentUser } from 'vuefire'
 import { type GameStore } from "~/model/GameModel"
 import type { TimedStat, UserStore } from "~/model/UserModel"
-import GameCenterView from "~/views/GameCenterView.vue"
-import SearchFieldView from "~/views/SearchFieldView.vue"
 import {
   updateUserToFirebase,
   getAllUserFromFirebase,
@@ -11,9 +9,11 @@ import {
   updateUserAVGRankToFirebase,
   saveCurrentGameToFirebase,
   readCurGameFromFirebase,
-  type UserPersistence,
+  type UserPersistence
 } from "~/model/FirebaseModel"
-import { getCurrentDayTimestamp } from "~/utilities/Utils"
+import { getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
+import GameCenterView from "~/views/GameCenterView.vue"
+import SearchFieldView from "~/views/SearchFieldView.vue"
 
 // Props
 const props = defineProps({
@@ -29,25 +29,29 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-})
-
-// Constants
-const baseString = "https://en.wikipedia.org/wiki/"
-const validGuess = ref(true)
-const user = useCurrentUser()
-const date : Date = new Date()
-date.setHours(0,0,0,0)
-
-let timeStamp = date.getTime()
-
-// Functions
-onMounted(async () => {
-  timeStamp = await getCurrentDayTimestamp()
-  if (props.dailyChallenge) {
-    await updateGameModel()
+  size: {
+    type: String,
+    required: true,
   }
 })
 
+// Constants
+const user = useCurrentUser()
+const baseString = "https://en.wikipedia.org/wiki/"
+const date : Date = new Date()
+date.setHours(0,0,0,0)
+let timeStamp = date.getTime()
+
+// Refs
+const validGuess = ref(true)
+const ready = ref(false)
+
+// Functions
+
+/**
+ * This function is used to make a guess and check if it is correct, triggering end of game if it is.
+ * @param name - The name of the celebrity guessed
+ */
 function guessAndCheck(name : string) {
   validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name)
   if (!validGuess.value) {
@@ -55,40 +59,24 @@ function guessAndCheck(name : string) {
       validGuess.value = true
     }, 2500)
   }
-
   if (props.gameModel.end && props.dailyChallenge) {
     computeRank().then((rank) => {
-      if(user.value && rank) {
+      if (user.value && rank) {
         props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, timeStamp)
         updateUserToFirebase(props.userModel, user.value.uid)
       }
     }).catch((err) => {
-      console.log(err)
+      console.error(err)
     })
   }
 }
 
-// Only used in daily challenge mode
-async function computeRank() {
+/**
+ * This function is used to compute the rank of the user in the daily challenge mode.
+ */
+async function computeRank(): Promise<number | void> {
   return getAllUserFromFirebase().then((data: UserPersistence[]) => {
-    const filteredUserData = data.filter((item: UserPersistence) => {
-      return item.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-          && item.uid !== user.value?.uid
-    })
-
-    // Sort by number of guesses or time if number of guesses is equal
-    const sortedUserData = filteredUserData.sort((a, b) => {
-      const aStats = a.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-      const bStats = b.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-      if (aStats && bStats) {
-        if (aStats.guesses === bStats.guesses) {
-          return aStats.time - bStats.time
-        }
-        return aStats.guesses - bStats.guesses
-      }
-      return 0
-    })
-
+    const sortedUserData = sortTodayChallengers(data, timeStamp).filter(item => item.uid !== user.value?.uid)
     for (let index = 0; index < sortedUserData.length; index++) {
       const item = sortedUserData[index]
       const stat = item.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
@@ -103,12 +91,14 @@ async function computeRank() {
     }
     return sortedUserData.length + 1
   }).catch((err) => {
-    console.log(err)
+    console.error(err)
   })
 }
 
-// Only used in daily challenge mode
-async function updateGameModel(){
+/**
+ * This function is used to update the game model with the user's stats if the user has already played the game today.
+ */
+async function updateGameModel(): Promise<void> {
   let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
   if (dailyStats.length !== 0) {
     props.gameModel.end = true
@@ -121,14 +111,26 @@ async function updateGameModel(){
   }
 }
 
-// Only used in daily challenge mode
-function updateCurrentGame() {
+/**
+ * This function is used to update the current game in the database.
+ */
+function updateCurrentGame(): void {
   setTimeout(() => {
     if (user.value && props.gameModel.nbGuesses > 0) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
   }, 1000)
 }
 
-if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
+// Lifecycle hooks
+onMounted(async () => {
+  timeStamp = await getCurrentDayTimestamp()
+  if (props.dailyChallenge) {
+    await updateGameModel()
+  }
+})
+
+if (props.dailyChallenge) {
+  watch(props.gameModel.$state, updateCurrentGame)
+}
 
 </script>
 
@@ -142,7 +144,7 @@ if(props.dailyChallenge) watch(props.gameModel.$state, updateCurrentGame)
       <GameCenterView
           :intro="gameModel.intro" :over="gameModel.end" :name="gameModel.name" :win = "gameModel.win"
           :first-sentence="gameModel.firstSentence" :fields = "gameModel.infobox" :imageUrl="gameModel.imageUrl"
-          :buttonLink="baseString + gameModel.name"
+          :buttonLink="baseString + gameModel.name" :size="size"
       />
     </div>
   </div>

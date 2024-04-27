@@ -59,7 +59,8 @@ function newName(): void {
 
 
 <template>
-  <div v-if="!over" class="pl-2.5 sm:pl-1 pr-2.5 px-2 pt-1 lg:pt-0">
+  <div v-if="over" class="text-3xl font-black mx-[11px] sm:ml-2 border-b">{{ name }}</div>
+  <div v-else class="pl-2.5 sm:pl-1 pr-2.5 px-2 pt-1 lg:pt-0 mt-0 sm:mt-1">
     <UInputMenu
         v-model="selectedName"
         :search="getAutocompleteSuggestions"
@@ -67,13 +68,8 @@ function newName(): void {
         option-attribute="name"
         trailing
         by="id"
-        :style="{ fontSize: '18px', padding: '10px', height: '40px',
-                      backgroundColor: alert ? redColor : '' }"
-        :class="{'tremble': tremble }"
-    />
-  </div>
-  <div v-if="over" class="text-3xl font-black mx-[11px] sm:ml-2 border-b">
-    {{name}}
+        :style="{ fontSize: '18px', padding: '10px', height: '40px', backgroundColor: alert ? redColor : '' }"
+        :class="{'tremble': tremble }" />
   </div>
 </template>
 

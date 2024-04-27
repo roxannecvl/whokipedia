@@ -3,6 +3,13 @@ import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import { passwordMinimalLength } from '~/utilities/Utils'
 
+// Props
+const props = defineProps({
+  welcome:{
+    type : Boolean
+  },
+})
+
 // Emits
 const emit = defineEmits(['login-event'])
 
@@ -28,23 +35,20 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
 
 <template>
   <div class="flex justify-between">
-    <div class="w-60 ">
-      <div class="m-5">
-        <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-          <UFormGroup name="email">
-            <UInput v-model="state.email" placeholder="Email"/>
-          </UFormGroup>
+    <UForm :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
+      <UFormGroup name="email">
+        <UInput v-model="state.email" placeholder="Email"/>
+      </UFormGroup>
 
-          <UFormGroup name="password">
-            <UInput v-model="state.password" placeholder="Password" type="password" />
-          </UFormGroup>
+      <UFormGroup name="password">
+        <UInput v-model="state.password" placeholder="Password" type="password" />
+      </UFormGroup>
 
-          <UButton type="submit">
-            Log in
-          </UButton>
-        </UForm>
+      <div class="flex justify-between w-full items-center">
+        <UButton type="submit">Log in</UButton>
+        <a v-if="welcome" href="/solo-mode" class="text-right text-sm text-blue-500 hover:underline">Skip to solo mode</a>
       </div>
-    </div>
+    </UForm>
   </div>
 
 </template>

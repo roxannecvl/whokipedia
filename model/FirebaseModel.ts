@@ -1,7 +1,7 @@
 import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
-import type { UserStore } from "~/model/UserModel.js"
+import type { TimedStat, UserStore } from "~/model/UserModel.js"
+import type { GameStore } from "~/model/GameModel"
 import { getCurrentDayTimestamp } from "~/utilities/Utils"
-import type {GameStore} from "~/model/GameModel"
 
 let database: Database
 
@@ -47,7 +47,7 @@ export function updateUserToFirebase(store: UserStore, uid: string): void {
     update(dbRef(database, 'users/' + uid), persistence).then()
 
     // Then update user's daily stats
-    store.timedStats?.map((stat) => {
+    store.timedStats?.map((stat: TimedStat) => {
         update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
             guesses: stat.guesses,
             rank: stat.rank,
@@ -74,7 +74,7 @@ export function updateUserRankToFirebase(rank: number, uid: string): void {
  */
 export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
     get(dbRef(database, 'users/' + uid)).then(snapshot => {
-        if(snapshot.val() && snapshot.val().averageRank){
+        if (snapshot.val() && snapshot.val().averageRank) {
             let newAverage = snapshot.val().averageRank + (diff / snapshot.val().gamesPlayed)
             update(dbRef(database, 'users/' + uid), {averageRank : newAverage}).then()
         }
@@ -88,7 +88,7 @@ export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
  */
 export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
     return get(dbRef(database, 'users/' + uid)).then(snapshot => {
-        if(snapshot.val()){
+        if (snapshot.val()) {
             persistenceToUserModel(store, snapshot.val())
         }
         return store
@@ -103,17 +103,17 @@ export async function readUserFromFirebase(store: UserStore, uid: string): Promi
  */
 export async function readCurGameFromFirebase(store : GameStore, uid: string): Promise<GameStore> {
     return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
-        if(snapshot.val()){
-            //make sure we don't get an old gameState
-            if(snapshot.val().name == store.name) {
+        if (snapshot.val()) {
+            // Make sure we do not get an old gameState
+            if (snapshot.val().name == store.name) {
                 store.$state = snapshot.val()
                 return store
-            }else{
-                //remove old game
+            } else {
+                // Remove old game
                 remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
             }
         }
-        //reset daily challenge if needed
+        // Reset daily challenge if needed
         if (store.nbGuesses > 0) store.init(store.name, true).then()
         return store
     })
@@ -135,7 +135,7 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
                 averageGuesses: child.val().averageGuesses,
                 winRate: child.val().winRate,
                 gamesPlayed: child.val().gamesPlayed,
-                stats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map(key => {
+                stats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map((key: string): TimedStat => {
                     return {
                         date: parseInt(key),
                         guesses: child.val().stats[key].guesses,
@@ -180,7 +180,7 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
         persistence.winRate || 0,
         persistence.gamesPlayed || 0,
         // Workaround to Firebase saving empty arrays as undefined
-        persistence.stats === undefined ? [] : Object.keys(persistence.stats).map(key => {
+        persistence.stats === undefined ? [] : Object.keys(persistence.stats).map((key: string): TimedStat => {
             return {
                 date: parseInt(key),
                 guesses: persistence.stats[key].guesses,
@@ -201,10 +201,6 @@ export type UserPersistence = {
     averageGuesses: number,
     winRate: number,
     gamesPlayed: number,
-    stats: {
-        date: number,
-        guesses: number,
-        rank: number,
-        time: number
-    }[]
+    stats: TimedStat[]
 }
+

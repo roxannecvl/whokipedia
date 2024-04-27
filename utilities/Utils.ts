@@ -1,6 +1,7 @@
-import { type TimedStat } from "~/model/UserModel"
-
 // --------------------------------- String utilities  --------------------------------- //
+
+import type {UserPersistence} from "~/model/FirebaseModel";
+import type {TimedStat} from "~/model/UserModel";
 
 /**
  * Given a string, this function returns the same string with the first letter capitalized.
@@ -59,6 +60,24 @@ export function removeNameOccurrences(text: string, name: string): string {
 }
 
 // --------------------------------- Miscellaneous --------------------------------- //
+/**
+ * This function is used to sort all users from the database according to their number
+ * of guesses and time for today's challenge.
+ */
+export function sortTodayChallengers(users: UserPersistence[], timeStamp: number): UserPersistence[] {
+    const filteredUserData: UserPersistence[] = users.filter((item: UserPersistence) => {
+        return item.stats.find((stat: TimedStat) => stat.date === timeStamp)
+    })
+    return filteredUserData.sort((a: UserPersistence, b: UserPersistence): number => {
+        const aStats = a.stats.find((stat: TimedStat) => stat.date === timeStamp)
+        const bStats = b.stats.find((stat: TimedStat) => stat.date === timeStamp)
+        if (aStats && bStats) {
+            if (aStats.guesses === bStats.guesses) return aStats.time - bStats.time
+            return aStats.guesses - bStats.guesses
+        }
+        return 0
+    })
+}
 
 /**
  * This function outputs a color depending on the number of streak
@@ -209,12 +228,12 @@ export function getRandomNumber(min: number, max: number) {
  * @param max - the maximum number returned
  */
 export async function dailyRandom(min: number, max: number): Promise<number> {
-    let state = await getCurrentDayTimestamp()
+    let state: number = await getCurrentDayTimestamp()
     // Use the xorshift32 algorithm for pseudo-random number generation
     state ^= state << 13
     state ^= state >> 17
     state ^= state << 5
-    let factor = (state >>> 0) / 0xFFFFFFFF // Convert to a float between 0 and 1
+    let factor: number = (state >>> 0) / 0xFFFFFFFF // Convert to a float between 0 and 1
     return Math.floor(factor * (max - min + 1)) + min
 }
 
@@ -249,55 +268,17 @@ export function randomPermutation(min: number, max: number, seed : number = 0): 
  */
 export async function getCurrentDayTimestamp(): Promise<number> {
     try {
-        const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Zurich')
-        const data = await response.json()
-        const currentDate = new Date(data.datetime)
-        currentDate.setHours(0, 0, 0, 0)
-        return currentDate.getTime()
+        return fetch('https://worldtimeapi.org/api/timezone/Europe/Zurich')
+            .then((response: Response) => response.json())
+            .then(data => {
+                const currentDate: Date = new Date(data.datetime)
+                currentDate.setUTCHours(0, 0, 0, 0)
+                return currentDate.getTime()
+            })
     } catch (error) {
         console.error('Error fetching current time:', error)
         throw error
     }
-}
-
-/**
- * Get a random timestamp.
- * @returns number - random timestamp
- */
-function getRandomTimestamp(): number {
-    const currentDate: Date = new Date(
-        getRandomNumber(2020, 2024),
-        getRandomNumber(0, 11),
-        getRandomNumber(1, 28)
-    )
-    return currentDate.getTime()
-}
-
-/**
- * Get a random array of timed statistics.
- * @param size - size of the array
- * @returns TimedStat[] - random array of timed statistics, chronologically ordered
- */
-export function getRandomTimedStats(size: number): TimedStat[] {
-    let array: TimedStat[] = []
-    for (let i = 0; i < size; i++) {
-        array.push({
-            date: getRandomTimestamp(),
-            guesses: getRandomNumber(1, 10),
-            rank: getRandomNumber(1, 100),
-            time: getRandomNumber(1, 100)
-        })
-    }
-    return array.sort((a: TimedStat, b: TimedStat) => {
-            return (a.date - b.date)
-        }).map((e: TimedStat): TimedStat => {
-            return {
-                date: e.date as number,
-                guesses: e.guesses as number,
-                rank: e.rank as number,
-                time: e.time as number
-            }
-        })
 }
 
 // --------------------------------- Data --------------------------------- //
