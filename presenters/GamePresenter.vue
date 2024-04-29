@@ -38,13 +38,10 @@ const props = defineProps({
 // Constants
 const user = useCurrentUser()
 const baseString = "https://en.wikipedia.org/wiki/"
-const date : Date = new Date()
-date.setHours(0,0,0,0)
-let timeStamp = date.getTime()
+let timeStamp = await getCurrentDayTimestamp()
 
 // Refs
 const validGuess = ref(true)
-const ready = ref(false)
 
 // Functions
 
@@ -124,7 +121,6 @@ function updateCurrentGame(): void {
 
 // Lifecycle hooks
 onMounted(async () => {
-  timeStamp = await getCurrentDayTimestamp()
   if (props.dailyChallenge) {
     await updateGameModel()
   }

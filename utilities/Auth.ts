@@ -22,8 +22,8 @@ export function login(username: string, password: string, auth : Auth, toast : a
             console.error(error)
             displayErrorNotification(toast, "Failed to log in. Your credentials may be wrong.")
         }).finally(() => {
-            if (redirect) useRouter().push('/daily-challenge').then()
-        })
+        if (redirect) useRouter().push('/daily-challenge').then()
+    })
 }
 
 /**
@@ -45,9 +45,9 @@ export function signup(email: string, username: string, password: string, userMo
             console.error(error)
             displayErrorNotification(toast, "Failed to sign up. Email already in use.")
         }).finally(() => {
-            console.log("redirect")
-            if (redirect) useRouter().push('/daily-challenge').then()
-        })
+        console.log("redirect")
+        if (redirect) useRouter().push('/daily-challenge').then()
+    })
 }
 
 /**

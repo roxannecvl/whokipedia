@@ -2,25 +2,16 @@
 import { useCurrentUser, useFirebaseAuth } from "vuefire"
 import {
   getAllUserFromFirebase,
-  initializeFirebase,
   readUserFromFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
-import { type TimedStat, type UserStore } from "~/model/UserModel"
+import {type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
 import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
-import { login, logout, signup } from "~/utilities/auth"
+import { login, logout, signup } from "~/utilities/Auth"
 
-// Set up authentication
-initializeFirebase()
-
-// Props
-const props = defineProps({
-  userModel: {
-      type: Object as () => UserStore,
-      required: true,
-  },
-})
+// Models
+const userModel: UserStore = useUserStore()
 
 // Constants
 const user = useCurrentUser()
@@ -32,7 +23,6 @@ const toast = useToast()
 
 // Refs
 const closeModal = ref(false)
-const errorMessage = ref("")
 const usersData = ref([] as LeaderboardData[])
 export interface LeaderboardData {
   readonly rank: number,
@@ -45,15 +35,15 @@ export interface LeaderboardData {
 
 // Lifecycle hooks
 onMounted(async () => {
-  if(user.value) await readUserFromFirebase(props.userModel, user.value.uid)
+  if(user.value) await readUserFromFirebase(userModel, user.value.uid)
   timeStamp = await getCurrentDayTimestamp()
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
       // User logged out
-      props.userModel.$reset()
+      userModel.$reset()
     } else if (user) {
       // User logged in
-      readUserFromFirebase(props.userModel, user.uid)
+      readUserFromFirebase(userModel, user.uid)
       closeModal.value = true
       setTimeout(() => {
         closeModal.value = false

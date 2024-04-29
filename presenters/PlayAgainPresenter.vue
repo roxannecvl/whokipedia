@@ -22,12 +22,15 @@ const props = defineProps({
   },
 })
 
+// Constants
 const user = useCurrentUser()
 
 // Functions
+/**
+ * This method inits a new game, ensuring chosen celebrity is different from daily challenge.
+ */
 async function initGame() {
   if (props.dailyChallenge) return
-  // Random celebrity but not the current daily challenge
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   if(randomIndex >= dailyRdm) randomIndex +=1
@@ -38,5 +41,5 @@ async function initGame() {
 
 <template>
   <PlayAgainView
-      @new-game="initGame" :over="gameModel.end" :challenge="dailyChallenge" :connected="user !== undefined"/>
+      @new-game="initGame" :over="gameModel.end" :challenge="dailyChallenge" :connected="userModel.username !== ''"/>
 </template>
