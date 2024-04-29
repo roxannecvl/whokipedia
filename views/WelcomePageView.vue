@@ -63,25 +63,14 @@ onMounted(() => {
       </div>
 
       <div class="p-2 box-border dark:drop-shadow-lg">
-        <UAlert
-            variant="solid"
-            :ui="{
-              color: {
-                white: {
-                  solid: 'text-gray-900 dark:text-white bg-gray-50/60 dark:bg-gray-900/60 ring-1 ring-gray-200/60 dark:ring-gray-800/60',
-                }
-              }
-            }"
-        >
-          <template #title>
+        <div class="w-full relative overflow-hidden rounded-lg p-4 text-gray-900 dark:text-white bg-gray-50/60 dark:bg-gray-900/60 ring-1 ring-gray-200/60 dark:ring-gray-800/60">
+          <div class="flex flex-col gap-3">
             <div class="flex flex-row items-center gap-2 pb-2">
               <p class="i-heroicons-check-circle text-lg"/>
               <p class="font-black text-xl">
                 How to play
               </p>
             </div>
-          </template>
-          <template #description>
             <div class="flex flex-col gap-2">
               <p class="text-lg font-semibold">
                 Guess the celebrity <span class="text-primary">in as few hints as possible</span>
@@ -93,8 +82,8 @@ onMounted(() => {
                   or until <span class="text-primary">all hints are consumed</span></li>
               </ul>
             </div>
-          </template>
-        </UAlert>
+          </div>
+        </div>
       </div>
     </div>
   </div>
