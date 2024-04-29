@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { type UserStore, useUserStore } from "./model/UserModel"
 import HeaderPresenter from "~/presenters/HeaderPresenter.vue"
-import {readUserFromFirebase} from "~/model/FirebaseModel";
 
 // Set up user model
 const store: UserStore = useUserStore()
 </script>
 
 <template>
-  <NuxtLoadingIndicator/>
+  <NuxtLoadingIndicator color="orange"/>
   <Body class="bg-gray-50 dark:bg-gray-950">
   <UContainer class="p-0 sm:py-5 sm:h-screen">
     <UCard
