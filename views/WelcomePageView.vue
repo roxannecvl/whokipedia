@@ -35,7 +35,7 @@ onMounted(() => {
 <template>
   <div class="w-full h-full relative">
     <div class="absolute flex items-center left-2 sm:left-auto sm:right-0 lg:right-8 h-full min-w-[32rem] aspect-square box-border p-8 pointer-events-none">
-      <img :src="logoPath" class="w-full h-full object-contain opacity-65 dark:opacity-75 blur-md" alt="Whokipedia"/>
+      <img :src="logoPath" class="w-full h-full object-contain opacity-60 dark:opacity-60 blur-[6px] sm:blur-[7px] md:blur-[8px]" alt="Whokipedia"/>
     </div>
     <div class="relative h-full flex flex-col justify-center gap-6 sm:gap-8 md:w-2/3 py-0 z-10">
       <div class="flex flex-col gap-4 p-2">
