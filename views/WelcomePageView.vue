@@ -33,20 +33,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative">
-    <div class="absolute inset-0 pointer-events-none bg-no-repeat bg-right blur"
-         :style="{ backgroundImage: `url(${logoPath})`, backgroundSize: '47%'}">
+  <div class="w-full h-full relative">
+    <div class="absolute flex items-center right-0 lg:right-8 h-full aspect-square box-border blur-md p-8">
+      <img :src="logoPath" class="w-full h-full object-contain" alt="Whokipedia"/>
     </div>
-
-    <div class="inset-0 flex flex-col items-start px-4 mt-10">
-      <div class="text-5xl font-bold mb-2 text-primary">Whokipedia</div>
-      <div class="text-3xl font-bold mb-4">The ultimate guessing game!</div>
-      <div class="text-xl  max-w-[50%] mb-10">
-        Test your knowledge of the who's who in Whokipedia,
-        where each clue leads you closer to uncovering the celebrity behind the blur!
+    <div class="relative h-full flex flex-col justify-center gap-10 md:w-2/3 py-6 sm:py-0 z-10">
+      <div class="flex flex-col gap-8 p-2">
+        <div class="flex flex-col gap-2">
+          <div class="text-5xl font-black text-primary dark:drop-shadow-lg">Whokipedia</div>
+          <div class="text-3xl font-black dark:drop-shadow">The ultimate guessing game!</div>
+        </div>
+        <div class="text-xl text-justify dark:drop-shadow">
+          Test your knowledge of the who's who in Whokipedia,
+          where each clue leads you closer to uncovering the celebrity behind the blur!
+        </div>
       </div>
 
-      <div class="flex flex-row">
+      <div class="flex flex-row drop-shadow">
         <LoginSignupView
             @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
             @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
@@ -59,24 +62,32 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="border border-primary border-solid rounded-lg p-4 mt-10">
-          <p class="font-black text-xl">
-            How to play
-          </p>
-          <p class="py-2 font-semibold">
-            Guess the celebrity <span class="text-primary">in as few hints as possible</span>
-          </p>
-          <ul class="list-disc list-inside m-1">
-            <li>Each guess must be one of our listed <span class="text-primary">celebrities</span>.</li>
-            <li>Each unsuccessful guess brings a <span class="text-primary">new hint</span>.</li>
-            <li><span class="text-primary">Guess until you find the celebrity</span>
-              or until <span class="text-primary">all hints are consumed</span>.</li>
-          </ul>
+      <div class="p-2 box-border dark:drop-shadow-lg">
+        <UAlert
+            variant="solid">
+          <template #title>
+            <div class="flex flex-row items-center gap-2 pb-2">
+              <p class="i-heroicons-check-circle text-lg"/>
+              <p class="font-black text-xl">
+                How to play
+              </p>
+            </div>
+          </template>
+          <template #description>
+            <div class="flex flex-col gap-2">
+              <p class="text-lg font-semibold">
+                Guess the celebrity <span class="text-primary">in as few hints as possible</span>
+              </p>
+              <ul class="list-disc list-inside">
+                <li>Each guess must be one of our listed <span class="text-primary">celebrities</span></li>
+                <li>Each unsuccessful guess brings a <span class="text-primary">new hint</span></li>
+                <li><span class="text-primary">Guess until you find the celebrity</span>
+                  or until <span class="text-primary">all hints are consumed</span></li>
+              </ul>
+            </div>
+          </template>
+        </UAlert>
       </div>
     </div>
-
   </div>
 </template>
-
-
-

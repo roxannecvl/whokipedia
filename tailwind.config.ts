@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./**/*.vue'],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'logo-filled': "url('/img/logo-filled.png')",
+      }
+    },
   },
   plugins: [],
 }
