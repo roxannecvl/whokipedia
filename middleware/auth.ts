@@ -5,7 +5,7 @@
  */
 export default defineNuxtRouteMiddleware(async (_to, from) => {
     const user = await getCurrentUser()
-    if(!user) {
+    if (!user) {
         await useRouter().push("/")
     }
 })

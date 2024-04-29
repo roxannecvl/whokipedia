@@ -8,9 +8,17 @@ import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue";
 
-// Stores
+
+// Props
+const props = defineProps({
+  userModel: {
+    type: Object as () => UserStore,
+    required: true,
+  },
+})
+
+// Store
 const gameStore: GameStore = useGameStore()
-const userStore: UserStore = useUserStore()
 
 // Refs
 const elapsedTime = ref(0)
@@ -61,14 +69,14 @@ async function startGame() {
         <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end)" :showTime="true" :showRules="true"/>
       </div>
       <div class="h-full flex flex-col w-5/6 p-2">
-        <PlayAgainPresenter :dailyChallenge="false" :gameModel="gameStore" :userModel="userStore"/>
-        <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="false" class="overflow-y-auto" size="big"/>
+        <PlayAgainPresenter :dailyChallenge="false" :gameModel="gameStore" :userModel="userModel"/>
+        <GamePresenter :userModel="userModel" :gameModel="gameStore" :dailyChallenge="false" class="overflow-y-auto" size="big"/>
       </div>
     </div>
 
     <!-- FOR SMALL SCREENS-->
     <div class="h-full flex flex-col gap-3 lg:hidden">
-      <PlayAgainPresenter :daily-challenge="false" :gameModel="gameStore" :userModel="userStore"/>
+      <PlayAgainPresenter :daily-challenge="false" :gameModel="gameStore" :userModel="userModel"/>
       <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
         <div>
           <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
@@ -90,7 +98,7 @@ async function startGame() {
         </UCard>
       </USlideover>
       <div class="h-full overflow-y-auto">
-        <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="false" size="small"/>
+        <GamePresenter :userModel="userModel" :gameModel="gameStore" :dailyChallenge="false" size="small"/>
       </div>
     </div>
   </div>

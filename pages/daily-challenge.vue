@@ -9,14 +9,24 @@ import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue"
 
 
+// Props
+const props = defineProps({
+  userModel: {
+    type: Object as () => UserStore,
+    required: true,
+  },
+})
+
 // Page meta
 definePageMeta({
   middleware: "auth"
 })
 
-// Stores
-const userStore: UserStore = useUserStore()
+// Store
 const gameStore: GameStore = useGameStore()
+
+// Const
+const user  = useCurrentUser()
 
 // Refs
 const elapsedTime = ref(0)
@@ -44,10 +54,6 @@ function checkStopInterval(over : boolean, name : string){
     clearInterval(timerInterval)
     timerInterval = null
   }
-  if (!over && timerInterval === null) {
-    elapsedTime.value = 0
-    startInterval()
-  }
   return elapsedTime.value
 }
 
@@ -61,14 +67,14 @@ await startGame()
 async function startGame() {
   let dailyRdm: number = await dailyRandom(0, celebrities.length - 1)
   await gameStore.init(celebrities[dailyRdm], true)
-  curUsername.value = userStore.username
+  curUsername.value = props.userModel.username
   if (gameStore.time > elapsedTime.value) elapsedTime.value = gameStore.time
 }
 
 </script>
 
 <template>
-  <div v-if="userStore.username != ''">
+  <div v-if="userModel.username != ''">
     <div v-if="gameStore.loading" class="w-full flex justify-center items-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
@@ -76,17 +82,17 @@ async function startGame() {
       <!-- FOR BIG SCREENS-->
       <div class="h-full hidden lg:flex">
         <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
-          <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userStore.username)" :showTime="true" :showRules="true"/>
+          <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userModel.username)" :showTime="true" :showRules="true"/>
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
-          <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore" :userModel="userStore"/>
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" size="big" class="overflow-y-auto"/>
+          <PlayAgainPresenter :dailyChallenge="true" :gameModel="gameStore" :userModel="userModel"/>
+          <GamePresenter :userModel="userModel" :gameModel="gameStore" :dailyChallenge="true" size="big" class="overflow-y-auto"/>
         </div>
       </div>
 
       <!-- FOR SMALL SCREENS-->
       <div class="h-full flex flex-col gap-3 lg:hidden">
-        <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore" :userModel="userStore"/>
+        <PlayAgainPresenter :daily-challenge="true" :gameModel="gameStore" :userModel="userModel"/>
         <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
           <div>
             <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
@@ -94,7 +100,7 @@ async function startGame() {
             </UButton>
           </div>
           <div class="flex-grow">
-            <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userStore.username)" :showTime="true" :showRules="false"/>
+            <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userModel.username)" :showTime="true" :showRules="false"/>
           </div>
         </div>
         <USlideover v-model="isRulesOpen" title="Rules">
@@ -103,14 +109,17 @@ async function startGame() {
               <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
             </div>
             <div class="p-5 w-full box-border">
-              <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userStore.username)" :showTime="false" :showRules="true"/>
+              <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end, userModel.username)" :showTime="false" :showRules="true"/>
             </div>
           </UCard>
         </USlideover>
         <div class="h-full overflow-y-auto">
-          <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="true" size="small"/>
+          <GamePresenter :userModel="userModel" :gameModel="gameStore" :dailyChallenge="true" size="small"/>
         </div>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <UIcon name="i-eos-icons-loading"/>
   </div>
 </template>

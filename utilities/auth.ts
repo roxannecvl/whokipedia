@@ -14,12 +14,15 @@ import { type UserStore } from "~/model/UserModel"
  * @param password - Password used for login
  * @param auth - firebase auth
  * @param toast - for alert notification
+ * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
  */
-export function login(username: string, password: string, auth : Auth, toast : any): void {
+export function login(username: string, password: string, auth : Auth, toast : any, redirect : boolean = false): void {
     signInWithEmailAndPassword(auth, username, password)
         .catch((error) => {
             console.error(error)
             displayErrorNotification(toast, "Failed to log in. Your credentials may be wrong.")
+        }).finally(() => {
+            if (redirect) useRouter().push('/daily-challenge').then()
         })
 }
 
@@ -31,8 +34,9 @@ export function login(username: string, password: string, auth : Auth, toast : a
  * @param userModel - the user model of the user signing in
  * @param auth - firebase auth
  * @param toast - for alert notification
+ * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
  */
-export function signup(email: string, username: string, password: string, userModel : UserStore, auth : Auth, toast : any): void {
+export function signup(email: string, username: string, password: string, userModel : UserStore, auth : Auth, toast : any, redirect : boolean = false): void {
     createUserWithEmailAndPassword(auth, email, password)
         .then((credentials: UserCredential) => {
             saveUserToFirebase(userModel, username, credentials.user?.uid)
@@ -40,6 +44,9 @@ export function signup(email: string, username: string, password: string, userMo
         .catch((error) => {
             console.error(error)
             displayErrorNotification(toast, "Failed to sign up. Email already in use.")
+        }).finally(() => {
+            console.log("redirect")
+            if (redirect) useRouter().push('/daily-challenge').then()
         })
 }
 
@@ -47,11 +54,14 @@ export function signup(email: string, username: string, password: string, userMo
  * Method to log out the user.
  * @param auth - firebase auth
  * @param toast - for alert notification
+ * @param path - current path of the user
  */
-export function logout(auth : Auth, toast : any ): void {
+export function logout(auth : Auth, toast : any, path : string ): void {
     signOut(auth).catch((error) => {
         console.error(error)
         displayErrorNotification(toast, "Failed to log out.")
+    }).finally(() => {
+        if (path === '/daily-challenge') useRouter().push('/').then()
     })
 }
 
