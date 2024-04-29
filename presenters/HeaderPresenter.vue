@@ -109,6 +109,6 @@ function updateLeaderboard(): void {
       :gamesPlayedSV="userModel.gamesPlayed"
       :timedStatsSV="userModel.timedStats"
       :gamesLV="usersData"
-      :usernameLV="userModel.username"
+      :usernameLVSV="userModel.username"
   />
 </template>

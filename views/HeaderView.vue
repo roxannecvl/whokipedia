@@ -43,7 +43,7 @@ const props = defineProps({
     type: Array<LeaderboardData>,
     required: true,
   },
-  usernameLV: {
+  usernameLVSV: {
     type: String,
     required: true,
   }
@@ -85,7 +85,7 @@ const logoPath = '/img/logo-primary-filled.svg'
       <LeaderboardView
           @update-leaderboard ="emit('update-leaderboard-bis')"
           :games="gamesLV"
-          :username="usernameLV"
+          :username="usernameLVSV"
       />
       <StatisticsView
           :current-streak="currentStreakSV"
@@ -95,6 +95,7 @@ const logoPath = '/img/logo-primary-filled.svg'
           :win-rate="winRateSV"
           :games-played="gamesPlayedSV"
           :timed-stats="timedStatsSV"
+          :username="usernameLVSV"
       />
       <LoginSignupView
         @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
