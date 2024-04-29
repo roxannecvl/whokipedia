@@ -33,6 +33,10 @@ const props = defineProps({
     type: Array<TimedStat>,
     required: true
   },
+  username: {
+    type: String,
+    required: true
+  }
 })
 
 // Refs
@@ -55,7 +59,7 @@ const maxStreakColor = computed(() => getColor(props.maxStreak))
     <UCard :ui="{ ring: '' }">
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Statistics</h3>
+          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Well done, <span class="text-primary">{{ username }}</span> !</h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isStatOpen = false" />
         </div>
       </template>
