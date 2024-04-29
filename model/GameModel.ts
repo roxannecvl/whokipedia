@@ -20,11 +20,13 @@ export const useGameStore = defineStore('game', {
         end: false as boolean,
         win: false as boolean,
         loading: false as boolean,
+        isDaily: false as boolean,
     }),
     actions: {
         async init (name: string, isDaily : boolean = false): Promise<void> {
             this.$reset()
             this.name = name
+            this.isDaily = isDaily
             try {
                 this.loading = true
                 const [images, infobox, paragraphs] = await Promise.all([

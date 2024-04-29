@@ -33,9 +33,9 @@ onMounted(async () => {
 
 <template>
   <WelcomePageView
-      @login-event-tris="(username: string, password: string) => login(username, password, auth, toast)"
-      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, auth, toast)"
-      @logout-event-bis="logout(auth, toast)"
+      @login-event-tris="(username: string, password: string) => login(username, password, auth, toast, true)"
+      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, auth, toast, true)"
+      @logout-event-bis="logout(auth, toast, useRoute().path)"
       :closeLSV="closeModal"
   />
 </template>

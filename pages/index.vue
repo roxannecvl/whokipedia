@@ -2,10 +2,17 @@
 import WelcomePagePresenter from "~/presenters/WelcomePagePresenter.vue"
 import { type UserStore, useUserStore } from "~/model/UserModel";
 
-// Store
-const userStore: UserStore = useUserStore()
+
+// Props
+const props = defineProps({
+  userModel: {
+    type: Object as () => UserStore,
+    required: true,
+  },
+})
+
 </script>
 
 <template>
-  <div ><WelcomePagePresenter :userModel="userStore"/></div>
+  <div ><WelcomePagePresenter :userModel="userModel"/></div>
 </template>
