@@ -86,12 +86,11 @@ export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
  * @param model - Local model to fill
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export async function readUserFromFirebase(model: UserStore, uid: string): Promise<UserStore> {
-    return get(dbRef(database, 'users/' + uid)).then(snapshot => {
+export async function readUserFromFirebase(model: UserStore, uid: string): Promise<void> {
+    get(dbRef(database, 'users/' + uid)).then(snapshot => {
         if (snapshot.val()) {
             persistenceToUserModel(model, snapshot.val())
         }
-        return model
     })
 }
 
@@ -101,8 +100,8 @@ export async function readUserFromFirebase(model: UserStore, uid: string): Promi
  * @param model - Local model to fill
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export async function readCurGameFromFirebase(model : GameStore, uid: string): Promise<GameStore> {
-    return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
+export async function readCurGameFromFirebase(model : GameStore, uid: string): Promise<void> {
+    get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
         if (snapshot.val()) {
             // Make sure we do not get an old gameState
             if (snapshot.val().name == model.name) {
@@ -115,7 +114,6 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
         }
         // Reset daily challenge if needed
         if (model.nbGuesses > 0) model.init(model.name, true).then()
-        return model
     })
 }
 

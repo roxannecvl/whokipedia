@@ -5,7 +5,7 @@ import {
   readUserFromFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
-import {type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
+import { type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
 import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
 import { login, logout, signup } from "~/utilities/Auth"
