@@ -4,7 +4,7 @@ import type { GameStore } from "~/model/GameModel";
 import PlayAgainView from "~/views/PlayAgainView.vue";
 import { celebrities } from "~/model/CelebrityList";
 import { dailyRandom, getRandomNumber } from "~/utilities/Utils";
-import type {UserStore} from "~/model/UserModel";
+import type { UserStore } from "~/model/UserModel";
 
 // Props
 const props = defineProps({
@@ -22,6 +22,8 @@ const props = defineProps({
   },
 })
 
+const user = useCurrentUser()
+
 // Functions
 async function initGame() {
   if (props.dailyChallenge) return
@@ -29,12 +31,12 @@ async function initGame() {
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   if(randomIndex >= dailyRdm) randomIndex +=1
-  props.gameModel.init(celebrities[randomIndex], true)
+  props.gameModel.init(celebrities[randomIndex])
 }
 
 </script>
 
 <template>
   <PlayAgainView
-      @new-game="initGame" :over="gameModel.end" :challenge="dailyChallenge" :connected="userModel.username != ''"/>
+      @new-game="initGame" :over="gameModel.end" :challenge="dailyChallenge" :connected="user !== undefined"/>
 </template>

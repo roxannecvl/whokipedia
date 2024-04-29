@@ -7,6 +7,7 @@ const store: UserStore = useUserStore()
 </script>
 
 <template>
+  <NuxtLoadingIndicator color="orange"/>
   <Body class="bg-gray-50 dark:bg-gray-950">
   <UContainer class="p-0 sm:py-5 sm:h-screen">
     <UCard
@@ -21,7 +22,7 @@ const store: UserStore = useUserStore()
         <HeaderPresenter :userModel="store"/>
       </template>
        <main class="flex sm:h-full sm:overflow-y-auto justify-center">
-        <NuxtPage/>
+        <NuxtPage :userModel="store"/>
       </main>
       <UNotifications />
     </UCard>

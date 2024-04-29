@@ -8,9 +8,17 @@ import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue";
 
-// Stores
+
+// Props
+const props = defineProps({
+  userModel: {
+    type: Object as () => UserStore,
+    required: true,
+  },
+})
+
+// Store
 const gameStore: GameStore = useGameStore()
-const userStore: UserStore = useUserStore()
 
 // Refs
 const elapsedTime = ref(0)
@@ -36,13 +44,17 @@ function checkStopInterval(over : boolean){
 
 // Lifecycle hooks
 onMounted(async () => {
+  startInterval()
+});
+
+await startGame()
+async function startGame() {
   // Random celebrity but not the current daily challenge
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   if(randomIndex >= dailyRdm) randomIndex +=1
-  await gameStore.init(celebrities[randomIndex], true)
-  startInterval()
-});
+  await gameStore.init(celebrities[randomIndex])
+}
 
 </script>
 
@@ -57,14 +69,14 @@ onMounted(async () => {
         <SidebarPresenter :gameModel="gameStore" :timeSec="checkStopInterval(gameStore.end)" :showTime="true" :showRules="true"/>
       </div>
       <div class="h-full flex flex-col w-5/6 p-2">
-        <PlayAgainPresenter :dailyChallenge="false" :gameModel="gameStore" :userModel="userStore"/>
-        <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="false" class="overflow-y-auto" size="big"/>
+        <PlayAgainPresenter :dailyChallenge="false" :gameModel="gameStore" :userModel="userModel"/>
+        <GamePresenter :userModel="userModel" :gameModel="gameStore" :dailyChallenge="false" class="overflow-y-auto" size="big"/>
       </div>
     </div>
 
     <!-- FOR SMALL SCREENS-->
     <div class="h-full flex flex-col gap-3 lg:hidden">
-      <PlayAgainPresenter :daily-challenge="false" :gameModel="gameStore" :userModel="userStore"/>
+      <PlayAgainPresenter :daily-challenge="false" :gameModel="gameStore" :userModel="userModel"/>
       <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
         <div>
           <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
@@ -86,7 +98,7 @@ onMounted(async () => {
         </UCard>
       </USlideover>
       <div class="h-full overflow-y-auto">
-        <GamePresenter :userModel="userStore" :gameModel="gameStore" :dailyChallenge="false" size="small"/>
+        <GamePresenter :userModel="userModel" :gameModel="gameStore" :dailyChallenge="false" size="small"/>
       </div>
     </div>
   </div>

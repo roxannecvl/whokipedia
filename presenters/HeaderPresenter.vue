@@ -45,6 +45,7 @@ export interface LeaderboardData {
 
 // Lifecycle hooks
 onMounted(async () => {
+  if(user.value) await readUserFromFirebase(props.userModel, user.value.uid)
   timeStamp = await getCurrentDayTimestamp()
   watch(user, (user, prevUser) => {
     if (prevUser && !user) {
@@ -97,7 +98,7 @@ function updateLeaderboard(): void {
   <HeaderView
       @login-event-tris="(username: string, password: string) => login(username, password, auth, toast)"
       @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, auth, toast)"
-      @logout-event-bis="logout(auth, toast)"
+      @logout-event-bis="logout(auth, toast, useRoute().path)"
       @update-leaderboard-bis="updateLeaderboard"
       :closeLSV="closeModal"
       :currentStreakSV="userModel.currentStreak"
