@@ -34,8 +34,8 @@ onMounted(() => {
 
 <template>
   <div class="w-full h-full relative">
-    <div class="absolute flex items-center right-0 lg:right-8 h-full aspect-square box-border blur-md p-8">
-      <img :src="logoPath" class="w-full h-full object-contain" alt="Whokipedia"/>
+    <div class="absolute flex items-center -left-4 sm:left-auto sm:right-0 lg:right-8 h-full min-w-[32rem] aspect-square box-border blur-md p-8 pointer-events-none">
+      <img :src="logoPath" class="w-full h-full object-contain opacity-65 dark:opacity-75" alt="Whokipedia"/>
     </div>
     <div class="relative h-full flex flex-col justify-center gap-10 md:w-2/3 py-6 sm:py-0 z-10">
       <div class="flex flex-col gap-8 p-2">
@@ -64,7 +64,15 @@ onMounted(() => {
 
       <div class="p-2 box-border dark:drop-shadow-lg">
         <UAlert
-            variant="solid">
+            variant="solid"
+            :ui="{
+              color: {
+                white: {
+                  solid: 'text-gray-900 dark:text-white bg-gray-50/60 dark:bg-gray-900/60 ring-1 ring-gray-200/60 dark:ring-gray-800/60',
+                }
+              }
+            }"
+        >
           <template #title>
             <div class="flex flex-row items-center gap-2 pb-2">
               <p class="i-heroicons-check-circle text-lg"/>

@@ -75,7 +75,7 @@ async function startGame() {
 
 <template>
   <div v-if="userModel.username != ''">
-    <div v-if="gameStore.loading" class="w-full flex justify-center items-center">
+    <div v-if="gameStore.loading" class="w-full flex justify-center">
       <UIcon name="i-eos-icons-loading"/>
     </div>
     <div v-else class="h-full">
