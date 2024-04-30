@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { type UserStore, useUserStore } from "./model/UserModel"
+import { initializeFirebase } from "~/model/FirebaseModel"
 import HeaderPresenter from "~/presenters/HeaderPresenter.vue"
 
-// Set up user model
-const store: UserStore = useUserStore()
+// Set up authentication
+initializeFirebase()
 </script>
 
 <template>
@@ -19,10 +19,10 @@ const store: UserStore = useUserStore()
         }
       }">
       <template #header>
-        <HeaderPresenter :userModel="store"/>
+        <HeaderPresenter/>
       </template>
        <main class="flex sm:h-full sm:overflow-y-auto justify-center">
-        <NuxtPage :userModel="store"/>
+        <NuxtPage/>
       </main>
       <UNotifications />
     </UCard>
