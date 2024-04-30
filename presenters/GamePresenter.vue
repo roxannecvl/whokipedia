@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCurrentUser } from 'vuefire'
-import { type GameStore } from "~/model/GameModel"
-import type { TimedStat, UserStore } from "~/model/UserModel"
+import { type GameStore, useGameStore } from "~/model/GameModel"
+import { type UserStore, useUserStore, type TimedStat } from "~/model/UserModel"
 import {
   updateUserToFirebase,
   getAllUserFromFirebase,
@@ -17,14 +17,6 @@ import SearchFieldView from "~/views/SearchFieldView.vue"
 
 // Props
 const props = defineProps({
-  gameModel: {
-      type: Object as () => GameStore,
-      required: true,
-  },
-  userModel: {
-      type: Object as () => UserStore,
-      required: true,
-  },
   dailyChallenge: {
     type: Boolean,
     required: true,
@@ -34,6 +26,10 @@ const props = defineProps({
     required: true,
   }
 })
+
+// Models
+const userModel: UserStore = useUserStore()
+const gameModel: GameStore = useGameStore()
 
 // Constants
 const user = useCurrentUser()
@@ -50,17 +46,17 @@ const validGuess = ref(true)
  * @param name - The name of the celebrity guessed
  */
 function guessAndCheck(name : string) {
-  validGuess.value = props.gameModel.makeAGuess.bind(props.gameModel)(name)
+  validGuess.value = gameModel.makeAGuess.bind(gameModel)(name)
   if (!validGuess.value) {
     setTimeout(() => {
       validGuess.value = true
     }, 2500)
   }
-  if (props.gameModel.end && props.dailyChallenge) {
+  if (gameModel.end && props.dailyChallenge) {
     computeRank().then((rank) => {
       if (user.value && rank) {
-        props.userModel.endGame(props.gameModel.win, rank, props.gameModel.nbGuesses, props.gameModel.time, timeStamp)
-        updateUserToFirebase(props.userModel, user.value.uid)
+        userModel.endGame(gameModel.win, rank, gameModel.nbGuesses, gameModel.time, timeStamp)
+        updateUserToFirebase(userModel, user.value.uid)
       }
     }).catch((err) => {
       console.error(err)
@@ -77,8 +73,8 @@ async function computeRank(): Promise<number | void> {
     for (let index = 0; index < sortedUserData.length; index++) {
       const item = sortedUserData[index]
       const stat = item.stats.find((stat: any) => parseInt(stat.date) === timeStamp)
-        if (stat && (props.gameModel.nbGuesses < stat.guesses
-            || (props.gameModel.nbGuesses === stat.guesses && props.gameModel.time < stat.time))) {
+        if (stat && (gameModel.nbGuesses < stat.guesses
+            || (gameModel.nbGuesses === stat.guesses && gameModel.time < stat.time))) {
           for (let i = index; i < sortedUserData.length; i++) {
             updateUserRankToFirebase(i + 2, sortedUserData[i].uid)
             updateUserAVGRankToFirebase(1, sortedUserData[i].uid)
@@ -96,16 +92,16 @@ async function computeRank(): Promise<number | void> {
  * This function is used to update the game model with the user's stats if the user has already played the game today.
  */
 async function updateGameModel(): Promise<void> {
-  if(props.gameModel?.isDaily) {
-    let dailyStats: TimedStat[] = props.userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
+  if(gameModel?.isDaily) {
+    let dailyStats: TimedStat[] = userModel.timedStats.filter((stat: TimedStat) => stat.date == timeStamp)
     if (dailyStats.length !== 0) {
-      props.gameModel.end = true
-      props.gameModel.win = true
-      props.gameModel.nbGuesses = dailyStats[0].guesses
-      props.gameModel.time = dailyStats[0].time
-      props.gameModel.imageUrl = props.gameModel.updateImage()
+      gameModel.end = true
+      gameModel.win = true
+      gameModel.nbGuesses = dailyStats[0].guesses
+      gameModel.time = dailyStats[0].time
+      gameModel.imageUrl = gameModel.updateImage()
     } else if (user.value) {
-      await readCurGameFromFirebase(props.gameModel, user.value.uid)
+      await readCurGameFromFirebase(gameModel, user.value.uid)
     }
   }
 }
@@ -115,7 +111,7 @@ async function updateGameModel(): Promise<void> {
  */
 function updateCurrentGame(): void {
   setTimeout(() => {
-    if (user.value && props.gameModel.nbGuesses > 0) saveCurrentGameToFirebase(props.gameModel, user.value.uid)
+    if (user.value && gameModel.nbGuesses > 0) saveCurrentGameToFirebase(gameModel, user.value.uid)
   }, 1000)
 }
 
@@ -127,7 +123,7 @@ onMounted(async () => {
 })
 
 if (props.dailyChallenge) {
-  watch(props.gameModel.$state, updateCurrentGame)
+  watch(gameModel.$state, updateCurrentGame)
 }
 
 </script>

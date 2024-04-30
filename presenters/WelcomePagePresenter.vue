@@ -2,15 +2,10 @@
 import WelcomePageView from "~/views/WelcomePageView.vue"
 import { useCurrentUser, useFirebaseAuth } from "vuefire";
 import { login, logout, signup } from "~/utilities/Auth";
-import type { UserStore } from "~/model/UserModel";
+import { useUserStore, type UserStore } from "~/model/UserModel";
 
-// Props
-const props = defineProps({
-  userModel: {
-    type: Object as () => UserStore,
-    required: true,
-  },
-})
+// Model
+const userModel: UserStore = useUserStore()
 
 // Refs
 const closeModal = ref(false)
@@ -33,9 +28,9 @@ onMounted(async () => {
 
 <template>
   <WelcomePageView
-      @login-event-tris="(username: string, password: string) => login(username, password, true, auth, toast)"
-      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, true, auth, toast)"
-      @logout-event-bis="logout(useRoute().path, auth, toast)"
+      @login-event-tris="(username: string, password: string) => login(username, password, auth, toast, true)"
+      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel,  auth, toast, true)"
+      @logout-event-bis="logout(auth, toast, useRoute().path)"
       :closeLSV="closeModal"
   />
 </template>

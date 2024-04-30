@@ -1,14 +1,10 @@
 <script setup lang="ts">
 
-import { type GameStore } from "~/model/GameModel"
+import { type GameStore, useGameStore } from "~/model/GameModel"
 import SidebarView from "~/views/SidebarView.vue"
 
 // Props
 const props = defineProps({
-  gameModel: {
-    type: Object as () => GameStore,
-    required: true,
-  },
   timeSec: {
     type : Number,
     required : true,
@@ -23,9 +19,12 @@ const props = defineProps({
   },
 })
 
+// Models
+const gameModel: GameStore = useGameStore()
+
 // Refs
 let trueSeconds = computed(() => {
-  if (props.gameModel.end && props.gameModel.time !== 0) return props.gameModel.time
+  if (gameModel.end && gameModel.time !== 0) return gameModel.time
   else return props.timeSec
 } )
 
@@ -33,11 +32,11 @@ let trueSeconds = computed(() => {
 // Function
 function updateCurrentTime() {
   if(trueSeconds.value !== 0){
-    props.gameModel.time = trueSeconds.value
+    gameModel.time = trueSeconds.value
   }
 }
 
-watch(props.gameModel.$state, updateCurrentTime)
+watch(gameModel.$state, updateCurrentTime)
 
 </script>
 

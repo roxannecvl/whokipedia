@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { useCurrentUser, useFirebaseAuth } from "vuefire"
-import {
-  getAllUserFromFirebase,
-  readUserFromFirebase,
-  type UserPersistence,
-} from "~/model/FirebaseModel"
 import { type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
+import { getAllUserFromFirebase, readUserFromFirebase, type UserPersistence } from "~/model/FirebaseModel"
 import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
-import HeaderView from "~/views/HeaderView.vue"
 import { login, logout, signup } from "~/utilities/Auth"
+import HeaderView from "~/views/HeaderView.vue"
 
 // Models
 const userModel: UserStore = useUserStore()

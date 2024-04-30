@@ -1,29 +1,22 @@
 <script setup lang="ts">
 
-import type { GameStore } from "~/model/GameModel";
-import PlayAgainView from "~/views/PlayAgainView.vue";
-import { celebrities } from "~/model/CelebrityList";
-import { dailyRandom, getRandomNumber } from "~/utilities/Utils";
-import type { UserStore } from "~/model/UserModel";
+import { type GameStore, useGameStore } from "~/model/GameModel"
+import { type UserStore, useUserStore } from "~/model/UserModel"
+import { celebrities } from "~/model/CelebrityList"
+import { dailyRandom, getRandomNumber } from "~/utilities/Utils"
+import PlayAgainView from "~/views/PlayAgainView.vue"
 
 // Props
 const props = defineProps({
-  gameModel: {
-    type: Object as () => GameStore,
-    required: true,
-  },
-  userModel: {
-    type: Object as () => UserStore,
-    required: true,
-  },
   dailyChallenge: {
     type: Boolean,
     required: true,
   },
 })
 
-// Constants
-const user = useCurrentUser()
+// Models
+const userModel: UserStore = useUserStore()
+const gameModel: GameStore = useGameStore()
 
 // Functions
 /**
@@ -34,7 +27,7 @@ async function initGame() {
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   let randomIndex = getRandomNumber(0, celebrities.length - 2)
   if(randomIndex >= dailyRdm) randomIndex +=1
-  props.gameModel.init(celebrities[randomIndex])
+  await gameModel.init(celebrities[randomIndex])
 }
 
 </script>
