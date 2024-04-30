@@ -2,7 +2,7 @@
 
 import { ref } from 'vue'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
-import { getAutocompleteSuggestions } from "~/model/CelebrityList"
+import { celebrities, getAutocompleteSuggestions } from "~/model/CelebrityList"
 
 const selectedName = ref()
 const intro = ref()
@@ -17,25 +17,17 @@ const getData = async () => {
 
 watch(selectedName, getData)
 
+async function verifyCelebrities() {
+  for (const celebrity of celebrities) {
+    console.log(celebrity)
+    await fetchIntro(celebrity)
+    await fetchInfoBox(celebrity)
+    await fetchImage(celebrity, 100)
+  }
+}
+
 </script>
 
 <template>
-  <div>
-    Test some of our implemented functionalities
-  </div>
-  <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-    <ULink to="/">Home</ULink>
-  </div>
-  <UInputMenu
-      v-model="selectedName"
-      :search="getAutocompleteSuggestions"
-      placeholder="Enter a name..."
-      option-attribute="name"
-      trailing
-      by="id"
-  />
-  <UCard class="m-4">{{ intro }}</UCard>
-  <img alt="profile picture" :src="imageUrl" v-if="imageUrl" class="m-4"/>
-  <UCard class="m-4">{{ infoBox }}</UCard>
-
+    <UButton @click="verifyCelebrities()">Verify Celebrities</UButton>
 </template>
