@@ -9,7 +9,7 @@ initializeFirebase()
 <template>
   <NuxtLoadingIndicator color="orange"/>
   <Body class="bg-gray-50 dark:bg-gray-950">
-  <UContainer class="p-0 sm:py-5 sm:h-screen">
+  <UContainer class="p-0 sm:py-5 sm:h-screen overflow-x-hidden">
     <UCard
       :ui="{
         base: 'flex flex-col h-full',
