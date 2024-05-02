@@ -35,7 +35,7 @@ function checkStopInterval(over : boolean){
 }
 
 // Lifecycle hooks
-onMounted(async () => {
+onMounted(() => {
   startInterval()
 });
 
