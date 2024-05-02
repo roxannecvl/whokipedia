@@ -1,4 +1,4 @@
-import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
+import { ref as dbRef, set, update, get, remove, Database, push } from "firebase/database"
 import type { TimedStat, UserStore } from "~/model/UserModel.js"
 import type { GameStore } from "~/model/GameModel"
 import { getCurrentDayTimestamp } from "~/utilities/Utils"
@@ -17,13 +17,14 @@ export function initializeFirebase(): void {
  * @param model - User model to push to persistence
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
+ * @param userIndex - number the new place of the username in the usernames list
  */
-export function saveUserToFirebase(model: UserStore, username: string, uid: string): void {
+export function saveUserToFirebase(model: UserStore, username: string, uid: string, userIndex : number): void {
     model.updateUser(uid, username)
-    const persistence: {[key: string]: string | number} = userStoreToPersistence(model)
+    const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
     set(dbRef(database, 'users/' + uid), persistence).then()
+    set(dbRef(database, 'usernames/' + userIndex), username.toLowerCase()).then()
 }
-
 
 /**
  * This method saves a local user model to persistence.
@@ -144,6 +145,16 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
             })
         })
         return usersData
+    })
+}
+
+/**
+ * This method gets all usernames to assure uniqueness
+ */
+export async function getAllUsernamesFromFirebase(): Promise<string[]> {
+    return get(dbRef(database, 'usernames')).then(snapshot => {
+        const usernames: string[] = snapshot.val() ? snapshot.val() : []
+        return usernames
     })
 }
 
