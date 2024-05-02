@@ -1,7 +1,7 @@
 import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
 import type { TimedStat, UserStore } from "~/model/UserModel.js"
 import type { GameStore } from "~/model/GameModel"
-import { getCurrentDayTimestamp } from "~/utilities/Utils"
+import {displaySuccessNotification, getCurrentDayTimestamp} from "~/utilities/Utils"
 
 let database: Database
 
@@ -122,10 +122,14 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
  * @param store - User model to update
  * @param username - New username to update
  * @param uid - User ID to update
+ * @param toast - Toast to display success message
  */
-export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string): Promise<void> {
+export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string, toast: any): Promise<void> {
+    if (store.username === username) return
     store.updateUser(uid, username)
-    update(dbRef(database, 'users/' + uid), { username: username }).then()
+    update(dbRef(database, 'users/' + uid), { username: username }).then(() => {
+        displaySuccessNotification(toast, 'Username updated successfully.')
+    })
 }
 
 /**

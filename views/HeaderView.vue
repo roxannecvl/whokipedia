@@ -95,7 +95,7 @@ const logoPath = '/img/logo-primary-filled.svg'
           :username="username"
       />
      <UserAccountView
-         @change-info-event-bis="(username, email, password) => emit('change-info-event-tris', username, email, password)"
+         @change-info-event-bis="(username, email, password, oldPassword) => emit('change-info-event-tris', username, email, password, oldPassword)"
          @delete-account-event-bis="emit('delete-account-event-tris')"
          :currentStreakSV="currentStreakUV"
          :maxStreakSV="maxStreakUV"

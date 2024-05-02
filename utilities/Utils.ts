@@ -1,7 +1,29 @@
-// --------------------------------- String utilities  --------------------------------- //
-
 import type {UserPersistence} from "~/model/FirebaseModel";
 import type {TimedStat} from "~/model/UserModel";
+
+// --------------------------------- Toast notifications display  --------------------------------- //
+
+/**
+ * Displays an error notification.
+ * @param description - The description of the error
+ * @param toast - for alert notification
+ */
+export function displayErrorNotification(toast: any, description: string) {
+    toast.remove('any')
+    toast.add({id: 'any', title: 'Error', description: description, icon: 'i-heroicons-x-circle', color: "red"})
+}
+
+/**
+ * Displays a success notification.
+ * @param description - The description of the success
+ * @param toast - for alert notification
+ */
+export function displaySuccessNotification(toast: any, description: string) {
+    toast.remove('any')
+    toast.add({id: 'any', title: 'Success', description: description, icon: 'i-heroicons-check-circle', color: "green"})
+}
+
+// --------------------------------- String utilities  --------------------------------- //
 
 /**
  * Given a string, this function returns the same string with the first letter capitalized.
@@ -495,4 +517,3 @@ export const countries: {[key: string]: string} = {
     "Zambia": "Zambian",
     "Zimbabwe": "Zimbabwean"
 }
-

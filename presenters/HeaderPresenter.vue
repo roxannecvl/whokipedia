@@ -91,9 +91,9 @@ function updateLeaderboard(): void {
       @signup-event-tris="(username: string, email: string, password: string) => signup(username, email, password, userModel, auth, toast)"
       @logout-event-bis="logout(auth, toast, useRoute().path)"
       @update-leaderboard-bis="updateLeaderboard"
-      @change-info-event-tris="(username: string, email: string, password: string) => {
-        updateEmailAndPassword(email, password, auth, toast)
-        if (user) updateUsernameToFirebase(userModel, username, user.uid)
+      @change-info-event-tris="(username: string, email: string, password: string, oldPassword: string) => {
+        updateEmailAndPassword(user?.email ?? '', oldPassword, email, password, auth, toast)
+        if (user) updateUsernameToFirebase(userModel, username, user.uid, toast)
       }"
       :closeLSV="closeModal"
       :currentStreakUV="userModel.currentStreak"

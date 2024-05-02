@@ -85,7 +85,7 @@ const user = useCurrentUser()
               <div v-else-if="item.key === 'account'" class="pt-4">
                 <UserManagementView
                     :username="username"
-                    @change-info-event="(username, email, password) => emit('change-info-event-bis', username, email, password)"
+                    @change-info-event="(username, email, password, oldPassword) => emit('change-info-event-bis', username, email, password, oldPassword)"
                     @delete-account-event="() => emit('delete-account-event-bis')"/>
               </div>
             </template>
