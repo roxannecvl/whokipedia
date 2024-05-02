@@ -10,9 +10,9 @@ import {
     deleteUser,
     type UserCredential
 } from "firebase/auth";
-import { saveUserToFirebase } from "~/model/FirebaseModel"
-import {type UserStore} from "~/model/UserModel"
 import { displayErrorNotification, displaySuccessNotification } from "~/utilities/Utils"
+import { getAllUsernamesFromFirebase, saveUserToFirebase } from "~/model/FirebaseModel";
+import { type UserStore } from "~/model/UserModel"
 
 /**
  * Method to log in the user.
@@ -51,29 +51,25 @@ export async function login(
  * @param toast - for alert notification
  * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
  */
-export async function signup(
-    username: string,
-    email: string,
-    password: string,
-    userModel : UserStore,
-    auth : Auth,
-    toast : any,
-    redirect : boolean = false
-): Promise<void> {
-    return createUserWithEmailAndPassword(auth, email, password)
-        .then((credentials: UserCredential) => {
-            saveUserToFirebase(userModel, username, credentials.user?.uid)
-        })
-        .then(() => {
-            displaySuccessNotification(toast, "Signed up successfully.")
-        })
-        .catch((error) => {
-            console.error(error)
-            displayErrorNotification(toast, "Failed to sign up. Email already in use.")
-        }).finally(() => {
-            console.log("redirect")
-            if (redirect) useRouter().push('/daily-challenge').then()
-        })
+export function signup(email: string, username: string, password: string, userModel : UserStore, auth : Auth, toast : any, redirect : boolean = false): void {
+    getAllUsernamesFromFirebase().then((usernames) => {
+        if (usernames.includes(username.toLowerCase())) {
+            displayErrorNotification(toast, "Failed to sign up. Username already in use.")
+        } else {
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((credentials: UserCredential) => {
+                    saveUserToFirebase(userModel, username, credentials.user?.uid, usernames.length - 1)
+                    displaySuccessNotification(toast, "Signed up successfully.")
+                })
+                .catch((error) => {
+                    console.error(error)
+                    displayErrorNotification(toast, "Failed to sign up. Email already in use.")
+                }).finally(() => {
+                console.log("redirect")
+                if (redirect) useRouter().push('/daily-challenge').then()
+            })
+        }
+    }).catch(() => displayErrorNotification(toast, "Failed to sign up. An external error occurred"))
 }
 
 /**
