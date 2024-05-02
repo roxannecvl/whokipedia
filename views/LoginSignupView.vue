@@ -41,7 +41,6 @@ watch(() => props.close, () => {
       </UButton>
     </div>
   </div>
-
   <div v-else>
     <UButton v-if="user" icon="i-heroicons-arrow-left-start-on-rectangle-16-solid" @click="emit('logout-event')">
       <span class="hidden md:inline">Log out</span>
@@ -52,14 +51,9 @@ watch(() => props.close, () => {
   </div>
   <UModal v-model="isModalOpen">
     <UCard :ui="{ ring: '' }">
-      <template #header v-if="welcome">
-        <div class="flex items-center justify-between">
-          <div class="text-lg">
-            Sign in to unlock the Daily Challenge
-          </div>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isModalOpen = false" />
-        </div>
-      </template>
+      <div v-if="welcome" class="flex items-center justify-between mb-5">
+        <UAlert color="primary" variant="subtle" title="Heads up !" description="Sign in to unlock the Daily Challenge." />
+      </div>
       <div class="flex">
         <div class="w-full ">
           <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
@@ -70,7 +64,7 @@ watch(() => props.close, () => {
               </div>
               <div v-else-if="item.key === 'signup'" class="pt-4">
                 <SignupView @signup-event="
-                (email, username, password) => emit('signup-event-bis', email, username, password)"
+                (username, email, password) => emit('signup-event-bis', username, email, password)"
                 :welcome="welcome"/>
               </div>
             </template>

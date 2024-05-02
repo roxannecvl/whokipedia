@@ -120,6 +120,17 @@ export async function readCurGameFromFirebase(store : GameStore, uid: string): P
 }
 
 /**
+ * This method updates user's username in both local store and persistence.
+ * @param store - User model to update
+ * @param username - New username to update
+ * @param uid - User ID to update
+ */
+export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string): Promise<void> {
+    store.updateUser(uid, username)
+    update(dbRef(database, 'users/' + uid), { username: username }).then()
+}
+
+/**
  * This method gets all user stats for leaderboard.
  */
 export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {

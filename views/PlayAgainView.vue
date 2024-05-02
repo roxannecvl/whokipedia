@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 // Props
-const props = defineProps({
+defineProps({
   over: {
     type: Boolean,
     required: true,

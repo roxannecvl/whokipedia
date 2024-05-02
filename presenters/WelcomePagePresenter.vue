@@ -5,7 +5,7 @@ import { login, logout, signup } from "~/utilities/auth";
 import type { UserStore } from "~/model/UserModel";
 
 // Props
-const props = defineProps({
+defineProps({
   userModel: {
     type: Object as () => UserStore,
     required: true,
@@ -34,7 +34,7 @@ onMounted(async () => {
 <template>
   <WelcomePageView
       @login-event-tris="(username: string, password: string) => login(username, password, auth, toast, true)"
-      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, auth, toast, true)"
+      @signup-event-tris="(username: string, email: string, password: string) => signup(username, email, password, userModel, auth, toast, true)"
       @logout-event-bis="logout(auth, toast, useRoute().path)"
       :closeLSV="closeModal"
   />

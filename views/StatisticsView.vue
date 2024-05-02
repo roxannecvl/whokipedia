@@ -33,94 +33,71 @@ const props = defineProps({
     type: Array<TimedStat>,
     required: true
   },
-  username: {
-    type: String,
-    required: true
-  }
 })
 
-// Refs
-const isStatOpen = ref(false)
-
 // Constants
-const user = useCurrentUser()
 const currentStreakColor = computed(() => getColor(props.currentStreak))
 const maxStreakColor = computed(() => getColor(props.maxStreak))
 
 </script>
 
 <template>
-  <UButton icon="i-heroicons-presentation-chart-line-16-solid" @click="isStatOpen = true" :disabled="!user">
-    <span class="hidden md:inline">Statistics</span>
-  </UButton>
-  <UModal v-model="isStatOpen" :ui="{
-    width: 'w-full sm:max-w-full sm:w-5/6',
-  }">
-    <UCard :ui="{ ring: '' }">
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Well done, <span class="text-primary">{{ username }}</span> !</h3>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isStatOpen = false" />
+  <div class="max-h-[70vh] overflow-y-auto">
+    <div class="flex flex-col md:flex-row justify-around mt-3">
+      <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+            {{ averageGuesses }}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
         </div>
-      </template>
-        <div style="max-height: 80vh; overflow-y: auto">
-          <div class="flex flex-col md:flex-row justify-around mt-3">
-            <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ averageGuesses }}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ averageRank }}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ winRate  }}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Win Rate</p>
-              </div>
-            </div>
-            <div class="flex justify-around w-full md:w-1/2">
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ gamesPlayed}}
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Games Played</p>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ currentStreak + " " }}
-                  <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + currentStreakColor +']'"/>
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-                  {{ maxStreak + " "}}
-                  <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + maxStreakColor +']'"/>
-                </div>
-                <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
-              </div>
-            </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+            {{ averageRank }}
           </div>
-        <div class="flex flex-col md:flex-row justify-between items-center md:items-end w-full mt-10">
-          <div class="flex flex-col items-center w-full md:w-1/2 mb-5 md:mb-0">
-            <Line :data="guessesData" :options="guessesOptions" />
-            <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
+          <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+            {{ winRate  }}
           </div>
-          <div class="flex flex-col items-center w-full md:w-1/2">
-            <Bar :data="ranksData" :options="ranksOptions" />
-            <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
-          </div>
+          <p class="mt-3 text-sm text-gray-500">Win Rate</p>
         </div>
       </div>
-    </UCard>
-  </UModal>
+      <div class="flex justify-around w-full md:w-1/2">
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+            {{ gamesPlayed}}
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Games Played</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+            {{ currentStreak + " " }}
+            <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + currentStreakColor +']'"/>
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Cur. Streak</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
+            {{ maxStreak + " "}}
+            <span :class="'i-heroicons-fire-16-solid text-3xl align-middle bg-[' + maxStreakColor +']'"/>
+          </div>
+          <p class="mt-3 text-sm text-gray-500">Max. Streak</p>
+        </div>
+      </div>
+    </div>
+  <div class="flex flex-col md:flex-row justify-between items-center md:items-end w-full mt-10">
+    <div class="flex flex-col items-center w-full md:w-1/2 mb-5 md:mb-0">
+      <Line :data="guessesData" :options="guessesOptions" />
+      <p class="mt-3 text-sm text-gray-500">{{ guessesTitle }}</p>
+    </div>
+    <div class="flex flex-col items-center w-full md:w-1/2">
+      <Bar :data="ranksData" :options="ranksOptions" />
+      <p class="mt-3 text-sm text-gray-500">{{ ranksTitle }}</p>
+    </div>
+  </div>
+</div>
 </template>
 
 

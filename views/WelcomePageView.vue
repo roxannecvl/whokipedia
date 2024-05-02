@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Props
-const props = defineProps({
+defineProps({
   closeLSV: {
     type : Boolean,
     required : true,
@@ -52,7 +52,7 @@ onMounted(() => {
       <div class="flex flex-row drop-shadow">
         <LoginSignupView
             @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
-            @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
+            @signup-event-bis="(username, email, password) => emit('signup-event-tris', username, email, password)"
             @logout-event="emit('logout-event-bis')"
             :close="closeLSV" :welcome="true"/>
         <div class="p-2">

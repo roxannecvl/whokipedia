@@ -4,12 +4,13 @@ import {
   getAllUserFromFirebase,
   initializeFirebase,
   readUserFromFirebase,
+  updateUsernameToFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
 import { type TimedStat, type UserStore } from "~/model/UserModel"
 import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
+import { login, logout, signup, updateEmailAndPassword } from "~/utilities/auth"
 import HeaderView from "~/views/HeaderView.vue"
-import { login, logout, signup } from "~/utilities/auth"
 
 // Set up authentication
 initializeFirebase()
@@ -23,7 +24,7 @@ const props = defineProps({
 })
 
 // Constants
-const user = useCurrentUser()
+const user = useCurrentUser()!
 const date : Date = new Date()
 date.setHours(0,0,0,0)
 let timeStamp = date.getTime()
@@ -32,7 +33,6 @@ const toast = useToast()
 
 // Refs
 const closeModal = ref(false)
-const errorMessage = ref("")
 const usersData = ref([] as LeaderboardData[])
 export interface LeaderboardData {
   readonly rank: number,
@@ -97,18 +97,22 @@ function updateLeaderboard(): void {
 <template>
   <HeaderView
       @login-event-tris="(username: string, password: string) => login(username, password, auth, toast)"
-      @signup-event-tris="(email: string, username: string, password: string) => signup(email, username, password, userModel, auth, toast)"
+      @signup-event-tris="(username: string, email: string, password: string) => signup(username, email, password, userModel, auth, toast)"
       @logout-event-bis="logout(auth, toast, useRoute().path)"
       @update-leaderboard-bis="updateLeaderboard"
+      @change-info-event-tris="(username: string, email: string, password: string) => {
+        updateEmailAndPassword(email, password, auth, toast)
+        if (user) updateUsernameToFirebase(userModel, username, user.uid)
+      }"
       :closeLSV="closeModal"
-      :currentStreakSV="userModel.currentStreak"
-      :maxStreakSV="userModel.maxStreak"
-      :averageRankSV="Math.round(userModel.averageRank * 100) / 100"
-      :averageGuessesSV="Math.round(userModel.averageGuesses * 100) / 100"
-      :winRateSV="Math.round(userModel.winRate * 100) + '%'"
-      :gamesPlayedSV="userModel.gamesPlayed"
-      :timedStatsSV="userModel.timedStats"
+      :currentStreakUV="userModel.currentStreak"
+      :maxStreakUV="userModel.maxStreak"
+      :averageRankUV="Math.round(userModel.averageRank * 100) / 100"
+      :averageGuessesUV="Math.round(userModel.averageGuesses * 100) / 100"
+      :winRateUV="Math.round(userModel.winRate * 100) + '%'"
+      :gamesPlayedUV="userModel.gamesPlayed"
+      :timedStatsUV="userModel.timedStats"
       :gamesLV="usersData"
-      :usernameLVSV="userModel.username"
+      :username="userModel.username"
   />
 </template>

@@ -2,7 +2,7 @@
 import { formatTime } from "~/utilities/Utils";
 
 // Props
-const props = defineProps({
+defineProps({
   guessCount: {
     type : Number,
     required : true,
