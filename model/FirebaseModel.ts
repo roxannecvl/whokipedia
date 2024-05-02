@@ -14,40 +14,40 @@ export function initializeFirebase(): void {
 
 /**
  * This method saves a local user model to persistence.
- * @param store - User model to push to persistence
+ * @param model - User model to push to persistence
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function saveUserToFirebase(store: UserStore, username: string, uid: string): void {
-    store.updateUser(uid, username)
-    const persistence: {[key: string]: string | number} = userStoreToPersistence(store)
+export function saveUserToFirebase(model: UserStore, username: string, uid: string): void {
+    model.updateUser(uid, username)
+    const persistence: {[key: string]: string | number} = userStoreToPersistence(model)
     set(dbRef(database, 'users/' + uid), persistence).then()
 }
 
 
 /**
  * This method saves a local user model to persistence.
- * @param store - Game model to push to persistence
+ * @param model - Game model to push to persistence
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function saveCurrentGameToFirebase(store: GameStore, uid: string): void {
-    if(store.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
-    else set(dbRef(database, 'users/' + uid + '/currentGame'),store.$state).then()
+export function saveCurrentGameToFirebase(model: GameStore, uid: string): void {
+    if(model.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
+    else set(dbRef(database, 'users/' + uid + '/currentGame'),model.$state).then()
 }
 
 /**
  * This method updates a user model to persistence.
- * @param store - User model to update to persistence
+ * @param model - User model to update to persistence
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function updateUserToFirebase(store: UserStore, uid: string): void {
-    const persistence = userStoreToPersistence(store)
+export function updateUserToFirebase(model: UserStore, uid: string): void {
+    const persistence = userStoreToPersistence(model)
 
     // First update user's general stats
     update(dbRef(database, 'users/' + uid), persistence).then()
 
     // Then update user's daily stats
-    store.timedStats?.map((stat: TimedStat) => {
+    model.timedStats?.map((stat: TimedStat) => {
         update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
             guesses: stat.guesses,
             rank: stat.rank,
@@ -83,39 +83,37 @@ export function updateUserAVGRankToFirebase(diff : number, uid: string): void {
 
 /**
  * This method fills local user model from persistence.
- * @param store - Local model to fill
+ * @param model - Local model to fill
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export async function readUserFromFirebase(store: UserStore, uid: string): Promise<UserStore> {
-    return get(dbRef(database, 'users/' + uid)).then(snapshot => {
+export async function readUserFromFirebase(model: UserStore, uid: string): Promise<void> {
+    get(dbRef(database, 'users/' + uid)).then(snapshot => {
         if (snapshot.val()) {
-            persistenceToUserModel(store, snapshot.val())
+            persistenceToUserModel(model, snapshot.val())
         }
-        return store
     })
 }
 
 
 /**
  * This method fills local user model from persistence.
- * @param store - Local model to fill
+ * @param model - Local model to fill
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export async function readCurGameFromFirebase(store : GameStore, uid: string): Promise<GameStore> {
-    return get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
+export async function readCurGameFromFirebase(model : GameStore, uid: string): Promise<void> {
+    get(dbRef(database, 'users/' + uid + '/currentGame')).then(snapshot => {
         if (snapshot.val()) {
             // Make sure we do not get an old gameState
-            if (snapshot.val().name == store.name) {
-                store.$state = snapshot.val()
-                return store
+            if (snapshot.val().name == model.name) {
+                model.$state = snapshot.val()
+                return model
             } else {
                 // Remove old game
                 remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
             }
         }
         // Reset daily challenge if needed
-        if (store.nbGuesses > 0) store.init(store.name, true).then()
-        return store
+        if (model.nbGuesses > 0) model.init(model.name, true).then()
     })
 }
 
@@ -162,28 +160,28 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
 
 /**
  * This private method converts our user model to store it as a POJO in persistence.
- * @param store - User model to push to persistence
+ * @param model - User model to push to persistence
  * @return UserPersistence - POJO will relevant user info
  */
-function userStoreToPersistence(store: UserStore): any {
+function userStoreToPersistence(model: UserStore): any {
     return {
-        username: store.username,
-        currentStreak: store.currentStreak,
-        maxStreak: store.maxStreak,
-        averageRank: store.averageRank,
-        averageGuesses: store.averageGuesses,
-        winRate: store.winRate,
-        gamesPlayed: store.gamesPlayed,
+        username: model.username,
+        currentStreak: model.currentStreak,
+        maxStreak: model.maxStreak,
+        averageRank: model.averageRank,
+        averageGuesses: model.averageGuesses,
+        winRate: model.winRate,
+        gamesPlayed: model.gamesPlayed,
     }
 }
 
 /**
  * This private method converts POJO from persistence to fill our local user model.
- * @param store - The local model to fill
+ * @param model - The local model to fill
  * @param persistence - The POJO obtained from persistence
  */
-function persistenceToUserModel(store: UserStore, persistence: any): void {
-    store.updateStats(
+function persistenceToUserModel(model: UserStore, persistence: any): void {
+    model.updateStats(
         persistence.currentStreak || 0,
         persistence.maxStreak || 0,
         persistence.averageRank || 0,
@@ -200,7 +198,7 @@ function persistenceToUserModel(store: UserStore, persistence: any): void {
             }
         })
     )
-    store.updateUser(persistence.uid, persistence.username)
+    model.updateUser(persistence.uid, persistence.username)
 }
 
 export type UserPersistence = {

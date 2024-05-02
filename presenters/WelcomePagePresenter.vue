@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import WelcomePageView from "~/views/WelcomePageView.vue"
 import { useCurrentUser, useFirebaseAuth } from "vuefire";
-import { login, logout, signup } from "~/utilities/auth";
-import type { UserStore } from "~/model/UserModel";
+import { login, logout, signup } from "~/utilities/Auth";
+import { useUserStore, type UserStore } from "~/model/UserModel";
 
-// Props
-defineProps({
-  userModel: {
-    type: Object as () => UserStore,
-    required: true,
-  },
-})
+// Model
+const userModel: UserStore = useUserStore()
 
 // Refs
 const closeModal = ref(false)
