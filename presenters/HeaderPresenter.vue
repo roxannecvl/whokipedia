@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { useCurrentUser, useFirebaseAuth } from "vuefire"
+import { Promise } from 'es6-promise';
+
 import {
+  deleteUserFromFirebase,
   getAllUserFromFirebase,
   readUserFromFirebase,
   updateUsernameToFirebase,
   type UserPersistence,
 } from "~/model/FirebaseModel"
 import { type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
-import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
-import { login, logout, signup, updateEmailAndPassword } from "~/utilities/Auth"
+import { displaySuccessNotification, formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
+import { login, logout, signup, updateEmailAndPassword, deleteAccount } from "~/utilities/Auth"
 import HeaderView from "~/views/HeaderView.vue"
 
 // Models
@@ -92,8 +95,20 @@ function updateLeaderboard(): void {
       @logout-event-bis="logout(auth, toast, useRoute().path)"
       @update-leaderboard-bis="updateLeaderboard"
       @change-info-event-tris="(username: string, email: string, password: string, oldPassword: string) => {
-        updateEmailAndPassword(user?.email ?? '', oldPassword, email, password, auth, toast)
-        if (user) updateUsernameToFirebase(userModel, username, user.uid, toast)
+        if (user) {
+          Promise.all([
+              updateEmailAndPassword(user?.email ?? '', oldPassword, email, password, auth, toast),
+              updateUsernameToFirebase(userModel, username, user.uid, toast)
+              ])
+              .then(() => {
+                displaySuccessNotification(toast, 'Account updated successfully.')
+          })
+        }
+      }"
+      @delete-account-event-tris="() => {
+        Promise.all([deleteAccount(auth, toast), deleteUserFromFirebase(user?.uid ?? '')]).then(() => {
+          displaySuccessNotification(toast, 'Account deleted successfully.')
+        })
       }"
       :closeLSV="closeModal"
       :currentStreakUV="userModel.currentStreak"

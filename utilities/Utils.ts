@@ -1,5 +1,5 @@
-import type {UserPersistence} from "~/model/FirebaseModel";
-import type {TimedStat} from "~/model/UserModel";
+import type { UserPersistence } from "~/model/FirebaseModel";
+import type { TimedStat } from "~/model/UserModel";
 
 // --------------------------------- Toast notifications display  --------------------------------- //
 

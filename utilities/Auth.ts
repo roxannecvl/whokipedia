@@ -7,6 +7,7 @@ import {
     signOut,
     updateEmail,
     updatePassword,
+    deleteUser,
     type UserCredential
 } from "firebase/auth";
 import { saveUserToFirebase } from "~/model/FirebaseModel"
@@ -21,14 +22,14 @@ import { displayErrorNotification, displaySuccessNotification } from "~/utilitie
  * @param toast - for alert notification
  * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
  */
-export function login(
+export async function login(
     username: string,
     password: string,
     auth : Auth,
     toast : any,
     redirect : boolean = false
-): void {
-    signInWithEmailAndPassword(auth, username, password)
+): Promise<void> {
+    return signInWithEmailAndPassword(auth, username, password)
         .then(() => {
             displaySuccessNotification(toast, "Logged in successfully.")
         })
@@ -50,7 +51,7 @@ export function login(
  * @param toast - for alert notification
  * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
  */
-export function signup(
+export async function signup(
     username: string,
     email: string,
     password: string,
@@ -58,8 +59,8 @@ export function signup(
     auth : Auth,
     toast : any,
     redirect : boolean = false
-): void {
-    createUserWithEmailAndPassword(auth, email, password)
+): Promise<void> {
+    return createUserWithEmailAndPassword(auth, email, password)
         .then((credentials: UserCredential) => {
             saveUserToFirebase(userModel, username, credentials.user?.uid)
         })
@@ -81,8 +82,8 @@ export function signup(
  * @param toast - for alert notification
  * @param path - current path of the user
  */
-export function logout(auth : Auth, toast : any, path : string ): void {
-    signOut(auth).catch((error) => {
+export async function logout(auth : Auth, toast : any, path : string ): Promise<void> {
+    return signOut(auth).catch((error) => {
         console.error(error)
         displayErrorNotification(toast, "Failed to log out.")
     }).finally(() => {
@@ -99,22 +100,19 @@ export function logout(auth : Auth, toast : any, path : string ): void {
  * @param auth - firebase auth
  * @param toast - for alert notification
  */
-export function updateEmailAndPassword(
+export async function updateEmailAndPassword(
     oldEmail: string,
     oldPassword: string,
     email: string,
     password: string,
     auth: Auth,
     toast: any
-): void {
+): Promise<void> {
     const user = auth.currentUser
     if (user && oldEmail !== email && oldPassword !== password) {
         // Firebase requires re-authentication before updating email and password
-        reauthenticateWithCredential(user, EmailAuthProvider.credential(oldEmail, oldPassword)).then(() => {
+        return reauthenticateWithCredential(user, EmailAuthProvider.credential(oldEmail, oldPassword)).then(() => {
             Promise.all([updateEmail(user, email), updatePassword(user, password)])
-                .then(() => {
-                    displaySuccessNotification(toast, "Information updated successfully.")
-                })
                 .catch((error) => {
                     console.error(error)
                     displayErrorNotification(toast, "Failed to update information.")
@@ -122,6 +120,23 @@ export function updateEmailAndPassword(
         }).catch((error) => {
             console.error(error)
             displayErrorNotification(toast, "Your current password is incorrect.")
+        })
+    }
+}
+
+/**
+ * Method to delete user's account.
+ * @param auth - firebase auth
+ * @param toast - for alert notification
+ */
+export async function deleteAccount(auth : Auth, toast : any): Promise<void> {
+    const user = auth.currentUser
+    if (user) {
+        return deleteUser(user).catch((error) => {
+            console.error(error)
+            displayErrorNotification(toast, "Failed to delete account.")
+        }).finally(() => {
+            useRouter().push('/').then()
         })
     }
 }

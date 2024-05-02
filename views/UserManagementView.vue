@@ -43,11 +43,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   emit("change-info-event", event.data.username, event.data.email, event.data.password, event.data.oldPassword)
 }
 
-function deleteAccount () {
-  isConfirmDeleteModalOpen.value = false
-  emit('delete-account-event')
-}
-
 </script>
 
 <template>
@@ -78,7 +73,10 @@ function deleteAccount () {
           </div>
         </template>
         <p class="mb-4">Are you sure you want to say goodbye to us, <span class="text-primary">{{ username }}</span> ?</p>
-        <UButton color="red" @click="deleteAccount()">Yes, delete my account</UButton>
+        <UButton color="red" @click="() => {
+           isConfirmDeleteModalOpen = false
+           emit('delete-account-event')
+        }">Yes, delete my account</UButton>
       </UCard>
     </UModal>
 </template>

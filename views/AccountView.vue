@@ -86,7 +86,10 @@ const user = useCurrentUser()
                 <UserManagementView
                     :username="username"
                     @change-info-event="(username, email, password, oldPassword) => emit('change-info-event-bis', username, email, password, oldPassword)"
-                    @delete-account-event="() => emit('delete-account-event-bis')"/>
+                    @delete-account-event="() => {
+                      isModalOpen = false
+                      emit('delete-account-event-bis')
+                    }"/>
               </div>
             </template>
           </UTabs>

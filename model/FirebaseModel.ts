@@ -1,7 +1,7 @@
 import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
 import type { TimedStat, UserStore } from "~/model/UserModel.js"
 import type { GameStore } from "~/model/GameModel"
-import {displaySuccessNotification, getCurrentDayTimestamp} from "~/utilities/Utils"
+import { getCurrentDayTimestamp } from "~/utilities/Utils"
 
 let database: Database
 
@@ -127,9 +127,15 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
 export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string, toast: any): Promise<void> {
     if (store.username === username) return
     store.updateUser(uid, username)
-    update(dbRef(database, 'users/' + uid), { username: username }).then(() => {
-        displaySuccessNotification(toast, 'Username updated successfully.')
-    })
+    update(dbRef(database, 'users/' + uid), { username: username }).then()
+}
+
+/**
+ * This method deletes a user from persistence.
+ * @param uid - User ID to delete
+ */
+export async function deleteUserFromFirebase(uid: string): Promise<void> {
+    remove(dbRef(database, 'users/' + uid)).then()
 }
 
 /**
