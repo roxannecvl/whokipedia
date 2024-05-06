@@ -3,10 +3,13 @@ import {
     EmailAuthProvider,
     reauthenticateWithCredential,
     signInWithEmailAndPassword,
+    sendPasswordResetEmail,
     signOut,
     updateEmail as updateEmailFirebase,
     updatePassword as updatePasswordFirebase,
     deleteUser,
+    verifyPasswordResetCode,
+    confirmPasswordReset,
     type Auth,
     type User,
     type UserCredential
@@ -131,3 +134,30 @@ export async function reauthenticate(email: string, password: string, user: User
         })
 }
 
+/**
+ * Method to reset user's password.
+ * @param email - Email to reset password
+ * @param auth - Firebase auth
+ * @param toast - Used for alert notification
+ */
+export async function resetPassword(email: string, auth: Auth, toast: any): Promise<void> {
+    return sendPasswordResetEmail(auth, email)
+        .then(() => displaySuccessNotification(toast, "Password reset email sent."))
+        .catch(() => displayErrorNotification(toast, "Failed to send reset email."))
+}
+
+/**
+ * Method to handle reset password.
+ * @param auth - Firebase auth
+ * @param actionCode - Action code ensuring request is legitimate
+ * @param newPassword - New password
+ * @param toast - Used for alert notification
+ */
+export async function handleResetPassword(auth: Auth, actionCode: any, newPassword: string, toast: any) {
+    verifyPasswordResetCode(auth, actionCode).then((email) => {
+        confirmPasswordReset(auth, actionCode, newPassword).then(() => {
+            signInWithEmailAndPassword(auth, email, newPassword)
+                .then(() => displaySuccessNotification(toast, "Password reset successfully."))
+        }).catch(() => displayErrorNotification(toast, "Password reset failed. Code might be expired."))
+    }).catch(() => displayErrorNotification(toast, "Password reset failed. Invalid action code."))
+}

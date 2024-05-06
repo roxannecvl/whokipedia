@@ -14,7 +14,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event'])
+const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event', 'reset-password-event-bis'])
 
 // Refs
 const isModalOpen = ref(false)
@@ -59,13 +59,21 @@ watch(() => props.close, () => {
           <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
             <template #item="{ item }">
               <div v-if="item.key === 'login'" class="pt-4">
-                <LoginView @login-event="(email, password) => emit('login-event-bis', email, password)"
-                :welcome="welcome"/>
+                <LoginView
+                  @login-event="(email, password) => {
+                    emit('login-event-bis', email, password)
+                  }"
+                  @reset-password-event="(email) => {
+                    emit('reset-password-event-bis', email)
+                  }"
+                  :welcome="welcome"/>
               </div>
               <div v-else-if="item.key === 'signup'" class="pt-4">
-                <SignupView @signup-event="
-                (username, email, password) => emit('signup-event-bis', username, email, password)"
-                :welcome="welcome"/>
+                <SignupView
+                  @signup-event="(username, email, password) => {
+                    emit('signup-event-bis', username, email, password)
+                  }"
+                  :welcome="welcome"/>
               </div>
             </template>
           </UTabs>

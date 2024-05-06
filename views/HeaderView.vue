@@ -54,6 +54,7 @@ const emit = defineEmits([
     'login-event-tris',
     'signup-event-tris',
     'logout-event-bis',
+    'reset-password-event-tris',
     'update-leaderboard-bis',
     'change-info-event-tris',
     'delete-account-event-tris'
@@ -90,7 +91,9 @@ const logoPath = '/img/logo-primary-filled.svg'
     </a>
     <div class="flex justify-between items-center gap-2">
       <LeaderboardView
-          @update-leaderboard ="emit('update-leaderboard-bis')"
+          @update-leaderboard ="() => {
+            emit('update-leaderboard-bis')
+          }"
           :games="gamesLV"
           :username="username"
       />
@@ -113,6 +116,9 @@ const logoPath = '/img/logo-primary-filled.svg'
       <LoginSignupView
         @login-event-bis="(email, password) => {
           emit('login-event-tris', email, password)
+        }"
+        @reset-password-event-bis="(email) => {
+          emit('reset-password-event-tris', email)
         }"
         @signup-event-bis="(username, email, password) => {
           emit('signup-event-tris', username, email, password)

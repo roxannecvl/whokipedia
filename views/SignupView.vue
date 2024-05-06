@@ -22,6 +22,8 @@ const schema = z.object({
   password: z.string().min(passwordMinimalLength, 'Must be at least '+ passwordMinimalLength + ' characters')
 })
 const usernames: string[] = await getAllUsernamesFromFirebase()
+
+// Types
 type Schema = z.output<typeof schema>
 
 // Refs
@@ -55,14 +57,14 @@ function validate(state: any): FormError[] {
 <template>
   <div class="flex justify-between">
     <UForm :validate="validate" :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
-      <UFormGroup name="username">
-        <UInput v-model="state.username" icon="i-heroicons-user" placeholder="Username" />
+      <UFormGroup label="Username" name="username">
+        <UInput v-model="state.username" icon="i-heroicons-user" placeholder="ChuckNorris18" />
       </UFormGroup>
-      <UFormGroup name="email">
-        <UInput v-model="state.email" icon="i-heroicons-envelope" placeholder="Email"/>
+      <UFormGroup name="email" label="Email">
+        <UInput v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
       </UFormGroup>
-      <UFormGroup name="password">
-        <UInput v-model="state.password" icon="i-heroicons-lock-closed" placeholder="Password" type="password" />
+      <UFormGroup name="password" label="Password" :description="'It must contain at least ' + passwordMinimalLength + ' characters.'">
+        <UInput v-model="state.password" icon="i-heroicons-lock-closed" type="password" />
       </UFormGroup>
       <div class="flex justify-between w-full items-center">
         <UButton type="submit">Sign up</UButton>

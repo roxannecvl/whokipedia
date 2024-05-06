@@ -74,7 +74,7 @@ function validate(state: any): FormError[] {
     <UFormGroup size="lg" label="Update your password" name="newPassword">
       <UInput v-model="state.newPassword" icon="i-heroicons-lock-closed" placeholder="New password" type="password"/>
     </UFormGroup>
-    <UFormGroup size="lg" label="Enter your password to confirm your changes" name="password" required>
+    <UFormGroup size="lg" label="Enter your password to confirm your changes or delete your account" name="password" required>
       <UInput v-model="state.password" icon="i-heroicons-lock-closed-20-solid" placeholder="Current password" type="password"/>
     </UFormGroup>
     <div class="flex justify-between w-full items-center">

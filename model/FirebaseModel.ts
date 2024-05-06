@@ -1,7 +1,7 @@
 import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
 import type { TimedStat, UserStore } from "~/model/UserModel.js"
 import type { GameStore } from "~/model/GameModel"
-import {displayErrorNotification, displaySuccessNotification, getCurrentDayTimestamp} from "~/utilities/Utils"
+import { displayErrorNotification, displaySuccessNotification, getCurrentDayTimestamp } from "~/utilities/Utils"
 
 let database: Database
 
@@ -123,6 +123,12 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
  * @param toast - Used for alert notification
  */
 export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string, toast: any): Promise<void> {
+    getAllUsernamesFromFirebase().then((usernames: string[]) => {
+        if (usernames.includes(username.toLowerCase())) {
+            displayErrorNotification(toast, 'Username is already taken.')
+            return
+        }
+    })
     store.updateUser(uid, username)
     return update(dbRef(database, 'users/' + uid), { username: username })
         .then(() => displaySuccessNotification(toast, 'Username updated successfully.'))

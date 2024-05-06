@@ -13,7 +13,16 @@ import {
   getCurrentDayTimestamp,
   sortTodayChallengers
 } from "~/utilities/Utils"
-import { login, logout, signup, updateEmail, updatePassword, reauthenticate, deleteAccount } from "~/utilities/Auth"
+import {
+  login,
+  logout,
+  signup,
+  updateEmail,
+  updatePassword,
+  reauthenticate,
+  deleteAccount,
+  resetPassword
+} from "~/utilities/Auth"
 import HeaderView from "~/views/HeaderView.vue"
 
 // Models
@@ -98,16 +107,16 @@ async function updateLeaderboard(): Promise<void> {
  * @param email - Current email used to reauthenticate
  * @param password - Current password used to reauthenticate
  */
-function changeInfo(
+async function changeInfo(
     newUsername: string,
     newEmail: string,
     newPassword: string | undefined,
     email: string,
     password: string
-): void {
+): Promise<void> {
   if (user.value) {
     const innerUser: User = user.value
-    reauthenticate(email, password, user.value, toast)
+    return reauthenticate(email, password, user.value, toast)
         .then(async () => {
           if (email !== newEmail) await updateEmail(newEmail, innerUser, toast)
           if (newPassword) await updatePassword(newPassword, innerUser, toast)
@@ -139,6 +148,9 @@ async function deleteUser(email: string, password: string): Promise<void> {
   <HeaderView
       @login-event-tris="async (email: string, password: string) => {
         await login(email, password, auth, toast)
+      }"
+      @reset-password-event-tris="async (email: string) => {
+        await resetPassword(email, auth, toast)
       }"
       @signup-event-tris="async (signupUsername: string, email: string, password: string) => {
         await signup(signupUsername, email, password, userModel, auth, toast)
