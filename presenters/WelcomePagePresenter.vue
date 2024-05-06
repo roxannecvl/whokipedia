@@ -28,9 +28,17 @@ onMounted(async () => {
 
 <template>
   <WelcomePageView
-      @login-event-tris="(username: string, password: string) => login(username, password, auth, toast, true)"
-      @signup-event-tris="(username: string, email: string, password: string) => signup(username, email, password, userModel, auth, toast, true)"
-      @logout-event-bis="logout(auth, toast, useRoute().path)"
-      :closeLSV="closeModal"
-  />
+      @login-event-tris="async (username: string, password: string) => {
+        await login(username, password, auth, toast)
+        await useRouter().push('/daily-challenge')
+      }"
+      @signup-event-tris="async (username: string, email: string, password: string) => {
+        await signup(username, email, password, userModel, auth, toast, true)
+        await useRouter().push('/daily-challenge')
+      }"
+      @logout-event-bis="async () => {
+        await logout(auth, toast)
+        if (useRoute().path === '/daily-challenge') await useRouter().push('/')
+      }"
+      :closeLSV="closeModal"></WelcomePageView>
 </template>

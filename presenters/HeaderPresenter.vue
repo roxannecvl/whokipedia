@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCurrentUser, useFirebaseAuth } from "vuefire"
+import type { User } from "firebase/auth"
 import {
-  deleteUserFromFirebase,
   getAllUserFromFirebase,
   readUserFromFirebase,
   updateUsernameToFirebase,
@@ -9,13 +9,11 @@ import {
 } from "~/model/FirebaseModel"
 import { type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
 import {
-  displayErrorNotification,
-  displaySuccessNotification,
   formatTime,
   getCurrentDayTimestamp,
   sortTodayChallengers
 } from "~/utilities/Utils"
-import { login, logout, signup, deleteAccount, updateEmail, updatePassword, reauthenticate } from "~/utilities/Auth"
+import { login, logout, signup, updateEmail, updatePassword, reauthenticate, deleteAccount } from "~/utilities/Auth"
 import HeaderView from "~/views/HeaderView.vue"
 
 // Models
@@ -23,11 +21,9 @@ const userModel: UserStore = useUserStore()
 
 // Constants
 const user = useCurrentUser()!
-const date : Date = new Date()
-date.setHours(0,0,0,0)
-let timeStamp = date.getTime()
 const auth = useFirebaseAuth()!
 const toast = useToast()
+let timeStamp = new Date().setHours(0,0,0,0)
 
 // Computed
 const username = computed(() => userModel.username)
@@ -35,7 +31,9 @@ const username = computed(() => userModel.username)
 // Refs
 const closeModal = ref(false)
 const usersData = ref([] as LeaderboardData[])
-export interface LeaderboardData {
+
+// Types
+export type LeaderboardData = {
   readonly rank: number,
   readonly username: string,
   readonly streak : number,
@@ -65,13 +63,11 @@ onMounted(async () => {
 
 // Functions
 /**
- * Method to update the leaderboard.
+ * Method to update the leaderboard, keeping the relevant data from the database.
  */
-function updateLeaderboard(): void {
-  getAllUserFromFirebase().then(data => {
+async function updateLeaderboard(): Promise<void> {
+  return getAllUserFromFirebase().then(data => {
     const rankedData = sortTodayChallengers(data, timeStamp)
-
-    // Keep only information relevant to the leaderboard
     usersData.value = rankedData.map((val : UserPersistence) => {
       const stats = val.stats.find((stat: TimedStat) => stat.date === timeStamp)
       if (stats) return {
@@ -93,55 +89,76 @@ function updateLeaderboard(): void {
     })
   })
 }
+
+/**
+ * Method to change user info, ensuring re-authentication before any updates as required by Firebase.
+ * @param newUsername - New username, if identical to the current username, no update is made
+ * @param newEmail - New email, if identical to the current email, no update is made
+ * @param newPassword - New password, if undefined, no update is made
+ * @param email - Current email used to reauthenticate
+ * @param password - Current password used to reauthenticate
+ */
+function changeInfo(
+    newUsername: string,
+    newEmail: string,
+    newPassword: string | undefined,
+    email: string,
+    password: string
+): void {
+  if (user.value) {
+    const innerUser: User = user.value
+    reauthenticate(email, password, user.value, toast)
+        .then(async () => {
+          if (email !== newEmail) await updateEmail(newEmail, innerUser, toast)
+          if (newPassword) await updatePassword(newPassword, innerUser, toast)
+          if (username.value !== newUsername) await updateUsernameToFirebase(userModel, newUsername, userModel.uid, toast)
+        })
+        .catch()
+  }
+}
+
+/**
+ * Method to delete a user account, ensuring re-authentication before any updates as required by Firebase.
+ * @param email - Current email of user to delete to reauthenticate
+ * @param password - Current password of user to delete to reauthenticate
+ */
+async function deleteUser(email: string, password: string): Promise<void> {
+  if (user.value) {
+    const innerUser: User = user.value
+    return reauthenticate(email, password, innerUser, toast)
+      .then(async () => {
+          await deleteAccount(innerUser, toast)
+          await useRouter().push('/')
+      })
+      .catch()
+  }
+}
 </script>
 
 <template>
   <HeaderView
-      @login-event-tris="(loginUsername: string, loginPassword: string) => {
-        login(loginUsername, loginPassword, auth, toast)
+      @login-event-tris="async (email: string, password: string) => {
+        await login(email, password, auth, toast)
       }"
-      @signup-event-tris="(signupUsername: string, signupEmail: string, signupPassword: string) => {
-        signup(signupUsername, signupEmail, signupPassword, userModel, auth, toast)
+      @signup-event-tris="async (signupUsername: string, email: string, password: string) => {
+        await signup(signupUsername, email, password, userModel, auth, toast)
       }"
-      @logout-event-bis="() => {
-        logout(auth, toast, useRoute().path)
+      @logout-event-bis="async () => {
+        await logout(auth, toast)
+        if (useRoute().path === '/daily-challenge') await useRouter().push('/')
       }"
       @update-leaderboard-bis="updateLeaderboard"
-      @change-info-event-tris="(newUsername: string, newEmail: string, newPassword: string | undefined, email: string, password: string) => {
-          // Firebase requires re-authentication before updating user info
-          reauthenticate(email, password, auth)
-            .then(() => {
-              if (email !== newEmail) updateEmail(newEmail, auth, toast)
-              if (newPassword) {
-                if (password !== newPassword) updatePassword(newPassword, auth, toast)
-              }
-              if (username !== newUsername)
-                updateUsernameToFirebase(userModel, newUsername, userModel.uid)
-                  .then(() => displaySuccessNotification(toast, 'Username updated successfully.'))
-            })
-            .catch((error) => {
-              console.error(error)
-              displayErrorNotification(toast, 'Your current password is incorrect.')
-            })
+      @change-info-event-tris="async (
+          newUsername: string,
+          newEmail: string,
+          newPassword: string | undefined,
+          email: string,
+          password: string
+      ) => {
+        await changeInfo(newUsername, newEmail, newPassword, email, password)
       }"
-      @delete-account-event-tris="(email, password) => {
-         // Firebase requires re-authentication before updating user info
-         reauthenticate(email, password, auth)
-          .then(() => {
-            deleteUserFromFirebase(userModel.uid)
-              .then(() => {
-                deleteAccount(email, password, auth, toast)
-                  .then(() => displaySuccessNotification(toast, 'Account deleted successfully.'))
-              })
-              .catch((error) => {
-                console.error(error)
-                displayErrorNotification(toast, 'Failed to delete account.')
-              })
-          })
-          .catch((error) => {
-            console.error(error)
-            displayErrorNotification(toast, 'Your current password is incorrect.')
-          })
+      @delete-account-event-tris="async (email: string, password: string) => {
+        await deleteUser(email, password)
       }"
       :closeLSV="closeModal"
       :currentStreakUV="userModel.currentStreak"
