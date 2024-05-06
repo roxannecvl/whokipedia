@@ -53,5 +53,4 @@ async function onSubmit(event: FormSubmitEvent<Schema>): Promise<void> {
       </UForm>
     </UCard>
   </div>
-
 </template>

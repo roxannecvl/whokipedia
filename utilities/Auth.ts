@@ -143,7 +143,7 @@ export async function reauthenticate(email: string, password: string, user: User
 export async function resetPassword(email: string, auth: Auth, toast: any): Promise<void> {
     return sendPasswordResetEmail(auth, email)
         .then(() => displaySuccessNotification(toast, "Password reset email sent."))
-        .catch(() => displayErrorNotification(toast, "Failed to send reset email."))
+        .catch(() => {})
 }
 
 /**
