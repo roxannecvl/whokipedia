@@ -47,19 +47,19 @@ const maxStreakColor = computed(() => getColor(props.maxStreak))
       <div class="flex justify-around w-full md:w-1/2 mb-5 md:mb-0">
         <div class="flex flex-col items-center">
           <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-            {{ averageGuesses }}
+            {{ gamesPlayed === 0 ? '/' : averageGuesses }}
           </div>
           <p class="mt-3 text-sm text-gray-500">Avg. Guesses</p>
         </div>
         <div class="flex flex-col items-center">
           <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-            {{ averageRank }}
+            {{ gamesPlayed === 0 ? '/' : averageRank }}
           </div>
           <p class="mt-3 text-sm text-gray-500">Avg. Rank</p>
         </div>
         <div class="flex flex-col items-center">
           <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-            {{ winRate  }}
+            {{ gamesPlayed === 0 ? '/' : winRate  }}
           </div>
           <p class="mt-3 text-sm text-gray-500">Win Rate</p>
         </div>
@@ -67,7 +67,7 @@ const maxStreakColor = computed(() => getColor(props.maxStreak))
       <div class="flex justify-around w-full md:w-1/2">
         <div class="flex flex-col items-center">
           <div class="flex justify-center items-center h-24 w-24 rounded-full border-primary border-8 text-2xl font-extrabold">
-            {{ gamesPlayed}}
+            {{ gamesPlayed }}
           </div>
           <p class="mt-3 text-sm text-gray-500">Games Played</p>
         </div>

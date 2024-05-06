@@ -32,11 +32,22 @@ const state = reactive({
 })
 
 // Functions
+
+/**
+ * This function emits an event when the form is submitted.
+ * @param event - The form submit event containing data
+ */
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   emit("signup-event", event.data.username, event.data.email, event.data.password)
 }
+
+/**
+ * This function validates the form data.
+ * @param state - The form state
+ * @returns FormError[] - An array of form errors
+ */
 function validate(state: any): FormError[] {
-  return usernames.includes(state.username) ? [{ path: 'username', message: 'This username is already in use' }] : []
+  return usernames.includes(state.username.toLowerCase()) ? [{ path: 'username', message: 'This username is already in use.' }] : []
 }
 
 </script>

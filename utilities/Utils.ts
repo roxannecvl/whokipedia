@@ -8,7 +8,7 @@ import type { TimedStat } from "~/model/UserModel";
  * @param description - The description of the error
  * @param toast - for alert notification
  */
-export function displayErrorNotification(toast: any, description: string) {
+export function displayErrorNotification(toast: any, description: string): void {
     toast.remove('any')
     toast.add({id: 'any', title: 'Error', description: description, icon: 'i-heroicons-x-circle', color: "red"})
 }
@@ -18,7 +18,7 @@ export function displayErrorNotification(toast: any, description: string) {
  * @param description - The description of the success
  * @param toast - for alert notification
  */
-export function displaySuccessNotification(toast: any, description: string) {
+export function displaySuccessNotification(toast: any, description: string): void {
     toast.remove('any')
     toast.add({id: 'any', title: 'Success', description: description, icon: 'i-heroicons-check-circle', color: "green"})
 }

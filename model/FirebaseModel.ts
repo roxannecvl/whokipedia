@@ -18,10 +18,10 @@ export function initializeFirebase(): void {
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function saveUserToFirebase(model: UserStore, username: string, uid: string): void {
+export async function saveUserToFirebase(model: UserStore, username: string, uid: string): Promise<void> {
     model.updateUser(uid, username)
     const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
-    set(dbRef(database, 'users/' + uid), persistence).then()
+    return set(dbRef(database, 'users/' + uid), persistence).then()
 }
 
 /**
@@ -29,9 +29,9 @@ export function saveUserToFirebase(model: UserStore, username: string, uid: stri
  * @param model - Game model to push to persistence
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function saveCurrentGameToFirebase(model: GameStore, uid: string): void {
-    if(model.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
-    else set(dbRef(database, 'users/' + uid + '/currentGame'),model.$state).then()
+export async function saveCurrentGameToFirebase(model: GameStore, uid: string): Promise<void> {
+    if (model.end) return remove(dbRef(database, 'users/' + uid + '/currentGame'))
+    else return set(dbRef(database, 'users/' + uid + '/currentGame'), model.$state)
 }
 
 /**
@@ -39,19 +39,18 @@ export function saveCurrentGameToFirebase(model: GameStore, uid: string): void {
  * @param model - User model to update to persistence
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function updateUserToFirebase(model: UserStore, uid: string): void {
+export async function updateUserToFirebase(model: UserStore, uid: string): Promise<void> {
     const persistence = userStoreToPersistence(model)
-
     // First update user's general stats
-    update(dbRef(database, 'users/' + uid), persistence).then()
-
-    // Then update user's daily stats
-    model.timedStats?.map((stat: TimedStat) => {
-        update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
-            guesses: stat.guesses,
-            rank: stat.rank,
-            time: stat.time
-        }).then()
+    return update(dbRef(database, 'users/' + uid), persistence).then(() => {
+        // Then update user's daily stats
+        model.timedStats?.map((stat: TimedStat) => {
+            update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
+                guesses: stat.guesses,
+                rank: stat.rank,
+                time: stat.time
+            })
+        })
     })
 }
 
@@ -125,7 +124,7 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
 export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string): Promise<void> {
     if (store.username === username) return
     store.updateUser(uid, username)
-    update(dbRef(database, 'users/' + uid), { username: username }).then()
+    return update(dbRef(database, 'users/' + uid), { username: username })
 }
 
 /**
@@ -133,7 +132,7 @@ export async function updateUsernameToFirebase(store: UserStore, username: strin
  * @param uid - User ID to delete
  */
 export async function deleteUserFromFirebase(uid: string): Promise<void> {
-    remove(dbRef(database, 'users/' + uid)).then()
+    return remove(dbRef(database, 'users/' + uid))
 }
 
 /**
@@ -173,7 +172,7 @@ export async function getAllUsernamesFromFirebase(): Promise<string[]> {
     return get(dbRef(database, 'users')).then(snapshot => {
         const usernames: string[] = []
         snapshot.forEach((child) => {
-            usernames.push(child.val().username)
+            usernames.push(child.val().username.toLowerCase())
         })
         return usernames
     })
@@ -186,6 +185,7 @@ export async function getAllUsernamesFromFirebase(): Promise<string[]> {
  */
 function userStoreToPersistence(model: UserStore): any {
     return {
+        uid: model.uid,
         username: model.username,
         currentStreak: model.currentStreak,
         maxStreak: model.maxStreak,

@@ -95,8 +95,12 @@ const logoPath = '/img/logo-primary-filled.svg'
           :username="username"
       />
      <UserAccountView
-         @change-info-event-bis="(username, email, password, oldPassword) => emit('change-info-event-tris', username, email, password, oldPassword)"
-         @delete-account-event-bis="emit('delete-account-event-tris')"
+         @change-info-event-bis="(newUsername, newEmail, newPassword, email, password) => {
+           emit('change-info-event-tris', newUsername, newEmail, newPassword, email, password)
+         }"
+         @delete-account-event-bis="(email, password) => {
+           emit('delete-account-event-tris', email, password)
+         }"
          :currentStreakSV="currentStreakUV"
          :maxStreakSV="maxStreakUV"
          :averageRankSV="averageRankUV"
@@ -107,9 +111,15 @@ const logoPath = '/img/logo-primary-filled.svg'
          :username="username"
      />
       <LoginSignupView
-        @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
-        @signup-event-bis="(username, email, password) => emit('signup-event-tris', username, email, password)"
-        @logout-event="emit('logout-event-bis')"
+        @login-event-bis="(email, password) => {
+          emit('login-event-tris', email, password)
+        }"
+        @signup-event-bis="(username, email, password) => {
+          emit('signup-event-tris', username, email, password)
+        }"
+        @logout-event="() => {
+          emit('logout-event-bis')
+        }"
         :close="closeLSV"/>
     </div>
   </div>
