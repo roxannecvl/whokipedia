@@ -32,13 +32,8 @@ function startInterval(){
   }, 1000)
 }
 
-function checkStopInterval(over : boolean, name : string){
+function checkStopInterval(over : boolean){
   if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
-  if (name !== curUsername.value && timerInterval !== null) {
-    curUsername.value = name
-    clearInterval(timerInterval)
-    timerInterval = null
-  }
   if (over && timerInterval !== null) {
     clearInterval(timerInterval)
     timerInterval = null
@@ -47,8 +42,8 @@ function checkStopInterval(over : boolean, name : string){
 }
 
 // Lifecycle hooks
-onMounted(async () => {
-  if(timerInterval === null) startInterval()
+onMounted(() => {
+   startInterval()
 })
 
 // Initialize game
@@ -70,7 +65,7 @@ if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
       <!-- FOR BIG SCREENS-->
       <div class="h-full hidden lg:flex">
         <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
-          <SidebarPresenter :timeSec="checkStopInterval(gameModel.end, userModel.username)" :showTime="true" :showRules="true"/>
+          <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showTime="true" :showRules="true"/>
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
           <PlayAgainPresenter :dailyChallenge="true"/>
@@ -88,7 +83,7 @@ if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
             </UButton>
           </div>
           <div class="flex-grow">
-            <SidebarPresenter :timeSec="checkStopInterval(gameModel.end, userModel.username)" :showTime="true" :showRules="false"/>
+            <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showTime="true" :showRules="false"/>
           </div>
         </div>
         <USlideover v-model="isRulesOpen" title="Rules">
@@ -97,7 +92,7 @@ if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
               <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
             </div>
             <div class="p-5 w-full box-border">
-              <SidebarPresenter :timeSec="checkStopInterval(gameModel.end, userModel.username)" :showTime="false" :showRules="true"/>
+              <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showTime="false" :showRules="true"/>
             </div>
           </UCard>
         </USlideover>
