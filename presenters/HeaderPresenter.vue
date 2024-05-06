@@ -97,17 +97,21 @@ function updateLeaderboard(): void {
       @change-info-event-tris="(username: string, email: string, password: string, oldPassword: string) => {
         if (user) {
           Promise.all([
-              updateEmailAndPassword(user?.email ?? '', oldPassword, email, password, auth, toast),
-              updateUsernameToFirebase(userModel, username, user.uid, toast)
-              ])
-              .then(() => {
-                displaySuccessNotification(toast, 'Account updated successfully.')
+            updateEmailAndPassword(user?.email ?? '', oldPassword, email, password, auth, toast),
+            updateUsernameToFirebase(userModel, username, user.uid)
+          ])
+          .then(() => {
+            displaySuccessNotification(toast, 'Account updated successfully.')
           })
         }
       }"
       @delete-account-event-tris="() => {
-        Promise.all([deleteAccount(auth, toast), deleteUserFromFirebase(user?.uid ?? '')]).then(() => {
-          displaySuccessNotification(toast, 'Account deleted successfully.')
+        Promise.all([
+            deleteAccount(auth, toast),
+            deleteUserFromFirebase(user?.uid ?? '')
+          ])
+          .then(() => {
+            displaySuccessNotification(toast, 'Account deleted successfully.')
         })
       }"
       :closeLSV="closeModal"

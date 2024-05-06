@@ -1,4 +1,4 @@
-import { ref as dbRef, set, update, get, remove, Database, push } from "firebase/database"
+import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
 import type { TimedStat, UserStore } from "~/model/UserModel.js"
 import type { GameStore } from "~/model/GameModel"
 import { getCurrentDayTimestamp } from "~/utilities/Utils"
@@ -17,13 +17,11 @@ export function initializeFirebase(): void {
  * @param model - User model to push to persistence
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
- * @param userIndex - number the new place of the username in the usernames list
  */
-export function saveUserToFirebase(model: UserStore, username: string, uid: string, userIndex : number): void {
+export function saveUserToFirebase(model: UserStore, username: string, uid: string): void {
     model.updateUser(uid, username)
     const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
     set(dbRef(database, 'users/' + uid), persistence).then()
-    set(dbRef(database, 'usernames/' + userIndex), username.toLowerCase()).then()
 }
 
 /**
@@ -123,9 +121,8 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
  * @param store - User model to update
  * @param username - New username to update
  * @param uid - User ID to update
- * @param toast - Toast to display success message
  */
-export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string, toast: any): Promise<void> {
+export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string): Promise<void> {
     if (store.username === username) return
     store.updateUser(uid, username)
     update(dbRef(database, 'users/' + uid), { username: username }).then()
@@ -173,8 +170,11 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
  * This method gets all usernames to assure uniqueness
  */
 export async function getAllUsernamesFromFirebase(): Promise<string[]> {
-    return get(dbRef(database, 'usernames')).then(snapshot => {
-        const usernames: string[] = snapshot.val() ? snapshot.val() : []
+    return get(dbRef(database, 'users')).then(snapshot => {
+        const usernames: string[] = []
+        snapshot.forEach((child) => {
+            usernames.push(child.val().username)
+        })
         return usernames
     })
 }
