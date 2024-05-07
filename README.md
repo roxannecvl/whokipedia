@@ -36,45 +36,52 @@ Here is the list of our already implemented features
 whokipedia/                          # 
 ├── LICENSE                          #
 ├── README.md                        #
-├── api/                             # Contains all files for talking to the api and parsing the responses
-│   └── WikipediaSource.ts           #
+├── api/                             # Contains all files to retrieve data from api
+│   ├── Parsing.ts                   # Contains the logic to parse data retrieved from api in useful hints
+│   └── WikipediaSource.ts           # Contains the logic to fetch data from WikiMedia API
 ├── app.config.ts                    #
-├── app.vue                          # Contains signupLoginPresenter.vue, logo (title version), black mode button and git button
+├── app.vue                          # Contains main layout of the app
 ├── model/                           #
 │   ├── CelebrityList.ts             # Contains the list of playable celebrity and function to get suggestions for seach field
 │   ├── GameModel.ts                 # Contains all the logic for the current game played 
 │   ├── Hint.ts                      # Declaration of Hint type (and method to create a list of hints from an object)
 │   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
-│   ├── Firebase.ts             # Contains all logic for talking to our database
 ├── nuxt.config.ts                   #
 ├── package.json                     # All our dependencies 
 ├── pages/                           #
 │   ├── daily-challenge.vue          # with GamePresenter, SidebarPresenter and PlayAgainPresenter together
+│   ├── reset-password.vue           # with ResetPasswordPresenter.vue
 │   ├── index.vue                    # with WelcomePagePresenter.vue
 │   └── solo-mode.vue                # with GamePresenter, SidebarPresenter and PlayAgainPresenter together
 ├── presenters/                      #
 │   ├── GamePresenter.vue            # with GameCenterView.vue and InfoboxView.vue
+│   ├── ResetPasswordPresenter.vue   # with ResetPasswordView.vue
 │   ├── HeaderPresenter.vue          # with HeaderView.vue
 │   ├── PlayAgainPresenter.vue       # with PlayAgainView.vue
 │   ├── SidebarPresenter.vue         # with SidebarView.vue
 │   └── WelcomePagePresenter.vue     # with WelcomePageView.vue
 ├── tailwind.config.ts               #
 ├── tsconfig.json                    #
-├── utilities/                       #
+├── utilities/  
+│   ├── Auth.ts                      # Contains all logic for handling authentication with Firebase auth 
+│   ├── Firebase.ts                  # Contains all logic for talking to our database#
 │   └── Utils.ts                     # utilities function, like getAverage(), getRandom(),  ...
 └── views/                           #
+    ├── AccountView.vue              # contains StatisticsView and UserManagementView as tabs
     ├── GameCenterView.vue           # contains intro paragraph of the celebrity and InfoboxView
-    ├── HeaderView.vue                # contains the UI of the Header, internally calls LoginSignupView LeaderboardView and StatisticsView which all are modals
+    ├── HeaderView.vue               # contains the UI of the Header, internally calls LoginSignupView, LeaderboardView and AccountView which all are modals
     ├── InfoboxView.vue              # contains the photo and the short informations about the celebrity (like right box in wikipedia)
-    ├── LeaderboardView.vue          # contains the leaderboard as a modal
-    ├── LoginSignupView.vue          # puts LoginView and SignupView together as a modal
+    ├── LeaderboardView.vue          # contains the leaderboard as a modal
+    ├── LoginSignupView.vue          # puts LoginView and SignupView together as tabs
     ├── LoginView.vue                # log in form 
     ├── PlayAgainView.vue            # buttons to play again
+    ├── ResetPasswordView.vue        # reset password form
     ├── SearchFieldView.vue          # the place where the user inputs their guesses
     ├── ShouldLoginView.vue          # A view to invite the current player to log in 
     ├── SidebarView.vue              # rules, login button, logo (train and leaderboard button if done) 
     ├── SignupView.vue               # sign up form 
-    ├── StatisticsView.vue           # statistics of the user (if loged in) as a modal
+    ├── StatisticsView.vue           # statistics of the user (if logged in)
+    ├── StatisticsView.vue           # user management window to change info / delete account
     └── WelcomePageView.vue          # two play buttons, the rules and the logo
 ```
 
