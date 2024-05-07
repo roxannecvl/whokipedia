@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+import LoginSignupView from "~/views/LoginSignupView.vue"
+
 // Props
 defineProps({
   closeLSV: {
@@ -11,8 +14,6 @@ defineProps({
 const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis'])
 
 // Refs
-import LoginSignupView from "~/views/LoginSignupView.vue";
-
 const logoPath = ref('')
 
 // Constants
@@ -20,12 +21,10 @@ const logoFilledPath = '/img/logo-filled.svg'
 const logoTransparentPath = '/img/logo-transparent.svg'
 const mode = useColorMode()
 
-// Watchers
+// Lifecycle hooks
 watch(mode, (newMode) => {
   logoPath.value = newMode.value === 'dark' ? logoFilledPath : logoTransparentPath
 })
-
-// Computed
 onMounted(() => {
   logoPath.value = mode.value === 'dark' ? logoFilledPath : logoTransparentPath
 })

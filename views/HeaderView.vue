@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+
 import type { TimedStat } from "~/model/UserModel"
 import type { LeaderboardData } from "~/presenters/HeaderPresenter.vue";
 import LoginSignupView from "~/views/LoginSignupView.vue"

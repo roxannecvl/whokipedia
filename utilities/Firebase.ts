@@ -17,8 +17,15 @@ export function initializeFirebase(): void {
  * @param model - User model to push to persistence
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
+ * @param toast - Used for alert notification
  */
-export async function saveUserToFirebase(model: UserStore, username: string, uid: string): Promise<void> {
+export async function saveUserToFirebase(model: UserStore, username: string, uid: string, toast: any): Promise<void> {
+    getAllUsernamesFromFirebase().then((usernames: string[]) => {
+        if (usernames.includes(username.toLowerCase())) {
+            displayErrorNotification(toast, 'Username is already taken.')
+            return
+        }
+    })
     model.updateUser(uid, username)
     const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
     return set(dbRef(database, 'users/' + uid), persistence).then()
@@ -122,7 +129,9 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
  * @param uid - User ID to update
  * @param toast - Used for alert notification
  */
-export async function updateUsernameToFirebase(store: UserStore, username: string, uid: string, toast: any): Promise<void> {
+export async function updateUsernameToFirebase(
+    store: UserStore, username: string, uid: string, toast: any
+): Promise<void> {
     getAllUsernamesFromFirebase().then((usernames: string[]) => {
         if (usernames.includes(username.toLowerCase())) {
             displayErrorNotification(toast, 'Username is already taken.')
@@ -159,14 +168,15 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
                 averageGuesses: child.val().averageGuesses,
                 winRate: child.val().winRate,
                 gamesPlayed: child.val().gamesPlayed,
-                stats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map((key: string): TimedStat => {
-                    return {
-                        date: parseInt(key),
-                        guesses: child.val().stats[key].guesses,
-                        rank: child.val().stats[key].rank,
-                        time: child.val().stats[key].time
-                    }
-                })
+                stats: child.val().stats === undefined ? [] :
+                    Object.keys(child.val().stats)?.map((key: string): TimedStat => {
+                        return {
+                            date: parseInt(key),
+                            guesses: child.val().stats[key].guesses,
+                            rank: child.val().stats[key].rank,
+                            time: child.val().stats[key].time
+                        }
+                    })
             })
         })
         return usersData
@@ -218,13 +228,14 @@ function persistenceToUserModel(model: UserStore, persistence: any): void {
         persistence.winRate || 0,
         persistence.gamesPlayed || 0,
         // Workaround to Firebase saving empty arrays as undefined
-        persistence.stats === undefined ? [] : Object.keys(persistence.stats).map((key: string): TimedStat => {
-            return {
-                date: parseInt(key),
-                guesses: persistence.stats[key].guesses,
-                rank: persistence.stats[key].rank,
-                time: persistence.stats[key].time
-            }
+        persistence.stats === undefined ? [] :
+            Object.keys(persistence.stats).map((key: string): TimedStat => {
+                return {
+                    date: parseInt(key),
+                    guesses: persistence.stats[key].guesses,
+                    rank: persistence.stats[key].rank,
+                    time: persistence.stats[key].time
+                }
         })
     )
     model.updateUser(persistence.uid, persistence.username)

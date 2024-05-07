@@ -1,16 +1,12 @@
 <script setup lang="ts">
+
 import { useCurrentUser } from 'vuefire'
 import { type GameStore, useGameStore } from "~/model/GameModel"
 import { type UserStore, useUserStore, type TimedStat } from "~/model/UserModel"
 import {
-  updateUserToFirebase,
-  getAllUserFromFirebase,
-  updateUserRankToFirebase,
-  updateUserAVGRankToFirebase,
-  saveCurrentGameToFirebase,
-  readCurGameFromFirebase,
-  type UserPersistence
-} from "~/model/FirebaseModel"
+  updateUserToFirebase, getAllUserFromFirebase, updateUserRankToFirebase, updateUserAVGRankToFirebase,
+  saveCurrentGameToFirebase, readCurGameFromFirebase, type UserPersistence
+} from "~/utilities/Firebase"
 import { getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
 import GameCenterView from "~/views/GameCenterView.vue"
 import SearchFieldView from "~/views/SearchFieldView.vue"

@@ -62,7 +62,9 @@ const user = useCurrentUser()
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Welcome, <span class="text-primary">{{ username }}</span>.</h3>
+          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">
+            Welcome, <span class="text-primary">{{ username }}</span>.
+          </h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isModalOpen = false" />
         </div>
       </template>

@@ -45,7 +45,7 @@ whokipedia/                          #
 │   ├── GameModel.ts                 # Contains all the logic for the current game played 
 │   ├── Hint.ts                      # Declaration of Hint type (and method to create a list of hints from an object)
 │   ├── UserModel.ts                 # Contains all the logic and data of the loged in user
-│   ├── FirebaseModel.ts             # Contains all logic for talking to our database
+│   ├── Firebase.ts             # Contains all logic for talking to our database
 ├── nuxt.config.ts                   #
 ├── package.json                     # All our dependencies 
 ├── pages/                           #

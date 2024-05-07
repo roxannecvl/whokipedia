@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import WelcomePageView from "~/views/WelcomePageView.vue"
 import { useCurrentUser, useFirebaseAuth } from "vuefire";
 import { login, logout, signup } from "~/utilities/Auth";
@@ -33,7 +34,7 @@ onMounted(async () => {
         await useRouter().push('/daily-challenge')
       }"
       @signup-event-tris="async (username: string, email: string, password: string) => {
-        await signup(username, email, password, userModel, auth, toast, true)
+        await signup(username, email, password, userModel, auth, toast)
         await useRouter().push('/daily-challenge')
       }"
       @logout-event-bis="async () => {
