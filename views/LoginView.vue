@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import { passwordMinimalLength } from '~/utilities/Utils'
@@ -65,7 +66,9 @@ async function onSubmitEmail (event: FormSubmitEvent<EmailSchema>) {
       </UFormGroup>
       <UFormGroup label="Password" name="password">
         <template #hint>
-          <p class="text-primary hover:text-primary-600 text-xs" @click="isPasswordForgottenModalOpen = true">Forgot your password ?</p>
+          <p class="text-primary hover:text-primary-600 text-xs" @click="isPasswordForgottenModalOpen = true">
+            Forgot your password ?
+          </p>
         </template>
         <template #default>
           <UInput v-model="state.password" placeholder="Your password" icon="i-heroicons-lock-closed" type="password" />
@@ -81,12 +84,15 @@ async function onSubmitEmail (event: FormSubmitEvent<EmailSchema>) {
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Reset your password</h3>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isPasswordForgottenModalOpen = false"/>
+            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid"
+                     @click="isPasswordForgottenModalOpen = false"/>
           </div>
         </template>
         <UForm :schema="emailSchema" :state="emailState" @submit="onSubmitEmail">
-          <UFormGroup class="mb-4" description='Type your email below. If it is associated with an existing account, you will receive an email with instructions to reset your password.' name="resetEmail">
-            <UInput class="mt-2" v-model="emailState.resetEmail" icon="i-heroicons-envelope" placeholder="you@example.com"/>
+          <UFormGroup class="mb-4" name="resetEmail" description='Type your email below. If it is associated with an
+                      existing account, you will receive an email with instructions to reset your password.'>
+            <UInput class="mt-2" v-model="emailState.resetEmail"
+                    icon="i-heroicons-envelope" placeholder="you@example.com"/>
           </UFormGroup>
           <UButton variant="soft" type="submit">Send me a reset link <UIcon name="i-heroicons-link"/></UButton>
         </UForm>

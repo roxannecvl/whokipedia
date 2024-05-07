@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { getAutocompleteSuggestions } from "~/model/CelebrityList"
 
 // Props

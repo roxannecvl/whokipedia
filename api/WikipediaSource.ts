@@ -1,8 +1,4 @@
-import {
-    splitIntoEqualSentenceParts,
-    removeNameOccurrences,
-    getInitials,
-} from "~/utilities/Utils"
+import { splitIntoEqualSentenceParts, getInitials } from "~/utilities/Utils"
 import { type InfoboxHint, type ParagraphHint, type BlurHint, fieldsOf, paragraphsOf, imagesOf } from "~/model/Hint"
 import { extractInfoboxFromWikitext } from "~/api/Parsing"
 

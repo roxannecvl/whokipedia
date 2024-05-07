@@ -1,28 +1,15 @@
 <script setup lang="ts">
+
 import { useCurrentUser, useFirebaseAuth } from "vuefire"
 import type { User } from "firebase/auth"
 import {
-  getAllUserFromFirebase,
-  readUserFromFirebase,
-  updateUsernameToFirebase,
-  type UserPersistence,
-} from "~/model/FirebaseModel"
-import { type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
+  getAllUserFromFirebase, readUserFromFirebase, updateUsernameToFirebase, type UserPersistence
+} from "~/utilities/Firebase"
 import {
-  formatTime,
-  getCurrentDayTimestamp,
-  sortTodayChallengers
-} from "~/utilities/Utils"
-import {
-  login,
-  logout,
-  signup,
-  updateEmail,
-  updatePassword,
-  reauthenticate,
-  deleteAccount,
-  resetPassword
+  login, logout, signup, updateEmail, updatePassword, reauthenticate, deleteAccount, resetPassword
 } from "~/utilities/Auth"
+import { type TimedStat, type UserStore, useUserStore } from "~/model/UserModel"
+import { formatTime, getCurrentDayTimestamp, sortTodayChallengers } from "~/utilities/Utils"
 import HeaderView from "~/views/HeaderView.vue"
 
 // Models
@@ -120,7 +107,8 @@ async function changeInfo(
         .then(async () => {
           if (email !== newEmail) await updateEmail(newEmail, innerUser, toast)
           if (newPassword) await updatePassword(newPassword, innerUser, toast)
-          if (username.value !== newUsername) await updateUsernameToFirebase(userModel, newUsername, userModel.uid, toast)
+          if (username.value !== newUsername)
+            await updateUsernameToFirebase(userModel, newUsername, userModel.uid, toast)
         })
         .catch()
   }
@@ -135,43 +123,31 @@ async function deleteUser(email: string, password: string): Promise<void> {
   if (user.value) {
     const innerUser: User = user.value
     return reauthenticate(email, password, innerUser, toast)
-      .then(async () => {
+        .then(async () => {
           await deleteAccount(innerUser, toast)
           await useRouter().push('/')
-      })
-      .catch()
+        })
+        .catch()
   }
 }
 </script>
 
 <template>
   <HeaderView
-      @login-event-tris="async (email: string, password: string) => {
-        await login(email, password, auth, toast)
-      }"
-      @reset-password-event-tris="async (email: string) => {
-        await resetPassword(email, auth, toast)
-      }"
+      @login-event-tris="async (email: string, password: string) => await login(email, password, auth, toast)"
+      @reset-password-event-tris="async (email: string) => await resetPassword(email, auth, toast)"
       @signup-event-tris="async (signupUsername: string, email: string, password: string) => {
         await signup(signupUsername, email, password, userModel, auth, toast)
       }"
       @logout-event-bis="async () => {
-        await logout(auth, toast)
-        if (useRoute().path === '/daily-challenge') await useRouter().push('/')
+         await logout(auth, toast)
+         if (useRoute().path === '/daily-challenge') await useRouter().push('/')
       }"
       @update-leaderboard-bis="updateLeaderboard"
-      @change-info-event-tris="async (
-          newUsername: string,
-          newEmail: string,
-          newPassword: string | undefined,
-          email: string,
-          password: string
-      ) => {
-        await changeInfo(newUsername, newEmail, newPassword, email, password)
-      }"
-      @delete-account-event-tris="async (email: string, password: string) => {
-        await deleteUser(email, password)
-      }"
+      @change-info-event-tris=" async (
+          newUsername: string, newEmail: string, newPassword: string | undefined,   email: string, password: string
+        ) =>  await changeInfo(newUsername, newEmail, newPassword, email, password)"
+      @delete-account-event-tris="async (email: string, password: string) => await deleteUser(email, password)"
       :closeLSV="closeModal"
       :currentStreakUV="userModel.currentStreak"
       :maxStreakUV="userModel.maxStreak"

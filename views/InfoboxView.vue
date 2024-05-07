@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { type InfoboxHint, compulsoryLabels } from "~/model/Hint"
 import { capitalize } from "~/utilities/Utils"
 

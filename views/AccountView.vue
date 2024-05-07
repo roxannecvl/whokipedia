@@ -62,7 +62,9 @@ const user = useCurrentUser()
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Welcome, <span class="text-primary">{{ username }}</span>.</h3>
+          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">
+            Welcome, <span class="text-primary">{{ username }}</span>.
+          </h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isModalOpen = false" />
         </div>
       </template>
@@ -85,10 +87,11 @@ const user = useCurrentUser()
               <div v-else-if="item.key === 'account'" class="pt-4">
                 <UserManagementView
                     :username="username"
-                    @change-info-event="(newUsername, newEmail, newPassword, email, password) => {
-                      emit('change-info-event-bis', newUsername, newEmail, newPassword, email, password)
-                    }"
-                    @delete-account-event="(email, password) => {
+                    @change-info-event="(
+                      newUsername: string, newEmail: string, newPassword: string | undefined,
+                      email: string, password: string
+                    ) => emit('change-info-event-bis', newUsername, newEmail, newPassword, email, password)"
+                    @delete-account-event="(email: string, password: string) => {
                       isModalOpen = false
                       emit('delete-account-event-bis', email, password)
                     }"/>

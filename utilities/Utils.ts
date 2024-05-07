@@ -1,5 +1,5 @@
-import type { UserPersistence } from "~/model/FirebaseModel";
-import type { TimedStat } from "~/model/UserModel";
+import type { UserPersistence } from "~/utilities/Firebase"
+import type { TimedStat } from "~/model/UserModel"
 
 // --------------------------------- Toast notifications display  --------------------------------- //
 
@@ -10,7 +10,13 @@ import type { TimedStat } from "~/model/UserModel";
  */
 export function displayErrorNotification(toast: any, description: string): void {
     toast.remove('any')
-    toast.add({id: 'any', title: 'Something went wrong :(', description: description, icon: 'i-heroicons-x-circle', color: "red"})
+    toast.add({
+        id: 'any',
+        title: 'Something went wrong :(',
+        description: description,
+        icon: 'i-heroicons-x-circle',
+        color: "red"
+    })
 }
 
 /**
@@ -20,7 +26,13 @@ export function displayErrorNotification(toast: any, description: string): void 
  */
 export function displaySuccessNotification(toast: any, description: string): void {
     toast.remove('any')
-    toast.add({id: 'any', title: 'Yeahhh !', description: description, icon: 'i-heroicons-check-circle', color: "green"})
+    toast.add({
+        id: 'any',
+        title: 'Yeahhh !',
+        description: description,
+        icon: 'i-heroicons-check-circle',
+        color: "green"
+    })
 }
 
 // --------------------------------- String utilities  --------------------------------- //
@@ -267,7 +279,7 @@ export async function dailyRandom(min: number, max: number): Promise<number> {
  */
 export function randomPermutation(min: number, max: number, seed : number = 0): number[] {
     if(seed === 0) seed = Math.random()
-    const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min); // Generate numbers from min to max
+    const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
     const permutation: number[] = [];
 
     const random = (seed: number) => {

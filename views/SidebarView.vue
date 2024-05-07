@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatTime } from "~/utilities/Utils"
+
+import { formatTime } from "~/utilities/Utils";
 
 // Props
 defineProps({

@@ -1,8 +1,9 @@
 <script setup lang="ts">
+
 import { z } from 'zod'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { passwordMinimalLength } from '~/utilities/Utils'
-import { getAllUsernamesFromFirebase } from "~/model/FirebaseModel";
+import { getAllUsernamesFromFirebase } from "~/utilities/Firebase"
 
 // Props
 const props = defineProps({

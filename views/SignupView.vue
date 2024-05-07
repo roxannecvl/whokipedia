@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { getAllUsernamesFromFirebase } from "~/model/FirebaseModel";
+import { getAllUsernamesFromFirebase } from "~/utilities/Firebase"
 import { passwordMinimalLength } from '~/utilities/Utils'
 
 // Props
@@ -21,7 +21,7 @@ const schema = z.object({
   username: z.string(),
   password: z.string().min(passwordMinimalLength, 'Must be at least '+ passwordMinimalLength + ' characters')
 })
-const usernames: string[] = await getAllUsernamesFromFirebase()
+let usernames: string[] = await getAllUsernamesFromFirebase()
 
 // Types
 type Schema = z.output<typeof schema>
@@ -41,6 +41,9 @@ const state = reactive({
  */
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   emit("signup-event", event.data.username, event.data.email, event.data.password)
+  setTimeout(async () => {
+    usernames = await getAllUsernamesFromFirebase()
+  }, 1000)
 }
 
 /**
@@ -49,7 +52,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
  * @returns FormError[] - An array of form errors
  */
 function validate(state: any): FormError[] {
-  return usernames.includes(state.username.toLowerCase()) ? [{ path: 'username', message: 'This username is already in use.' }] : []
+  return usernames.includes(state.username.toLowerCase()) ?
+      [{ path: 'username', message: 'This username is already in use.' }] : []
 }
 
 </script>
@@ -57,14 +61,18 @@ function validate(state: any): FormError[] {
 <template>
   <div class="flex justify-between">
     <UForm :validate="validate" :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
-      <UFormGroup label="Username" description="This is the way others will see you shine on the leaderboard." name="username">
+      <UFormGroup label="Username" name="username"
+                  description="This is the way others will see you shine on the leaderboard." >
         <UInput v-model="state.username" icon="i-heroicons-user" placeholder="ChuckNorris18" />
       </UFormGroup>
-      <UFormGroup name="email" label="Email" description="We will never contact you, this is only for authentication purposes.">
+      <UFormGroup name="email" label="Email"
+                  description="We will never contact you, this is only for authentication purposes.">
         <UInput v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
       </UFormGroup>
-      <UFormGroup name="password" label="Password" :description="'It must contain at least ' + passwordMinimalLength + ' characters.'">
-        <UInput v-model="state.password" icon="i-heroicons-lock-closed" type="password" placeholder="Choose your password"/>
+      <UFormGroup name="password" label="Password"
+                  :description="'It must contain at least ' + passwordMinimalLength + ' characters.'">
+        <UInput v-model="state.password" icon="i-heroicons-lock-closed"
+                type="password" placeholder="Choose your password"/>
       </UFormGroup>
       <div class="flex justify-between w-full items-center">
         <UButton type="submit">Sign up</UButton>

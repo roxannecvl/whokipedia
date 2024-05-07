@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { initializeFirebase } from "~/model/FirebaseModel"
+import { initializeFirebase } from "~/utilities/Firebase"
 import HeaderPresenter from "~/presenters/HeaderPresenter.vue"
 
 // Set up authentication
