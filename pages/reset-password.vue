@@ -53,7 +53,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>): Promise<void> {
           </template>
           <UForm :schema="schema" :state="state" @submit="onSubmit">
             <UFormGroup required label="New password" :description="'It must contain at least ' + passwordMinimalLength + ' characters.'" name="newPassword">
-              <UInput class="text-input" v-model="state.newPassword" icon="i-heroicons-lock-closed" type="password" placeholder="Choose a new password" />
+              <UInput v-model="state.newPassword" icon="i-heroicons-lock-closed" type="password" placeholder="Choose a new password" />
             </UFormGroup>
             <UButton class="mt-2" type="submit" variant="soft">Reset password</UButton>
           </UForm>

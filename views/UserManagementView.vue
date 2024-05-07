@@ -66,17 +66,17 @@ function validate(state: any): FormError[] {
 <template>
   <UForm :validate="validate" :schema="schema" :state="state" class="space-y-4 w-full pb-4" @submit="onSubmit">
     <UFormGroup size="lg" label="Update your username" description="This is the way others will see you shine on the leaderboard." name="newUsername">
-      <UInput class="text-input" v-model="state.newUsername" icon="i-heroicons-user"/>
+      <UInput v-model="state.newUsername" icon="i-heroicons-user"/>
     </UFormGroup>
     <UFormGroup size="lg" label="Update your email" description="We will never contact you, this is only for authentication purposes." name="newEmail">
-      <UInput class="text-input" v-model="state.newEmail" icon="i-heroicons-envelope"/>
+      <UInput v-model="state.newEmail" icon="i-heroicons-envelope"/>
     </UFormGroup>
     <UFormGroup size="lg" label="Update your password" :description="'It must contain at least ' + passwordMinimalLength + ' characters.'" name="newPassword">
-      <UInput class="text-input" v-model="state.newPassword" icon="i-heroicons-lock-closed" placeholder="New password" type="password"/>
+      <UInput v-model="state.newPassword" icon="i-heroicons-lock-closed" placeholder="New password" type="password"/>
     </UFormGroup>
     <div class="flex flex-col md:flex-row md:items-end">
       <UFormGroup label="Current password" description="We need it to confirm your changes or delete your account." name="password" required>
-        <UInput class="text-input" v-model="state.password" placeholder="Your password" type="password"/>
+        <UInput v-model="state.password" placeholder="Your password" type="password"/>
       </UFormGroup>
       <div class="flex md:ml-4 mt-4 md:mt-0">
         <UButton type="submit" :disabled="state.password.length < passwordMinimalLength ||
@@ -97,12 +97,12 @@ function validate(state: any): FormError[] {
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Confirm your changes</h3>
+          <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Delete your account</h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isConfirmModalOpen = false"/>
         </div>
       </template>
       <p class="mb-4">Are you sure you want to say goodbye, <span class="text-primary">{{ username }}</span> ?</p>
-      <UButton color="red" @click="() => {
+      <UButton block color="red" icon="i-heroicons-trash-16-solid" @click="() => {
            isConfirmModalOpen = false
            emit('delete-account-event', user?.email ?? '', state.password)
         }">Yes, delete my account</UButton>
