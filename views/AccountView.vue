@@ -87,10 +87,11 @@ const user = useCurrentUser()
               <div v-else-if="item.key === 'account'" class="pt-4">
                 <UserManagementView
                     :username="username"
-                    @change-info-event="(newUsername, newEmail, newPassword, email, password) => {
-                      emit('change-info-event-bis', newUsername, newEmail, newPassword, email, password)
-                    }"
-                    @delete-account-event="(email, password) => {
+                    @change-info-event="(
+                      newUsername: string, newEmail: string, newPassword: string | undefined,
+                      email: string, password: string
+                    ) => emit('change-info-event-bis', newUsername, newEmail, newPassword, email, password)"
+                    @delete-account-event="(email: string, password: string) => {
                       isModalOpen = false
                       emit('delete-account-event-bis', email, password)
                     }"/>

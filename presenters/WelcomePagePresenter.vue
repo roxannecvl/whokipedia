@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 import WelcomePageView from "~/views/WelcomePageView.vue"
-import { useCurrentUser, useFirebaseAuth } from "vuefire";
-import { login, logout, signup } from "~/utilities/Auth";
-import { useUserStore, type UserStore } from "~/model/UserModel";
+import { useCurrentUser, useFirebaseAuth } from "vuefire"
+import { login, logout, resetPassword, signup } from "~/utilities/Auth"
+import { useUserStore, type UserStore } from "~/model/UserModel"
 
 // Model
 const userModel: UserStore = useUserStore()
@@ -41,5 +41,6 @@ onMounted(async () => {
         await logout(auth, toast)
         if (useRoute().path === '/daily-challenge') await useRouter().push('/')
       }"
+      @reset-password-event-bis="async (email: string) => await resetPassword(email, auth, toast)"
       :closeLSV="closeModal"></WelcomePageView>
 </template>

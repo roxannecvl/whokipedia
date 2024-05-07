@@ -61,17 +61,13 @@ watch(() => props.close, () => {
             <template #item="{ item }">
               <div v-if="item.key === 'login'" class="pt-4">
                 <LoginView
-                  @login-event="(email, password) => {
-                    emit('login-event-bis', email, password)
-                  }"
-                  @reset-password-event="(email) => {
-                    emit('reset-password-event-bis', email)
-                  }"
+                  @login-event="(email: string, password: string) => emit('login-event-bis', email, password)"
+                  @reset-password-event="(email: string) => emit('reset-password-event-bis', email)"
                   :welcome="welcome"/>
               </div>
               <div v-else-if="item.key === 'signup'" class="pt-4">
                 <SignupView
-                  @signup-event="(username, email, password) => {
+                  @signup-event="(username: string, email: string, password: string) =>  {
                     emit('signup-event-bis', username, email, password)
                   }"
                   :welcome="welcome"/>

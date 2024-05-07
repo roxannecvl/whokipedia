@@ -17,18 +17,15 @@ export function initializeFirebase(): void {
  * @param model - User model to push to persistence
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
- * @param toast - Used for alert notification
  */
-export async function saveUserToFirebase(model: UserStore, username: string, uid: string, toast: any): Promise<void> {
-    getAllUsernamesFromFirebase().then((usernames: string[]) => {
-        if (usernames.includes(username.toLowerCase())) {
-            displayErrorNotification(toast, 'Username is already taken.')
-            return
-        }
-    })
-    model.updateUser(uid, username)
-    const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
-    return set(dbRef(database, 'users/' + uid), persistence).then()
+export async function saveUserToFirebase(model: UserStore, username: string, uid: string): Promise<void> {
+    return getAllUsernamesFromFirebase()
+        .then((usernames: string[]) => {
+            if (usernames.includes(username.toLowerCase())) throw new Error()
+            model.updateUser(uid, username)
+            const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
+            return set(dbRef(database, 'users/' + uid), persistence)
+        })
 }
 
 /**
@@ -132,16 +129,16 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
 export async function updateUsernameToFirebase(
     store: UserStore, username: string, uid: string, toast: any
 ): Promise<void> {
-    getAllUsernamesFromFirebase().then((usernames: string[]) => {
+    return getAllUsernamesFromFirebase().then((usernames: string[]) => {
         if (usernames.includes(username.toLowerCase())) {
             displayErrorNotification(toast, 'Username is already taken.')
-            return
+            throw new Error()
         }
+        store.updateUser(uid, username)
+        return update(dbRef(database, 'users/' + uid), { username: username })
+            .then(() => displaySuccessNotification(toast, 'Username updated successfully.'))
+            .catch(() => displayErrorNotification(toast, 'Failed to update username.'))
     })
-    store.updateUser(uid, username)
-    return update(dbRef(database, 'users/' + uid), { username: username })
-        .then(() => displaySuccessNotification(toast, 'Username updated successfully.'))
-        .catch(() => displayErrorNotification(toast, 'Failed to update username.'))
 }
 
 /**

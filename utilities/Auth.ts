@@ -38,7 +38,7 @@ export async function signup(
                 .then(() => displaySuccessNotification(toast, "Signed up successfully."))
                 .catch(() => {
                     deleteUser(credentials.user)
-                    displayErrorNotification(toast, "Failed to sign up.")
+                    displayErrorNotification(toast, "Failed to sign up. Username is already in use.")
                 })
         })
         .catch(() => displayErrorNotification(toast, "Failed to sign up. Email already in use."))
@@ -60,11 +60,7 @@ export async function logout(auth : Auth, toast : any): Promise<void> {
  * @param user - User to update
  * @param toast - Used for alert notification
  */
-export async function updateEmail(
-    newEmail: string,
-    user: User,
-    toast: any
-): Promise<void> {
+export async function updateEmail(newEmail: string, user: User, toast: any): Promise<void> {
     return updateEmailFirebase(user, newEmail)
         .then(() => displaySuccessNotification(toast, "Email updated successfully."))
         .catch(() => displayErrorNotification(toast, "Failed to update email."))
@@ -76,11 +72,7 @@ export async function updateEmail(
  * @param user - User to update
  * @param toast - Used for alert notification
  */
-export async function updatePassword(
-    newPassword: string,
-    user: User,
-    toast: any
-): Promise<void> {
+export async function updatePassword(newPassword: string, user: User, toast: any): Promise<void> {
     return updatePasswordFirebase(user, newPassword)
         .then(() => displaySuccessNotification(toast, "Password updated successfully."))
         .catch(() => displayErrorNotification(toast, "Failed to update password."))
@@ -94,7 +86,7 @@ export async function updatePassword(
 export async function deleteAccount(user: User, toast : any): Promise<void> {
     return deleteUserFromFirebase(user.uid)
         .then(() => {
-            deleteUser(user).then(() => displaySuccessNotification(toast, "Account deleted successfully."))
+            return deleteUser(user).then(() => displaySuccessNotification(toast, "Account deleted successfully."))
         })
         .catch(() => displayErrorNotification(toast, "Failed to delete account."))
 }
@@ -133,10 +125,10 @@ export async function resetPassword(email: string, auth: Auth, toast: any): Prom
  * @param newPassword - New password
  * @param toast - Used for alert notification
  */
-export async function handleResetPassword(auth: Auth, actionCode: any, newPassword: string, toast: any) {
-    verifyPasswordResetCode(auth, actionCode).then((email) => {
-        confirmPasswordReset(auth, actionCode, newPassword).then(() => {
-            signInWithEmailAndPassword(auth, email, newPassword).then(() => {
+export async function handleResetPassword(auth: Auth, actionCode: any, newPassword: string, toast: any): Promise<void> {
+    return verifyPasswordResetCode(auth, actionCode).then((email) => {
+        return confirmPasswordReset(auth, actionCode, newPassword).then(() => {
+            return signInWithEmailAndPassword(auth, email, newPassword).then(() => {
                 displaySuccessNotification(toast, "Password reset successfully. You are now logged in.")
             }).catch(() => {
                 displayErrorNotification(toast, "Password reset succeeded, but you need to log in again.")

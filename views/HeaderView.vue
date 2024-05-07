@@ -115,18 +115,12 @@ const logoPath = '/img/logo-primary-filled.svg'
          :username="username"
      />
       <LoginSignupView
-        @login-event-bis="(email, password) => {
-          emit('login-event-tris', email, password)
-        }"
-        @reset-password-event-bis="(email) => {
-          emit('reset-password-event-tris', email)
-        }"
-        @signup-event-bis="(username, email, password) => {
+        @login-event-bis="(email: string, password: string) => emit('login-event-tris', email, password)"
+        @reset-password-event-bis="(email: string) => emit('reset-password-event-tris', email)"
+        @signup-event-bis="(username: string, email: string, password: string) => {
           emit('signup-event-tris', username, email, password)
         }"
-        @logout-event="() => {
-          emit('logout-event-bis')
-        }"
+        @logout-event="() => emit('logout-event-bis')"
         :close="closeLSV"/>
     </div>
   </div>
