@@ -10,7 +10,7 @@ import type { TimedStat } from "~/model/UserModel";
  */
 export function displayErrorNotification(toast: any, description: string): void {
     toast.remove('any')
-    toast.add({id: 'any', title: 'Error', description: description, icon: 'i-heroicons-x-circle', color: "red"})
+    toast.add({id: 'any', title: 'Something went wrong :(', description: description, icon: 'i-heroicons-x-circle', color: "red"})
 }
 
 /**
@@ -20,7 +20,7 @@ export function displayErrorNotification(toast: any, description: string): void 
  */
 export function displaySuccessNotification(toast: any, description: string): void {
     toast.remove('any')
-    toast.add({id: 'any', title: 'Success', description: description, icon: 'i-heroicons-check-circle', color: "green"})
+    toast.add({id: 'any', title: 'Yeahhh !', description: description, icon: 'i-heroicons-check-circle', color: "green"})
 }
 
 // --------------------------------- String utilities  --------------------------------- //

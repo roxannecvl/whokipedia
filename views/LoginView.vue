@@ -61,19 +61,19 @@ async function onSubmitEmail (event: FormSubmitEvent<EmailSchema>) {
   <div class="flex justify-between">
     <UForm :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
       <UFormGroup label="Email" name="email">
-        <UInput v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
+        <UInput class="text-input" v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
       </UFormGroup>
       <UFormGroup label="Password" name="password">
         <template #hint>
           <p class="text-primary hover:text-primary-600 text-xs" @click="isPasswordForgottenModalOpen = true">Forgot your password ?</p>
         </template>
         <template #default>
-          <UInput v-model="state.password" icon="i-heroicons-lock-closed" type="password" />
+          <UInput class="text-input" v-model="state.password" placeholder="Your password" icon="i-heroicons-lock-closed" type="password" />
         </template>
       </UFormGroup>
       <div class="flex justify-between w-full items-center">
         <UButton type="submit">Log in</UButton>
-        <UButton v-if="welcome" href="/solo-mode" color="primary" variant="soft">Skip to solo mode</UButton>
+        <UButton v-if="welcome" to="/solo-mode" color="primary" variant="soft">Skip to solo mode</UButton>
       </div>
     </UForm>
     <UModal v-model="isPasswordForgottenModalOpen">
@@ -86,7 +86,7 @@ async function onSubmitEmail (event: FormSubmitEvent<EmailSchema>) {
         </template>
         <UForm :schema="emailSchema" :state="emailState" @submit="onSubmitEmail">
           <UFormGroup class="mb-4" description='Type your email below. If it is associated with an existing account, you will receive an email with instructions to reset your password.' name="resetEmail">
-            <UInput class="mt-2" v-model="emailState.resetEmail" icon="i-heroicons-envelope" placeholder="you@example.com"/>
+            <UInput class="text-input mt-2" v-model="emailState.resetEmail" icon="i-heroicons-envelope" placeholder="you@example.com"/>
           </UFormGroup>
           <UButton variant="soft" type="submit">Send me a reset link <UIcon name="i-heroicons-link"/></UButton>
         </UForm>

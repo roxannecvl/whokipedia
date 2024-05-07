@@ -57,18 +57,18 @@ function validate(state: any): FormError[] {
 <template>
   <div class="flex justify-between">
     <UForm :validate="validate" :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
-      <UFormGroup label="Username" name="username">
-        <UInput v-model="state.username" icon="i-heroicons-user" placeholder="ChuckNorris18" />
+      <UFormGroup label="Username" description="This is the way others will see you shine on the leaderboard." name="username">
+        <UInput class="text-input" v-model="state.username" icon="i-heroicons-user" placeholder="ChuckNorris18" />
       </UFormGroup>
-      <UFormGroup name="email" label="Email">
-        <UInput v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
+      <UFormGroup name="email" label="Email" description="We will never contact you, this is only for authentication purposes.">
+        <UInput class="text-input" v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
       </UFormGroup>
       <UFormGroup name="password" label="Password" :description="'It must contain at least ' + passwordMinimalLength + ' characters.'">
-        <UInput v-model="state.password" icon="i-heroicons-lock-closed" type="password" />
+        <UInput class="text-input" v-model="state.password" icon="i-heroicons-lock-closed" type="password" placeholder="Choose your password"/>
       </UFormGroup>
       <div class="flex justify-between w-full items-center">
         <UButton type="submit">Sign up</UButton>
-        <UButton v-if="welcome" href="/solo-mode" color="primary" variant="soft">Skip to solo mode</UButton>
+        <UButton v-if="welcome" to="/solo-mode" color="primary" variant="soft">Skip to solo mode</UButton>
       </div>
     </UForm>
   </div>

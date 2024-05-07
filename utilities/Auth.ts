@@ -157,7 +157,7 @@ export async function handleResetPassword(auth: Auth, actionCode: any, newPasswo
     verifyPasswordResetCode(auth, actionCode).then((email) => {
         confirmPasswordReset(auth, actionCode, newPassword).then(() => {
             signInWithEmailAndPassword(auth, email, newPassword)
-                .then(() => displaySuccessNotification(toast, "Password reset successfully."))
+                .then(() => displaySuccessNotification(toast, "Password reset successfully. You are now logged in."))
         }).catch(() => displayErrorNotification(toast, "Password reset failed. Code might be expired."))
     }).catch(() => displayErrorNotification(toast, "Password reset failed. Invalid action code."))
 }
