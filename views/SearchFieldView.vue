@@ -28,8 +28,6 @@ const tremble = ref(false)
 const mode = useColorMode()
 const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6')
 const toast = useToast()
-const errTitle = "Already guessed!"
-const errDescription = "This guess doesn't count as a new guess, try again :)"
 
 // Watchers
 watch(selectedName, newName)
@@ -46,8 +44,8 @@ function newName(): void {
   setTimeout(() => {
     if(props.alert){
       toast.add({
-        title: errTitle,
-        description: errDescription,
+        title: "Already guessed!",
+        description: "This guess doesn't count as a new guess, try again :)",
         icon: 'i-heroicons-x-circle',
         color:"red",
         timeout: 2500
