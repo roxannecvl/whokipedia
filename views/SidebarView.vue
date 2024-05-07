@@ -47,7 +47,7 @@ function showAndEmit(seconds : number, over : boolean){
 </script>
 
 <template>
-  <div :class="showRules ? '' : 'flex justify-between'">
+  <div :class="showRules ? '' : 'flex justify-between sm:mt-1'">
     <UButton v-if="!showRules" @click="areRulesOpen = true" icon="i-material-symbols-help-rounded" variant="soft" class="mr-2"/>
     <UCard :class="showRules ? 'mb-5' : 'w-full'" :ui="{
       background: over ? 'bg-gray-100' : 'bg-white',
@@ -57,16 +57,21 @@ function showAndEmit(seconds : number, over : boolean){
     }">
       <div :class="showRules ? '' : 'flex justify-between'">
         <div :class="showRules ? '' : 'w-3/5'">
-          <UDivider label="guess n°" :ui="{ label: 'text-xs' }"/>
+          <UDivider label="consumed hints" :ui="{ label: 'text-xs' }"/>
           <div :class="showRules ? 'flex mb-4 mt-2' : 'flex'">
             <UProgress :value="(guessCount / totalGuesses) * 100" size="md" :class="showRules ? 'mb-2 mr-2' : 'mr-1'">
               <template #indicator="{ percent }">
-                <div class="text-right" :style="{ width: `${percent}%` }">
-                  <span class="text-amber-500">{{ Math.round((percent / 100) * totalGuesses)}}</span>
+                <div class="flex justify-between">
+                  <div class="text-right" :style="{ width: `${percent}%` }">
+                    <span class="text-primary">{{ Math.round((percent / 100) * totalGuesses)}}</span>
+                  </div>
+                  <div class="text-right ml-1">
+                    <span class="text-primary text-nowrap">/ {{ totalGuesses }}</span>
+                  </div>
                 </div>
               </template>
             </UProgress>
-            <UButton :disabled="over" variant="ghost"
+            <UButton v-if="!over" variant="ghost"
                      icon="i-heroicons-plus-circle-16-solid"
                      @click="emit('new-guess-asked')"/>
           </div>
@@ -80,14 +85,20 @@ function showAndEmit(seconds : number, over : boolean){
   </div>
 
   <div v-if="showRules">
-    <UDivider label="How to play" :ui="{ label: 'text-xl font-bold' }"/>
-    <p class="py-3 font-semibold">
-    Guess the celebrity <span class="text-primary">in as few hints as possible</span>
+    <UDivider label="How to play" :ui="{ label: 'text-sm font-bold' }"/>
+    <p class="py-3 font-semibold text-sm">
+    Guess the celebrity <span class="text-primary">in as few hints as possible</span>.
     </p>
-    <ul class="list-disc list-inside m-2">
-      <li>Each guess must be one of our listed <span class="text-primary">celebrities</span>.</li>
-      <li>Each unsuccessful guess brings a <span class="text-primary">new hint</span>.</li>
-      <li><span class="text-primary">Guess until you find the celebrity</span> or until <span class="text-primary">all hints are consumed</span>.</li>
+    <ul class="list-inside m-2 text-sm">
+      <li class="mb-4"><UIcon name="i-heroicons-arrow-long-right-16-solid"/>
+        Each unsuccessful guess brings a <span class="text-primary">new hint</span>.</li>
+      <li class="mb-4"><UIcon name="i-heroicons-arrow-long-right-16-solid"/>
+        Guess until you find the <span class="text-primary">celebrity</span> or until
+        <span class="text-primary">all hints are consumed</span>.</li>
+      <li><UIcon name="i-heroicons-arrow-long-right-16-solid"/>
+        If you do not have the slightest <span class="text-primary">idea</span>, press the
+        <UIcon class="text-primary" name="i-heroicons-plus-circle-16-solid"/> button to get a new hint. Be
+        careful, this will <span class="text-primary">consume</span> a new guess !</li>
     </ul>
   </div>
 
@@ -99,12 +110,18 @@ function showAndEmit(seconds : number, over : boolean){
       <div class="p-5 w-full box-border">
         <UDivider label="How to play" :ui="{ label: 'text-xl font-bold' }"/>
         <p class="py-3 font-semibold">
-          Guess the celebrity <span class="text-primary">in as few hints as possible</span>
+          Guess the celebrity <span class="text-primary">in as few hints as possible</span>.
         </p>
-        <ul class="list-disc list-inside m-2">
-          <li>Each guess must be one of our listed <span class="text-primary">celebrities</span>.</li>
-          <li>Each unsuccessful guess brings a <span class="text-primary">new hint</span>.</li>
-          <li><span class="text-primary">Guess until you find the celebrity</span> or until <span class="text-primary">all hints are consumed</span>.</li>
+        <ul class="list-inside m-2">
+          <li><UIcon name="i-heroicons-arrow-long-right-16-solid"/>
+            Each unsuccessful guess brings a <span class="text-primary">new hint</span>.</li>
+          <li><UIcon name="i-heroicons-arrow-long-right-16-solid"/>
+            Guess until you find the <span class="text-primary">celebrity</span> or until
+            <span class="text-primary">all hints are consumed</span>.</li>
+          <li><UIcon name="i-heroicons-arrow-long-right-16-solid"/>
+            If you do not have the slightest <span class="text-primary">idea</span>, press the
+            <UIcon class="text-primary" name="i-heroicons-plus-circle-16-solid"/> button to get a new hint. Be
+            careful, this will <span class="text-primary">consume</span> a new guess !</li>
         </ul>
       </div>
     </UCard>
