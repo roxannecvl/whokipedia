@@ -1,7 +1,41 @@
-// --------------------------------- String utilities  --------------------------------- //
+import type { UserPersistence } from "~/utilities/Firebase"
+import type { TimedStat } from "~/model/UserModel"
 
-import type {UserPersistence} from "~/model/FirebaseModel";
-import type {TimedStat} from "~/model/UserModel";
+// --------------------------------- Toast notifications display  --------------------------------- //
+
+/**
+ * Displays an error notification.
+ * @param description - The description of the error
+ * @param toast - for alert notification
+ */
+export function displayErrorNotification(toast: any, description: string): void {
+    toast.remove('any')
+    toast.add({
+        id: 'any',
+        title: 'Something went wrong :(',
+        description: description,
+        icon: 'i-heroicons-x-circle',
+        color: "red"
+    })
+}
+
+/**
+ * Displays a success notification.
+ * @param description - The description of the success
+ * @param toast - for alert notification
+ */
+export function displaySuccessNotification(toast: any, description: string): void {
+    toast.remove('any')
+    toast.add({
+        id: 'any',
+        title: 'Yeahhh !',
+        description: description,
+        icon: 'i-heroicons-check-circle',
+        color: "green"
+    })
+}
+
+// --------------------------------- String utilities  --------------------------------- //
 
 /**
  * Given a string, this function returns the same string with the first letter capitalized.
@@ -245,7 +279,7 @@ export async function dailyRandom(min: number, max: number): Promise<number> {
  */
 export function randomPermutation(min: number, max: number, seed : number = 0): number[] {
     if(seed === 0) seed = Math.random()
-    const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min); // Generate numbers from min to max
+    const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
     const permutation: number[] = [];
 
     const random = (seed: number) => {
@@ -495,4 +529,3 @@ export const countries: {[key: string]: string} = {
     "Zambia": "Zambian",
     "Zimbabwe": "Zimbabwean"
 }
-

@@ -36,7 +36,7 @@ export const useUserStore = defineStore('user', {
                 this.updateStreak()
                 this.averageRank = (this.averageRank * this.gamesPlayed + rank) / (this.gamesPlayed+1)
                 this.averageGuesses = (this.averageGuesses * this.gamesPlayed + guesses) / (this.gamesPlayed+1)
-            }else {
+            } else {
                 this.resetStreak()
                 this.winRate = (this.winRate * this.gamesPlayed) / (this.gamesPlayed+1)
             }

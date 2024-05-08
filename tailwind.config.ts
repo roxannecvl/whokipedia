@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'logo-filled': "url('/img/logo-filled.png')",
-      }
+      },
     },
   },
   plugins: [],

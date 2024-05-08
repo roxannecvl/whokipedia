@@ -1,31 +1,23 @@
 import {
-    type Auth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    type UserCredential
+    createUserWithEmailAndPassword, EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword,
+    sendPasswordResetEmail, signOut, updateEmail as updateEmailFirebase, updatePassword as updatePasswordFirebase,
+    deleteUser, verifyPasswordResetCode, confirmPasswordReset, type Auth, type User, type UserCredential
 } from "firebase/auth";
-import {getAllUsernamesFromFirebase, saveUserToFirebase} from "~/model/FirebaseModel";
+import { displayErrorNotification, displaySuccessNotification } from "~/utilities/Utils"
+import { deleteUserFromFirebase, saveUserToFirebase } from "~/utilities/Firebase"
 import { type UserStore } from "~/model/UserModel"
-import {set, update} from "firebase/database";
-import {ref as dbRef} from "@firebase/database";
 
 /**
  * Method to log in the user.
  * @param username - Username used for login
  * @param password - Password used for login
- * @param auth - firebase auth
- * @param toast - for alert notification
- * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
+ * @param auth - Firebase auth
+ * @param toast - Used for alert notification
  */
-export function login(username: string, password: string, auth : Auth, toast : any, redirect : boolean = false): void {
-    signInWithEmailAndPassword(auth, username, password)
-        .catch((error) => {
-            console.error(error)
-            displayErrorNotification(toast, "Failed to log in. Your credentials may be wrong.")
-        }).finally(() => {
-            if (redirect) useRouter().push('/daily-challenge').then()
-        })
+export async function login(username: string, password: string, auth : Auth, toast : any): Promise<void> {
+    return signInWithEmailAndPassword(auth, username, password)
+        .then(() => displaySuccessNotification(toast, "Logged in successfully."))
+        .catch(() => displayErrorNotification(toast, "Failed to log in. Your credentials may be wrong."))
 }
 
 /**
@@ -33,52 +25,114 @@ export function login(username: string, password: string, auth : Auth, toast : a
  * @param username - Username used for signup
  * @param email - Email used for signup
  * @param password - Password used for signup
- * @param userModel - the user model of the user signing in
- * @param auth - firebase auth
- * @param toast - for alert notification
- * @param redirect - if the user should be redirected to 'daily-challenge' after logging in
+ * @param userModel - User model of user signing up
+ * @param auth - Firebase auth
+ * @param toast - Used for alert notification
  */
-export function signup(email: string, username: string, password: string, userModel : UserStore, auth : Auth, toast : any, redirect : boolean = false): void {
-    getAllUsernamesFromFirebase().then((usernames) => {
-        if (usernames.includes(username.toLowerCase())) {
-            displayErrorNotification(toast, "Failed to sign up. Username already in use.")
-        } else {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((credentials: UserCredential) => {
-                    saveUserToFirebase(userModel, username, credentials.user?.uid, usernames.length - 1)
+export async function signup(
+    username: string, email: string, password: string, userModel : UserStore, auth : Auth, toast : any,
+): Promise<void> {
+    return createUserWithEmailAndPassword(auth, email, password)
+        .then((credentials: UserCredential) => {
+            saveUserToFirebase(userModel, username, credentials.user?.uid, toast)
+                .then(() => displaySuccessNotification(toast, "Signed up successfully."))
+                .catch(() => {
+                    deleteUser(credentials.user)
+                    displayErrorNotification(toast, "Failed to sign up. Username is already in use.")
                 })
-                .catch((error) => {
-                    console.error(error)
-                    displayErrorNotification(toast, "Failed to sign up. Email already in use.")
-                }).finally(() => {
-                console.log("redirect")
-                if (redirect) useRouter().push('/daily-challenge').then()
-            })
-        }
-    }).catch(() => displayErrorNotification(toast, "Failed to sign up. An external error occurred"))
+        })
+        .catch(() => displayErrorNotification(toast, "Failed to sign up. Email already in use."))
 }
 
 /**
  * Method to log out the user.
- * @param auth - firebase auth
- * @param toast - for alert notification
- * @param path - current path of the user
+ * @param auth - Firebase auth
+ * @param toast - Used for alert notification
  */
-export function logout(auth : Auth, toast : any, path : string ): void {
-    signOut(auth).catch((error) => {
-        console.error(error)
-        displayErrorNotification(toast, "Failed to log out.")
-    }).finally(() => {
-        if (path === '/daily-challenge') useRouter().push('/').then()
-    })
+export async function logout(auth : Auth, toast : any): Promise<void> {
+    return signOut(auth)
+        .catch(() => displayErrorNotification(toast, "Failed to log out."))
 }
 
 /**
- * Displays an error notification.
- * @param description - The description of the error
- * @param toast - for alert notification
+ * Method to update the user's email.
+ * @param newEmail - New email
+ * @param user - User to update
+ * @param toast - Used for alert notification
  */
-function displayErrorNotification(toast : any, description: string) {
-    toast.remove('any')
-    toast.add({ id:'any', title: 'Error', description: description, icon: 'i-heroicons-x-circle', color:"red"})
+export async function updateEmail(newEmail: string, user: User, toast: any): Promise<void> {
+    return updateEmailFirebase(user, newEmail)
+        .then(() => displaySuccessNotification(toast, "Email updated successfully."))
+        .catch(() => displayErrorNotification(toast, "Failed to update email."))
+}
+
+/**
+ * Method to update the user's password.
+ * @param newPassword - New password
+ * @param user - User to update
+ * @param toast - Used for alert notification
+ */
+export async function updatePassword(newPassword: string, user: User, toast: any): Promise<void> {
+    return updatePasswordFirebase(user, newPassword)
+        .then(() => displaySuccessNotification(toast, "Password updated successfully."))
+        .catch(() => displayErrorNotification(toast, "Failed to update password."))
+}
+
+/**
+ * Method to delete user's account.
+ * @param user - User to delete
+ * @param toast - Used for alert notification
+ */
+export async function deleteAccount(user: User, toast : any): Promise<void> {
+    return deleteUserFromFirebase(user.uid)
+        .then(() => {
+            return deleteUser(user).then(() => displaySuccessNotification(toast, "Account deleted successfully."))
+        })
+        .catch(() => displayErrorNotification(toast, "Failed to delete account."))
+}
+
+/**
+ * Method to reauthenticate user.
+ * @param email - Email to reauthenticate
+ * @param password - User password to reauthenticate
+ * @param user - User to reauthenticate
+ * @param toast - Used for alert notification
+ */
+export async function reauthenticate(email: string, password: string, user: User, toast: any): Promise<any> {
+    return reauthenticateWithCredential(user, EmailAuthProvider.credential(email, password))
+        .catch((error) => {
+            displayErrorNotification(toast, "Your password is incorrect.")
+            throw error
+        })
+}
+
+/**
+ * Method to reset user's password.
+ * @param email - Email to reset password
+ * @param auth - Firebase auth
+ * @param toast - Used for alert notification
+ */
+export async function resetPassword(email: string, auth: Auth, toast: any): Promise<void> {
+    return sendPasswordResetEmail(auth, email)
+        .then(() => displaySuccessNotification(toast, "Password reset email sent."))
+        .catch(() => {})
+}
+
+/**
+ * Method to handle reset password.
+ * @param auth - Firebase auth
+ * @param actionCode - Action code ensuring request is legitimate
+ * @param newPassword - New password
+ * @param toast - Used for alert notification
+ */
+export async function handleResetPassword(auth: Auth, actionCode: any, newPassword: string, toast: any): Promise<void> {
+    return verifyPasswordResetCode(auth, actionCode).then((email) => {
+        return confirmPasswordReset(auth, actionCode, newPassword).then(() => {
+            return signInWithEmailAndPassword(auth, email, newPassword).then(() => {
+                displaySuccessNotification(toast, "Password reset successfully. You are now logged in.")
+            }).catch(() => {
+                displayErrorNotification(toast, "Password reset succeeded, but you need to log in again.")
+            })
+        }).catch(() => displayErrorNotification(toast, "Password reset failed. Code might be expired."))
+    }).catch(() => displayErrorNotification(toast, "Password reset failed. Invalid action code."))
 }

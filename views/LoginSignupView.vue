@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import SignupView from "~/views/SignupView.vue"
 import LoginView from "~/views/LoginView.vue"
 
@@ -14,7 +15,7 @@ const props = defineProps({
 })
 
 // Emits
-const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event'])
+const emit = defineEmits(['login-event-bis', 'signup-event-bis', 'logout-event', 'reset-password-event-bis'])
 
 // Refs
 const isModalOpen = ref(false)
@@ -41,7 +42,6 @@ watch(() => props.close, () => {
       </UButton>
     </div>
   </div>
-
   <div v-else>
     <UButton v-if="user" icon="i-heroicons-arrow-left-start-on-rectangle-16-solid" @click="emit('logout-event')">
       <span class="hidden md:inline">Log out</span>
@@ -52,26 +52,25 @@ watch(() => props.close, () => {
   </div>
   <UModal v-model="isModalOpen">
     <UCard :ui="{ ring: '' }">
-      <template #header v-if="welcome">
-        <div class="flex items-center justify-between">
-          <div class="text-lg">
-            Sign in to unlock the Daily Challenge
-          </div>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isModalOpen = false" />
-        </div>
-      </template>
+      <div v-if="welcome" class="flex items-center justify-between mb-5">
+        <UAlert color="primary" variant="subtle" title="Heads up !" description="Sign in to unlock the Daily Challenge." />
+      </div>
       <div class="flex">
         <div class="w-full ">
           <UTabs :items="[{ key: 'login', label: 'Log in' },  { key: 'signup', label: 'Sign up' }]">
             <template #item="{ item }">
               <div v-if="item.key === 'login'" class="pt-4">
-                <LoginView @login-event="(email, password) => emit('login-event-bis', email, password)"
-                :welcome="welcome"/>
+                <LoginView
+                  @login-event="(email: string, password: string) => emit('login-event-bis', email, password)"
+                  @reset-password-event="(email: string) => emit('reset-password-event-bis', email)"
+                  :welcome="welcome"/>
               </div>
               <div v-else-if="item.key === 'signup'" class="pt-4">
-                <SignupView @signup-event="
-                (email, username, password) => emit('signup-event-bis', email, username, password)"
-                :welcome="welcome"/>
+                <SignupView
+                  @signup-event="(username: string, email: string, password: string) =>  {
+                    emit('signup-event-bis', username, email, password)
+                  }"
+                  :welcome="welcome"/>
               </div>
             </template>
           </UTabs>

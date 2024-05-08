@@ -2,7 +2,7 @@
 
 import { ref } from 'vue'
 import { fetchIntro, fetchImage, fetchInfoBox } from "~/api/WikipediaSource"
-import { celebrities, getAutocompleteSuggestions } from "~/model/CelebrityList"
+import { celebrities } from "~/model/CelebrityList"
 
 const selectedName = ref()
 const intro = ref()

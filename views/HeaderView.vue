@@ -1,41 +1,42 @@
 <script lang="ts" setup>
+
 import type { TimedStat } from "~/model/UserModel"
 import type { LeaderboardData } from "~/presenters/HeaderPresenter.vue";
 import LoginSignupView from "~/views/LoginSignupView.vue"
-import StatisticsView from "~/views/StatisticsView.vue"
 import LeaderboardView from "~/views/LeaderboardView.vue"
+import UserAccountView from "~/views/AccountView.vue";
 
 // Props
-const props = defineProps({
+defineProps({
   closeLSV: {
     type : Boolean,
     required : true,
   },
-  currentStreakSV: {
+  currentStreakUV: {
     type: Number,
     required: true
   },
-  maxStreakSV: {
+  maxStreakUV: {
     type: Number,
     required: true
   },
-  averageRankSV: {
+  averageRankUV: {
     type: Number,
     required: true
   },
-  averageGuessesSV: {
+  averageGuessesUV: {
     type: Number,
     required: true
   },
-  winRateSV: {
+  winRateUV: {
     type: String,
     required: true
   },
-  gamesPlayedSV: {
+  gamesPlayedUV: {
     type: Number,
     required: true
   },
-  timedStatsSV: {
+  timedStatsUV: {
     type: Array<TimedStat>,
     required: true
   },
@@ -43,14 +44,22 @@ const props = defineProps({
     type: Array<LeaderboardData>,
     required: true,
   },
-  usernameLVSV: {
+  username: {
     type: String,
     required: true,
   }
 })
 
 // Emits
-const emit = defineEmits(['login-event-tris', 'signup-event-tris', 'logout-event-bis', 'update-leaderboard-bis'])
+const emit = defineEmits([
+    'login-event-tris',
+    'signup-event-tris',
+    'logout-event-bis',
+    'reset-password-event-tris',
+    'update-leaderboard-bis',
+    'change-info-event-tris',
+    'delete-account-event-tris'
+])
 
 // Constants
 const logoPath = '/img/logo-primary-filled.svg'
@@ -83,24 +92,35 @@ const logoPath = '/img/logo-primary-filled.svg'
     </a>
     <div class="flex justify-between items-center gap-2">
       <LeaderboardView
-          @update-leaderboard ="emit('update-leaderboard-bis')"
+          @update-leaderboard ="() => {
+            emit('update-leaderboard-bis')
+          }"
           :games="gamesLV"
-          :username="usernameLVSV"
+          :username="username"
       />
-      <StatisticsView
-          :current-streak="currentStreakSV"
-          :max-streak="maxStreakSV"
-          :average-guesses="averageGuessesSV"
-          :average-rank="averageRankSV"
-          :win-rate="winRateSV"
-          :games-played="gamesPlayedSV"
-          :timed-stats="timedStatsSV"
-          :username="usernameLVSV"
-      />
+     <UserAccountView
+         @change-info-event-bis="(newUsername, newEmail, newPassword, email, password) => {
+           emit('change-info-event-tris', newUsername, newEmail, newPassword, email, password)
+         }"
+         @delete-account-event-bis="(email, password) => {
+           emit('delete-account-event-tris', email, password)
+         }"
+         :currentStreakSV="currentStreakUV"
+         :maxStreakSV="maxStreakUV"
+         :averageRankSV="averageRankUV"
+         :averageGuessesSV="averageGuessesUV"
+         :winRateSV="winRateUV"
+         :gamesPlayedSV="gamesPlayedUV"
+         :timedStatsSV="timedStatsUV"
+         :username="username"
+     />
       <LoginSignupView
-        @login-event-bis="(email, password) => emit('login-event-tris', email, password)"
-        @signup-event-bis="(email, username, password) => emit('signup-event-tris', email, username, password)"
-        @logout-event="emit('logout-event-bis')"
+        @login-event-bis="(email: string, password: string) => emit('login-event-tris', email, password)"
+        @reset-password-event-bis="(email: string) => emit('reset-password-event-tris', email)"
+        @signup-event-bis="(username: string, email: string, password: string) => {
+          emit('signup-event-tris', username, email, password)
+        }"
+        @logout-event="() => emit('logout-event-bis')"
         :close="closeLSV"/>
     </div>
   </div>

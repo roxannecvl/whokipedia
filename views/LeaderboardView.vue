@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import type { LeaderboardData } from "~/presenters/HeaderPresenter.vue"
 
 // Props

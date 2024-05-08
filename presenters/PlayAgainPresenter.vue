@@ -33,6 +33,6 @@ async function initGame() {
 </script>
 
 <template>
-  <PlayAgainView
-      @new-game="initGame" :over="gameModel.end" :challenge="dailyChallenge" :connected="userModel.username !== ''"/>
+  <PlayAgainView @new-game="initGame" :over="gameModel.end"
+                 :challenge="dailyChallenge" :connected="userModel.username !== ''"/>
 </template>

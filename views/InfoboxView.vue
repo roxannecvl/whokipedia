@@ -1,9 +1,10 @@
 <script setup lang="ts">
+
 import { type InfoboxHint, compulsoryLabels } from "~/model/Hint"
 import { capitalize } from "~/utilities/Utils"
 
 // Props
-const props = defineProps( {
+defineProps( {
     fields: {
       type: Array<InfoboxHint>,
       required: true,

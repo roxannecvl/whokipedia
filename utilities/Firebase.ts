@@ -1,7 +1,7 @@
-import { ref as dbRef, set, update, get, remove, Database, push } from "firebase/database"
+import { ref as dbRef, set, update, get, remove, Database } from "firebase/database"
 import type { TimedStat, UserStore } from "~/model/UserModel.js"
 import type { GameStore } from "~/model/GameModel"
-import { getCurrentDayTimestamp } from "~/utilities/Utils"
+import { displayErrorNotification, displaySuccessNotification, getCurrentDayTimestamp } from "~/utilities/Utils"
 
 let database: Database
 
@@ -17,13 +17,15 @@ export function initializeFirebase(): void {
  * @param model - User model to push to persistence
  * @param username - Username to give to user
  * @param uid - ID to give to model in order to keep track in persistence
- * @param userIndex - number the new place of the username in the usernames list
  */
-export function saveUserToFirebase(model: UserStore, username: string, uid: string, userIndex : number): void {
-    model.updateUser(uid, username)
-    const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
-    set(dbRef(database, 'users/' + uid), persistence).then()
-    set(dbRef(database, 'usernames/' + userIndex), username.toLowerCase()).then()
+export async function saveUserToFirebase(model: UserStore, username: string, uid: string): Promise<void> {
+    return getAllUsernamesFromFirebase()
+        .then((usernames: string[]) => {
+            if (usernames.includes(username.toLowerCase())) throw new Error()
+            model.updateUser(uid, username)
+            const persistence: { [key: string]: string | number } = userStoreToPersistence(model)
+            return set(dbRef(database, 'users/' + uid), persistence)
+        })
 }
 
 /**
@@ -31,9 +33,9 @@ export function saveUserToFirebase(model: UserStore, username: string, uid: stri
  * @param model - Game model to push to persistence
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function saveCurrentGameToFirebase(model: GameStore, uid: string): void {
-    if(model.end) remove(dbRef(database, 'users/' + uid + '/currentGame')).then()
-    else set(dbRef(database, 'users/' + uid + '/currentGame'),model.$state).then()
+export async function saveCurrentGameToFirebase(model: GameStore, uid: string): Promise<void> {
+    if (model.end) return remove(dbRef(database, 'users/' + uid + '/currentGame'))
+    else return set(dbRef(database, 'users/' + uid + '/currentGame'), model.$state)
 }
 
 /**
@@ -41,19 +43,18 @@ export function saveCurrentGameToFirebase(model: GameStore, uid: string): void {
  * @param model - User model to update to persistence
  * @param uid - ID to give to model in order to keep track in persistence
  */
-export function updateUserToFirebase(model: UserStore, uid: string): void {
+export async function updateUserToFirebase(model: UserStore, uid: string): Promise<void> {
     const persistence = userStoreToPersistence(model)
-
     // First update user's general stats
-    update(dbRef(database, 'users/' + uid), persistence).then()
-
-    // Then update user's daily stats
-    model.timedStats?.map((stat: TimedStat) => {
-        update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
-            guesses: stat.guesses,
-            rank: stat.rank,
-            time: stat.time
-        }).then()
+    return update(dbRef(database, 'users/' + uid), persistence).then(() => {
+        // Then update user's daily stats
+        model.timedStats?.map((stat: TimedStat) => {
+            update(dbRef(database, 'users/' + uid + '/stats/' + stat.date), {
+                guesses: stat.guesses,
+                rank: stat.rank,
+                time: stat.time
+            })
+        })
     })
 }
 
@@ -119,6 +120,36 @@ export async function readCurGameFromFirebase(model : GameStore, uid: string): P
 }
 
 /**
+ * This method updates user's username in both local store and persistence.
+ * @param store - User model to update
+ * @param username - New username to update
+ * @param uid - User ID to update
+ * @param toast - Used for alert notification
+ */
+export async function updateUsernameToFirebase(
+    store: UserStore, username: string, uid: string, toast: any
+): Promise<void> {
+    return getAllUsernamesFromFirebase().then((usernames: string[]) => {
+        if (usernames.includes(username.toLowerCase())) {
+            displayErrorNotification(toast, 'Username is already taken.')
+            throw new Error()
+        }
+        store.updateUser(uid, username)
+        return update(dbRef(database, 'users/' + uid), { username: username })
+            .then(() => displaySuccessNotification(toast, 'Username updated successfully.'))
+            .catch(() => displayErrorNotification(toast, 'Failed to update username.'))
+    })
+}
+
+/**
+ * This method deletes a user from persistence.
+ * @param uid - User ID to delete
+ */
+export async function deleteUserFromFirebase(uid: string): Promise<void> {
+    return remove(dbRef(database, 'users/' + uid))
+}
+
+/**
  * This method gets all user stats for leaderboard.
  */
 export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
@@ -134,14 +165,15 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
                 averageGuesses: child.val().averageGuesses,
                 winRate: child.val().winRate,
                 gamesPlayed: child.val().gamesPlayed,
-                stats: child.val().stats === undefined ? [] : Object.keys(child.val().stats)?.map((key: string): TimedStat => {
-                    return {
-                        date: parseInt(key),
-                        guesses: child.val().stats[key].guesses,
-                        rank: child.val().stats[key].rank,
-                        time: child.val().stats[key].time
-                    }
-                })
+                stats: child.val().stats === undefined ? [] :
+                    Object.keys(child.val().stats)?.map((key: string): TimedStat => {
+                        return {
+                            date: parseInt(key),
+                            guesses: child.val().stats[key].guesses,
+                            rank: child.val().stats[key].rank,
+                            time: child.val().stats[key].time
+                        }
+                    })
             })
         })
         return usersData
@@ -152,8 +184,11 @@ export async function getAllUserFromFirebase(): Promise<UserPersistence[]> {
  * This method gets all usernames to assure uniqueness
  */
 export async function getAllUsernamesFromFirebase(): Promise<string[]> {
-    return get(dbRef(database, 'usernames')).then(snapshot => {
-        const usernames: string[] = snapshot.val() ? snapshot.val() : []
+    return get(dbRef(database, 'users')).then(snapshot => {
+        const usernames: string[] = []
+        snapshot.forEach((child) => {
+            usernames.push(child.val().username.toLowerCase())
+        })
         return usernames
     })
 }
@@ -165,6 +200,7 @@ export async function getAllUsernamesFromFirebase(): Promise<string[]> {
  */
 function userStoreToPersistence(model: UserStore): any {
     return {
+        uid: model.uid,
         username: model.username,
         currentStreak: model.currentStreak,
         maxStreak: model.maxStreak,
@@ -189,13 +225,14 @@ function persistenceToUserModel(model: UserStore, persistence: any): void {
         persistence.winRate || 0,
         persistence.gamesPlayed || 0,
         // Workaround to Firebase saving empty arrays as undefined
-        persistence.stats === undefined ? [] : Object.keys(persistence.stats).map((key: string): TimedStat => {
-            return {
-                date: parseInt(key),
-                guesses: persistence.stats[key].guesses,
-                rank: persistence.stats[key].rank,
-                time: persistence.stats[key].time
-            }
+        persistence.stats === undefined ? [] :
+            Object.keys(persistence.stats).map((key: string): TimedStat => {
+                return {
+                    date: parseInt(key),
+                    guesses: persistence.stats[key].guesses,
+                    rank: persistence.stats[key].rank,
+                    time: persistence.stats[key].time
+                }
         })
     )
     model.updateUser(persistence.uid, persistence.username)

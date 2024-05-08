@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
 import { z } from 'zod'
-import type { FormSubmitEvent } from '#ui/types'
+import type { FormError, FormSubmitEvent } from '#ui/types'
+import { getAllUsernamesFromFirebase } from "~/utilities/Firebase"
 import { passwordMinimalLength } from '~/utilities/Utils'
 
 // Props
-const props = defineProps({
+defineProps({
   welcome:{
     type : Boolean
   },
@@ -18,8 +19,11 @@ const emit = defineEmits(['signup-event'])
 const schema = z.object({
   email: z.string().email('Invalid email'),
   username: z.string(),
-  password: z.string().min(passwordMinimalLength, 'Must be at least '+passwordMinimalLength+' characters')
+  password: z.string().min(passwordMinimalLength, 'Must be at least '+ passwordMinimalLength + ' characters')
 })
+let usernames: string[] = await getAllUsernamesFromFirebase()
+
+// Types
 type Schema = z.output<typeof schema>
 
 // Refs
@@ -30,32 +34,50 @@ const state = reactive({
 })
 
 // Functions
-async function onSubmit (event: FormSubmitEvent<Schema>) {
-  emit("signup-event", event.data.email, event.data.username, event.data.password)
+
+/**
+ * This function emits an event when the form is submitted.
+ * @param event - The form submit event containing data
+ */
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  emit("signup-event", event.data.username, event.data.email, event.data.password)
+  setTimeout(async () => {
+    usernames = await getAllUsernamesFromFirebase()
+  }, 1000)
+}
+
+/**
+ * This function validates the form data.
+ * @param state - The form state
+ * @returns FormError[] - An array of form errors
+ */
+function validate(state: any): FormError[] {
+  return usernames.includes(state.username.toLowerCase()) ?
+      [{ path: 'username', message: 'This username is already in use.' }] : []
 }
 
 </script>
 
 <template>
   <div class="flex justify-between">
-    <UForm :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
-      <UFormGroup name="email">
-        <UInput v-model="state.email" placeholder="Email"/>
+    <UForm :validate="validate" :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
+      <UFormGroup label="Username" name="username"
+                  description="This is the way others will see you shine on the leaderboard." >
+        <UInput v-model="state.username" icon="i-heroicons-user" placeholder="ChuckNorris18" />
       </UFormGroup>
-
-      <UFormGroup name="username">
-        <UInput v-model="state.username" placeholder="Username" />
+      <UFormGroup name="email" label="Email"
+                  description="We will never contact you, this is only for authentication purposes.">
+        <UInput v-model="state.email" icon="i-heroicons-envelope" placeholder="you@example.com"/>
       </UFormGroup>
-
-      <UFormGroup name="password">
-        <UInput v-model="state.password" placeholder="Password" type="password" />
+      <UFormGroup name="password" label="Password"
+                  :description="'It must contain at least ' + passwordMinimalLength + ' characters.'">
+        <UInput v-model="state.password" icon="i-heroicons-lock-closed"
+                type="password" placeholder="Choose your password"/>
       </UFormGroup>
-
       <div class="flex justify-between w-full items-center">
         <UButton type="submit">Sign up</UButton>
-        <a v-if="welcome" href="/solo-mode" class="text-right text-sm text-blue-500 hover:underline">Skip to solo mode</a>
+        <UButton v-if="welcome" to="/solo-mode" color="primary" variant="soft">Skip to solo mode</UButton>
       </div>
     </UForm>
   </div>
-
 </template>
