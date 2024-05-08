@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import { formatTime } from "~/utilities/Utils";
+import { formatTime } from "~/utilities/Utils"
+import { useElementSize } from '@vueuse/core'
 
 // Props
 defineProps({
@@ -31,9 +32,11 @@ const emit = defineEmits(['new-time-set', 'new-guess-asked'])
 
 // Refs
 const areRulesOpen = ref(false)
+const progressBar = ref(null)
 
 // Variables
 let once = true
+const { width } = useElementSize(progressBar)
 
 // Functions
 function showAndEmit(seconds : number, over : boolean){
@@ -48,7 +51,7 @@ function showAndEmit(seconds : number, over : boolean){
 
 <template>
   <div :class="showRules ? '' : 'flex justify-between sm:mt-1'">
-    <UButton v-if="!showRules" @click="areRulesOpen = true" icon="i-material-symbols-help-rounded" variant="soft" class="mr-2"/>
+    <UButton v-if="!showRules" @click="areRulesOpen = true" icon="i-material-symbols-help-rounded" variant="soft" class="mr-2 max-w-20 w-1/6 justify-center items-center"/>
     <UCard :class="showRules ? 'mb-5' : 'w-full'" :ui="{
       background: over ? 'bg-gray-100' : 'bg-white',
       body: {
@@ -56,17 +59,17 @@ function showAndEmit(seconds : number, over : boolean){
       },
     }">
       <div :class="showRules ? '' : 'flex justify-between'">
-        <div :class="showRules ? '' : 'w-3/5'">
-          <UDivider label="consumed hints" :ui="{ label: 'text-xs' }"/>
+        <div :class="showRules ? '' : 'w-7/12'">
+          <UDivider label="hints" :ui="{ label: 'text-xs' }"/>
           <div :class="showRules ? 'flex mb-4 mt-2' : 'flex'">
-            <UProgress :value="(guessCount / totalGuesses) * 100" size="md" :class="showRules ? 'mb-2 mr-2' : 'mr-1'">
+            <UProgress :value="(guessCount / totalGuesses) * 100" size="md"
+                       :class="showRules ? 'mb-2 mr-2' : 'mr-1'" ref="progressBar">
               <template #indicator="{ percent }">
                 <div class="flex justify-between">
-                  <div class="text-right" :style="{ width: `${percent}%` }">
-                    <span class="text-primary">{{ Math.round((percent / 100) * totalGuesses)}}</span>
-                  </div>
-                  <div class="text-right ml-1">
-                    <span class="text-primary text-nowrap">/ {{ totalGuesses }}</span>
+                  <div class="text-right whitespace-pre" :style="{ width: `${ percent + 1.2 * (16 / width * 100) }%` }">
+                    <span class="text-primary">
+                      {{ Math.round((percent / 100) * totalGuesses)}} / {{ totalGuesses}}
+                    </span>
                   </div>
                 </div>
               </template>
@@ -76,7 +79,8 @@ function showAndEmit(seconds : number, over : boolean){
                      @click="emit('new-guess-asked')"/>
           </div>
         </div>
-        <div>
+        <UDivider v-if="!showRules" type="dashed" orientation="vertical" class="w-1/12"/>
+        <div :class="showRules ? '' : 'w-4/12'">
           <UDivider label="time" :ui="{ label: 'text-xs' }"/>
           <p class="mt-2 text-center text-primary">{{ showAndEmit(seconds, over)}}</p>
         </div>

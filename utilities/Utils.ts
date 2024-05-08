@@ -145,7 +145,7 @@ export function formatTime(seconds : number, simple : boolean = false){
         return `${hours} hr ${remainingMinutes} min ${formattedSeconds} sec`
     }
     if(simple) return `${minutes} m ${formattedSeconds} s`
-    return `${minutes} min ${formattedSeconds} sec`
+    return `${minutes} min ${formattedSeconds} s`
 }
 
 /**

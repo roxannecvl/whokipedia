@@ -14,6 +14,8 @@
     "@nuxt/ui": "^2.14.2",
     "@pinia/nuxt": "^0.5.1",
     "@types/infobox-parser": "^3.3.4",
+    "@vueuse/components": "^10.9.0",
+    "@vueuse/core": "^10.9.0",
     "chart.js": "^4.4.2",
     "firebase": "^10.6.0",
     "firebase-admin": "^11.11.1",
