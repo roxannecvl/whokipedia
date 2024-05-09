@@ -19,7 +19,6 @@ const gameModel: GameStore = useGameStore()
 
 // Refs
 const elapsedTime = ref(0)
-const isRulesOpen = ref(false)
 const curUsername = ref("")
 
 // Computed
@@ -65,7 +64,7 @@ if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
       <!-- FOR BIG SCREENS-->
       <div class="h-full hidden lg:flex">
         <div class="w-1/6 p-2 max-h-[75vh] overflow-y-auto">
-          <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showTime="true" :showRules="true"/>
+          <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showRules="true"/>
         </div>
         <div class="h-full flex flex-col w-5/6 p-2">
           <PlayAgainPresenter :dailyChallenge="true"/>
@@ -76,26 +75,9 @@ if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
       <!-- FOR SMALL SCREENS-->
       <div class="h-full flex flex-col gap-3 lg:hidden">
         <PlayAgainPresenter :dailyChallenge="true"/>
-        <div class="flex justify-between gap-2 items-center px-2.5 sm:pl-1">
-          <div>
-            <UButton icon="i-material-symbols-help-rounded" variant="outline" size="md" class="h-full" @click="isRulesOpen = true">
-              <span class="hidden md:inline">Rules</span>
-            </UButton>
-          </div>
-          <div class="flex-grow">
-            <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showTime="true" :showRules="false"/>
-          </div>
+        <div class="w-full px-3">
+          <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)"  :showRules="false"/>
         </div>
-        <USlideover v-model="isRulesOpen" title="Rules">
-          <UCard :ui="{ body: { base: 'flex-1' }, ring: '', shadow: '', rounded: ''}">
-            <div class="flex items-center justify-end">
-              <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isRulesOpen = false" />
-            </div>
-            <div class="p-5 w-full box-border">
-              <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showTime="false" :showRules="true"/>
-            </div>
-          </UCard>
-        </USlideover>
         <div class="h-full overflow-y-auto">
           <GamePresenter :dailyChallenge="true" size="small"/>
         </div>

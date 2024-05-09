@@ -9,10 +9,6 @@ const props = defineProps({
     type : Number,
     required : true,
   },
-  showTime: {
-    type : Boolean,
-    required : true,
-  },
   showRules: {
     type : Boolean,
     required : true,
@@ -26,23 +22,28 @@ const gameModel: GameStore = useGameStore()
 let trueSeconds = computed(() => {
   if (gameModel.end && gameModel.time !== 0) return gameModel.time
   else return props.timeSec
-} )
+})
 
 
 // Function
+
+/**
+ * This function is used to update the current time of the game.
+ */
 function updateCurrentTime() {
   if(trueSeconds.value !== 0){
     gameModel.time = trueSeconds.value
   }
 }
 
+// Lifecycle hooks
 watch(gameModel.$state, updateCurrentTime)
 
 </script>
 
 <template>
   <SidebarView
-      @new-time-set="seconds => {gameModel.time = seconds}"
+      @new-time-set="(seconds: number) => gameModel.time = seconds"
       :guessCount="gameModel.nbGuesses" :totalGuesses="gameModel.totalGuesses" :over="gameModel.end" 
-      :seconds="trueSeconds" :showTime="showTime" :showRules="showRules"/>
+      :seconds="trueSeconds" :showRules="showRules"/>
 </template>

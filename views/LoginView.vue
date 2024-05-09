@@ -66,7 +66,7 @@ async function onSubmitEmail (event: FormSubmitEvent<EmailSchema>) {
       </UFormGroup>
       <UFormGroup label="Password" name="password">
         <template #hint>
-          <p class="text-primary hover:text-primary-600 text-xs" @click="isPasswordForgottenModalOpen = true">
+          <p class="text-primary hover:text-primary-600 text-xs cursor-pointer" @click="isPasswordForgottenModalOpen = true">
             Forgot your password ?
           </p>
         </template>
