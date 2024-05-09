@@ -127,7 +127,11 @@ if (props.dailyChallenge) {
 <template>
   <div class="flex flex-col h-full">
     <SearchFieldView
-        @new-name-set="selectedName => guessAndCheck(selectedName)"
+        @new-name-set="(selectedName: string) => guessAndCheck(selectedName)"
+        @new-hint-asked="() => {
+          gameModel.nbGuesses++
+          gameModel.getNewHint()
+        }"
         :over="gameModel.end" :name="gameModel.name" :alert="!validGuess"
     />
     <div class="overflow-y-auto">

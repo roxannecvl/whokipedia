@@ -36,15 +36,6 @@ function updateCurrentTime() {
   }
 }
 
-/**
- * This function is used to reveal a hint to the player, triggered
- * after player asked for a hint without making any guess.
- */
-function revealHint() {
-  gameModel.nbGuesses++
-  gameModel.getNewHint()
-}
-
 // Lifecycle hooks
 watch(gameModel.$state, updateCurrentTime)
 
@@ -53,7 +44,6 @@ watch(gameModel.$state, updateCurrentTime)
 <template>
   <SidebarView
       @new-time-set="(seconds: number) => gameModel.time = seconds"
-      @new-guess-asked="() => revealHint()"
       :guessCount="gameModel.nbGuesses" :totalGuesses="gameModel.totalGuesses" :over="gameModel.end" 
       :seconds="trueSeconds" :showRules="showRules"/>
 </template>

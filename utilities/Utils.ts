@@ -145,7 +145,7 @@ export function formatTime(seconds : number, simple : boolean = false){
         return `${hours} hr ${remainingMinutes} min ${formattedSeconds} sec`
     }
     if(simple) return `${minutes} m ${formattedSeconds} s`
-    return `${minutes} min ${formattedSeconds} s`
+    return `${minutes} m ${formattedSeconds} s`
 }
 
 /**
@@ -485,6 +485,7 @@ export const countries: {[key: string]: string} = {
     "San Marino": "San Marinese",
     "Sao Tome and Principe": "Sao Tomean",
     "Saudi Arabia": "Saudi",
+    "Scotland": "Scottish",
     "Senegal": "Senegalese",
     "Serbia": "Serbian",
     "Seychelles": "Seychellois",

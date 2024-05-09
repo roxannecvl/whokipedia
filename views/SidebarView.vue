@@ -28,7 +28,7 @@ defineProps({
 })
 
 // Emits
-const emit = defineEmits(['new-time-set', 'new-guess-asked'])
+const emit = defineEmits(['new-time-set'])
 
 // Refs
 const areRulesOpen = ref(false)
@@ -74,9 +74,6 @@ function showAndEmit(seconds : number, over : boolean){
                 </div>
               </template>
             </UProgress>
-            <UButton v-if="!over" variant="ghost"
-                     icon="i-heroicons-plus-circle-16-solid"
-                     @click="emit('new-guess-asked')"/>
           </div>
         </div>
         <UDivider v-if="!showRules" type="dashed" orientation="vertical" class="w-1/12"/>

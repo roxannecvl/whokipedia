@@ -19,7 +19,7 @@ const props = defineProps( {
 })
 
 // Emits
-const emit = defineEmits(['new-name-set'])
+const emit = defineEmits(['new-name-set', 'new-hint-asked'])
 
 // Refs
 const selectedName = ref("")
@@ -59,7 +59,7 @@ function newName(): void {
 
 <template>
   <div v-if="over" class="text-3xl font-black mx-[11px] sm:ml-2 border-b">{{ name }}</div>
-  <div v-else class="pl-2.5 sm:pl-1 pr-2.5 px-2 pt-1 lg:pt-0 mt-0 sm:mt-1">
+  <div v-else class="flex pl-2.5 sm:pl-1 pr-2.5 px-2 pt-1 lg:pt-0 mt-0 sm:mt-1">
     <UInputMenu
         v-model="selectedName"
         :search="getAutocompleteSuggestions"
@@ -68,7 +68,10 @@ function newName(): void {
         trailing
         by="id"
         :style="{ fontSize: '18px', padding: '10px', height: '40px', backgroundColor: alert ? redColor : '' }"
-        :class="{'tremble': tremble }" />
+        :class="{'tremble': tremble }" class="w-full mr-2" />
+    <UButton v-if="!over" variant="soft"
+             icon="i-heroicons-plus-circle-16-solid"
+             @click="emit('new-hint-asked')"/>
   </div>
 </template>
 
