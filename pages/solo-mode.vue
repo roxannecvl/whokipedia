@@ -2,7 +2,7 @@
 
 import { type GameStore, useGameStore } from "~/model/GameModel"
 import { celebrities } from "~/model/CelebrityList"
-import { dailyRandom, getRandomNumber } from "~/utilities/Utils"
+import {dailyRandom, getRandomNumber } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue"
@@ -17,13 +17,22 @@ const elapsedTime = ref(0)
 let timerInterval: NodeJS.Timeout | null = null
 
 // Functions
-function startInterval(){
+
+/**
+ * Method to start the timer, it will increment the elapsed time every second.
+ */
+function startInterval(): void {
   timerInterval = setInterval(() => {
     elapsedTime.value++
   }, 1000)
 }
 
-function checkStopInterval(over : boolean){
+/**
+ * Method to stop the timer when game is over and returning elapsed time.
+ * @param over - boolean to check if game is over
+ * @return number - elapsed time
+ */
+function checkStopInterval(over : boolean): number {
   if(over && timerInterval !== null){
     clearInterval(timerInterval)
     timerInterval = null
@@ -31,16 +40,24 @@ function checkStopInterval(over : boolean){
   return elapsedTime.value;
 }
 
-// Lifecycle hooks
-onMounted(() => {
-  startInterval()
-});
+/*
+ * Method to initialize the game, ensuring the celebrity is different from the daily challenge.
+ * This method must be called on client only to ensure randomness won't cause hydration mismatches due to SSR.
+ */
+async function initGame(): Promise<void> {
+  let randomIndex = getRandomNumber(0, celebrities.length - 2)
+  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
+  if (randomIndex >= dailyRdm) randomIndex +=1
+  await gameModel.init(celebrities[randomIndex])
+}
 
-// Initialize game - ensure celebrity is different from daily challenge
-let randomIndex = getRandomNumber(0, celebrities.length - 2)
-let dailyRdm = await dailyRandom(0, celebrities.length - 1)
-if (randomIndex >= dailyRdm) randomIndex +=1
-await gameModel.init(celebrities[randomIndex])
+gameModel.loading = true
+// Lifecycle hooks
+onMounted(async () => {
+  await initGame()
+  startInterval()
+})
+
 </script>
 
 <template>

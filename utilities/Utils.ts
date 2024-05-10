@@ -159,16 +159,6 @@ export function blurHTML(str: string): string {
 }
 
 /**
- * Method to pick a random element from a list.
- * @param list - a nonempty list
- * @returns any - element from the given list
- */
-export function getRandom(list: any[]): any {
-    if (list.length == 0) return null
-    return list[Math.floor(Math.random() * list.length)]
-}
-
-/**
  * Method to encrypt text.
  * @param text - text to encrypt
  */
