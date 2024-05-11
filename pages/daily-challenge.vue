@@ -23,8 +23,6 @@ const elapsedTime = ref(0)
 // Computed
 let timerInterval: NodeJS.Timeout | null = null
 
-// Functions
-
 /**
  * Method to start the timer, it will increment the elapsed time every second.
  */
@@ -59,8 +57,6 @@ async function initGame(): Promise<void> {
 }
 
 await initGame()
-
-// Lifecycle hooks
 onMounted(() => {
    startInterval()
 })

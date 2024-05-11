@@ -48,7 +48,6 @@ const props = defineProps( {
 const encrypted : string[] = props.intro ?
     props.intro.map(paragraph => getEncryptedString(paragraph.value)) : [""]
 
-// Functions
 /**
  * Format the string by HTML-blurring the name occurrences.
  * @param str - string to format

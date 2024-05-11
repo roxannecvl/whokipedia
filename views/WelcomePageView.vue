@@ -21,7 +21,6 @@ const logoFilledPath = '/img/logo-filled.svg'
 const logoTransparentPath = '/img/logo-transparent.svg'
 const mode = useColorMode()
 
-// Lifecycle hooks
 watch(mode, (newMode) => {
   logoPath.value = newMode.value === 'dark' ? logoFilledPath : logoTransparentPath
 })

@@ -24,9 +24,6 @@ let trueSeconds = computed(() => {
   else return props.timeSec
 })
 
-
-// Function
-
 /**
  * This function is used to update the current time of the game.
  */
@@ -36,7 +33,6 @@ function updateCurrentTime() {
   }
 }
 
-// Lifecycle hooks
 watch(gameModel.$state, updateCurrentTime)
 
 </script>

@@ -18,7 +18,6 @@ const props = defineProps({
 const userModel: UserStore = useUserStore()
 const gameModel: GameStore = useGameStore()
 
-// Functions
 /**
  * This method inits a new game, ensuring chosen celebrity is different from daily challenge.
  */
