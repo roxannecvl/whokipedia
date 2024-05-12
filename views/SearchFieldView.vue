@@ -30,10 +30,10 @@ const mode = useColorMode()
 const redColor = computed(() => mode.value === 'dark' ? '#996666' : '#ffe6e6')
 const toast = useToast()
 
-// Watchers
-watch(selectedName, newName)
-
-// Functions
+/**
+ * Method to set the new name guessed by the user. It will emit the event to the parent component.
+ * It also handles error when user tries to submit same name twice and resets the input field.
+ */
 function newName(): void {
   if (selectedName.value === "") return
   emit("new-name-set", selectedName.value)
@@ -54,8 +54,10 @@ function newName(): void {
     }
   }, 50)
 }
-</script>
 
+watch(selectedName, newName)
+
+</script>
 
 <template>
   <div v-if="over" class="text-3xl font-black mx-[11px] sm:ml-2 border-b">{{ name }}</div>
@@ -75,9 +77,7 @@ function newName(): void {
   </div>
 </template>
 
-
 <style>
-
 @keyframes tremble {
   0% { transform: translate(0) }
   25% { transform: translate(-15px, 0px) }

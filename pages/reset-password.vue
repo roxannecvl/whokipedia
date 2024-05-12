@@ -11,13 +11,13 @@ const toast = useToast()
 const mode = ref(route.query.mode as string)
 const actionCode = ref(route.query.oobCode as string)
 
-// Lifecycle hooks
 onMounted(async () => {
   if (mode.value !== 'resetPassword') {
     displayErrorNotification(toast, 'Invalid request.')
     await useRouter().push('/')
   }
 })
+
 </script>
 
 <template>

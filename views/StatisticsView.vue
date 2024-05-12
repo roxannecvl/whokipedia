@@ -35,7 +35,7 @@ const props = defineProps({
   },
 })
 
-// Constants
+// Computed
 const currentStreakColor = computed(() => getColor(props.currentStreak))
 const maxStreakColor = computed(() => getColor(props.maxStreak))
 

@@ -64,7 +64,6 @@ const emit = defineEmits([
 // Constants
 const logoPath = '/img/logo-primary-filled.svg'
 
-
 </script>
 
 <template>

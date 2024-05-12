@@ -38,8 +38,6 @@ const state = reactive({
 })
 const isConfirmModalOpen = ref(false)
 
-// Functions
-
 /**
  * This function emits an event when the form is submitted.
  * @param event - The form submit event containing data

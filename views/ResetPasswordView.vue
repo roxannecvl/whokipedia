@@ -21,7 +21,10 @@ const state = reactive({
 // Types
 type Schema = z.output<typeof schema>
 
-// Functions
+/**
+ * Method to emit the event to reset the password.
+ * @param event
+ */
 async function onSubmit(event: FormSubmitEvent<Schema>): Promise<void> {
   emit('reset-password-event', event.data.newPassword)
 }

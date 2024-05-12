@@ -38,7 +38,11 @@ const progressBar = ref(null)
 let once = true
 const { width } = useElementSize(progressBar)
 
-// Functions
+/**
+ * Method to show the time in a formatted way and emit the event to the parent component.
+ * @param seconds - elapsed time in seconds.
+ * @param over - whether the game is over or not.
+ */
 function showAndEmit(seconds : number, over : boolean){
   if(over && once){
     once = false
