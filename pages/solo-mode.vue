@@ -2,7 +2,7 @@
 
 import { type GameStore, useGameStore } from "~/model/GameModel"
 import { celebrities } from "~/model/CelebrityList"
-import {dailyRandom, getRandomNumber } from "~/utilities/Utils"
+import { dailyRandom, getRandomNumber } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
 import PlayAgainPresenter from "~/presenters/PlayAgainPresenter.vue"
@@ -47,12 +47,13 @@ async function initGame(): Promise<void> {
   let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   if (randomIndex >= dailyRdm) randomIndex +=1
   await gameModel.init(celebrities[randomIndex])
+  elapsedTime.value = 0
+  startInterval()
 }
 
 gameModel.loading = true
 onMounted(async () => {
   await initGame()
-  startInterval()
 })
 
 </script>
@@ -68,8 +69,8 @@ onMounted(async () => {
         <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showRules="true"/>
       </div>
       <div class="h-full flex flex-col w-5/6 p-2">
-        <PlayAgainPresenter :dailyChallenge="false"/>
-        <GamePresenter :dailyChallenge="false" class="overflow-y-auto" size="big"/>
+        <PlayAgainPresenter @new-game-bis="async () => await initGame()" :dailyChallenge="false"/>
+        <GamePresenter :dailyChallenge="false" cass="overflow-y-auto" size="big"/>
       </div>
     </div>
 

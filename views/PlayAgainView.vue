@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-// Props
-import {displayErrorNotification} from "~/utilities/Utils";
+import { displayErrorNotification } from "~/utilities/Utils"
 
+// Props
 defineProps({
   over: {
     type: Boolean,

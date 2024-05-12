@@ -14,24 +14,16 @@ const props = defineProps({
   },
 })
 
+// Emits
+const emit = defineEmits(['new-game-bis'])
+
 // Models
 const userModel: UserStore = useUserStore()
 const gameModel: GameStore = useGameStore()
 
-/**
- * This method inits a new game, ensuring chosen celebrity is different from daily challenge.
- */
-async function initGame() {
-  if (props.dailyChallenge) return
-  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
-  let randomIndex = getRandomNumber(0, celebrities.length - 2)
-  if(randomIndex >= dailyRdm) randomIndex +=1
-  await gameModel.init(celebrities[randomIndex])
-}
-
 </script>
 
 <template>
-  <PlayAgainView @new-game="initGame" :over="gameModel.end"
+  <PlayAgainView @new-game="() => emit('new-game-bis')" :over="gameModel.end"
                  :challenge="dailyChallenge" :connected="userModel.username !== ''"/>
 </template>
