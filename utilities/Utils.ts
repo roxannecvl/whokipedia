@@ -159,16 +159,6 @@ export function blurHTML(str: string): string {
 }
 
 /**
- * Method to pick a random element from a list.
- * @param list - a nonempty list
- * @returns any - element from the given list
- */
-export function getRandom(list: any[]): any {
-    if (list.length == 0) return null
-    return list[Math.floor(Math.random() * list.length)]
-}
-
-/**
  * Method to encrypt text.
  * @param text - text to encrypt
  */
@@ -511,7 +501,7 @@ export const countries: {[key: string]: string} = {
     "Thailand": "Thai",
     "Togo": "Togolese",
     "Tonga": "Tongan",
-    "Trinidad and Tobago": "Trinidadian or Tobagonian",
+    "Trinidad and Tobago": "Trinidadian",
     "Tunisia": "Tunisian",
     "Turkey": "Turkish",
     "Turkmenistan": "Turkmen",
@@ -526,6 +516,7 @@ export const countries: {[key: string]: string} = {
     "Vanuatu": "Ni-Vanuatu",
     "Venezuela": "Venezuelan",
     "Vietnam": "Vietnamese",
+    "Wales": "Welsh",
     "Yemen": "Yemeni",
     "Zambia": "Zambian",
     "Zimbabwe": "Zimbabwean"
