@@ -76,7 +76,7 @@ onMounted(async () => {
 
     <!-- FOR SMALL SCREENS-->
     <div class="h-full flex flex-col gap-3 lg:hidden">
-      <PlayAgainPresenter :daily-challenge="false"/>
+      <PlayAgainPresenter @new-game-bis="async () => await initGame()" :daily-challenge="false"/>
       <div class="w-full px-3">
         <SidebarPresenter :timeSec="checkStopInterval(gameModel.end)" :showRules="false"/>
       </div>
