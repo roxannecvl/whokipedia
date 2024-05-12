@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import { displayErrorNotification } from "~/utilities/Utils"
+
 // Props
 defineProps({
   over: {
@@ -18,18 +20,9 @@ defineProps({
 
 // Emits
 const emit = defineEmits(['new-game'])
-const toast = useToast()
 
-// Functions
-function alertLogin(){
-  toast.remove('any')
-  toast.add({
-    id:'any',
-    title: 'Sign in to play the Daily Challenge',
-    icon: 'i-heroicons-x-circle',
-    color:'red'
-  })
-}
+// Constants
+const toast = useToast()
 
 </script>
 
@@ -48,7 +41,9 @@ function alertLogin(){
           click: () => navigateTo('/daily-challenge') },
         ] : [
           { variant: 'solid', color: 'primary', label: 'PLAY AGAIN', click: () => emit('new-game') },
-          { variant: 'outline', color: 'primary', label: 'DAILY CHALLENGE', click: alertLogin },
+          { variant: 'outline', color: 'primary', label: 'DAILY CHALLENGE', click: () => {
+            displayErrorNotification(toast, 'You must sign in to play the Daily Challenge.')
+          }},
         ]"
         title="More ?"
         :ui="{

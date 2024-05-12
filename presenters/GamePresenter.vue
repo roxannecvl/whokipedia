@@ -35,8 +35,6 @@ let timeStamp = await getCurrentDayTimestamp()
 // Refs
 const validGuess = ref(true)
 
-// Functions
-
 /**
  * This function is used to make a guess and check if it is correct, triggering end of game if it is.
  * @param name - The name of the celebrity guessed
@@ -111,13 +109,11 @@ function updateCurrentGame(): void {
   }, 1000)
 }
 
-// Lifecycle hooks
 onMounted(async () => {
   if (props.dailyChallenge) {
     await updateGameModel()
   }
 })
-
 if (props.dailyChallenge) {
   watch(gameModel.$state, updateCurrentGame)
 }

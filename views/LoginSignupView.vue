@@ -23,10 +23,10 @@ const isModalOpen = ref(false)
 // Constants
 const user = useCurrentUser()
 
-//watchers
 watch(() => props.close, () => {
   if(props.close) isModalOpen.value = false
 })
+
 </script>
 
 <template>

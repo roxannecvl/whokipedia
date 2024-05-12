@@ -56,6 +56,7 @@ const columns = [{
   label: 'Average Rank',
   sortable: true
 }]
+
 </script>
 
 <template>

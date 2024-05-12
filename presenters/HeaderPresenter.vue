@@ -38,26 +38,6 @@ export type LeaderboardData = {
   readonly averageRank: number,
 }
 
-// Lifecycle hooks
-onMounted(async () => {
-  if (user.value) await readUserFromFirebase(userModel, user.value.uid)
-  timeStamp = await getCurrentDayTimestamp()
-  watch(user, (user, prevUser) => {
-    if (prevUser && !user) {
-      // User logged out
-      userModel.$reset()
-    } else if (user) {
-      // User logged in
-      readUserFromFirebase(userModel, user.uid)
-      closeModal.value = true
-      setTimeout(() => {
-        closeModal.value = false
-      }, 1000)
-    }
-  })
-})
-
-// Functions
 /**
  * Method to update the leaderboard, keeping the relevant data from the database.
  */
@@ -130,6 +110,25 @@ async function deleteUser(email: string, password: string): Promise<void> {
         .catch()
   }
 }
+
+watch(user, (user, prevUser) => {
+  if (prevUser && !user) {
+    // User logged out
+    userModel.$reset()
+  } else if (user) {
+    // User logged in
+    readUserFromFirebase(userModel, user.uid)
+    closeModal.value = true
+    setTimeout(() => {
+      closeModal.value = false
+    }, 1000)
+  }
+})
+onMounted(async () => {
+  if (user.value) await readUserFromFirebase(userModel, user.value.uid)
+  timeStamp = await getCurrentDayTimestamp()
+})
+
 </script>
 
 <template>

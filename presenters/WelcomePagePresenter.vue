@@ -14,16 +14,13 @@ const user = useCurrentUser()
 const auth = useFirebaseAuth()!
 const toast = useToast()
 
-// Lifecycle hooks
-onMounted(async () => {
-  watch(user, (user) => {
-    if (user) {
-      closeModal.value = true
-      setTimeout(() => {
-        closeModal.value = false
-      }, 1000)
-    }
-  })
+watch(user, (user) => {
+  if (user) {
+    closeModal.value = true
+    setTimeout(() => {
+      closeModal.value = false
+    }, 1000)
+  }
 })
 </script>
 

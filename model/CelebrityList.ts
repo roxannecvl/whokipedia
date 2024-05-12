@@ -696,7 +696,7 @@ export const celebrities: string[] = [
     "Judas Iscariot",
     "Sofía Vergara",
     "Laura Dern",
-    "Tenzin Gyatso",
+    "14th Dalai Lama",
     "Javier Bardem",
     "Priyanka Chopra",
     "Hirohito",

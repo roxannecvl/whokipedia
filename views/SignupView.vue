@@ -33,7 +33,6 @@ const state = reactive({
   password: undefined
 })
 
-// Functions
 
 /**
  * This function emits an event when the form is submitted.
