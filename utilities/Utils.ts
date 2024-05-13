@@ -501,7 +501,7 @@ export const countries: {[key: string]: string} = {
     "Thailand": "Thai",
     "Togo": "Togolese",
     "Tonga": "Tongan",
-    "Trinidad and Tobago": "Trinidadian or Tobagonian",
+    "Trinidad and Tobago": "Trinidadian",
     "Tunisia": "Tunisian",
     "Turkey": "Turkish",
     "Turkmenistan": "Turkmen",
@@ -516,6 +516,7 @@ export const countries: {[key: string]: string} = {
     "Vanuatu": "Ni-Vanuatu",
     "Venezuela": "Venezuelan",
     "Vietnam": "Vietnamese",
+    "Wales": "Welsh",
     "Yemen": "Yemeni",
     "Zambia": "Zambian",
     "Zimbabwe": "Zimbabwean"
