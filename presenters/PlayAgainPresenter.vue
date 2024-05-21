@@ -2,8 +2,6 @@
 
 import { type GameStore, useGameStore } from "~/model/GameModel"
 import { type UserStore, useUserStore } from "~/model/UserModel"
-import { celebrities } from "~/model/CelebrityList"
-import { dailyRandom, getRandomNumber } from "~/utilities/Utils"
 import PlayAgainView from "~/views/PlayAgainView.vue"
 
 // Props
