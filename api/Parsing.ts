@@ -159,7 +159,7 @@ const fieldMatchers: {[key: string]: RegExp} = {
     lists: /\[\[([^[\]]+)]]|\*\s*([^\n]+)/gi,
 }
 const occupationMatchers: {[key: string]: RegExp} = {
-    "Member of the royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
+    "Member of a royal family": /(heir\s*apparent\s*to\s*the\s*(\w+)\s*throne)|(Queen of)|(royal)/i,
     "Politician": /^[\w\s]+of[\w\s]+(?:from\s\d{4}\sto\s\d{4}|since\s\d{4})$/i,
     "Activist": /\bactivist\b/i,
     "Musician": /\bmusician\b/i
