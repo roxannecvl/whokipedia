@@ -43,10 +43,10 @@ function checkStopInterval(over : boolean): number {
  * This method must be called on client only to ensure randomness won't cause hydration mismatches due to SSR.
  */
 async function initGame(): Promise<void> {
-  let randomIndex = getRandomNumber(0, pres_celebrities.length - 2)
-  let dailyRdm = await dailyRandom(0, pres_celebrities.length - 1)
+  let randomIndex = getRandomNumber(0, celebrities.length - 2)
+  let dailyRdm = await dailyRandom(0, celebrities.length - 1)
   if (randomIndex >= dailyRdm) randomIndex +=1
-  await gameModel.init(pres_celebrities[randomIndex])
+  await gameModel.init(celebrities[randomIndex])
   elapsedTime.value = 0
   startInterval()
 }
