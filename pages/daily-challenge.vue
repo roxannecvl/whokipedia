@@ -2,7 +2,7 @@
 
 import { type GameStore, useGameStore } from "~/model/GameModel"
 import { type UserStore, useUserStore } from "~/model/UserModel"
-import { celebrities, pres_celebrities } from "~/model/CelebrityList"
+import { celebrities, celebrities } from "~/model/CelebrityList"
 import { dailyRandom } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
@@ -52,8 +52,8 @@ function checkStopInterval(over : boolean){
  */
 async function initGame(): Promise<void> {
   if (gameModel.time > elapsedTime.value) elapsedTime.value = gameModel.time
-  const dailyRdm: number = await dailyRandom(0, pres_celebrities.length - 1)
-  await gameModel.init(pres_celebrities[dailyRdm], true)
+  const dailyRdm: number = await dailyRandom(0, celebrities.length - 1)
+  await gameModel.init(celebrities[dailyRdm], true)
 }
 
 await initGame()
