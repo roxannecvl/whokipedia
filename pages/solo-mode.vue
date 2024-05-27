@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { type GameStore, useGameStore } from "~/model/GameModel"
-import { celebrities, pres_celebrities } from "~/model/CelebrityList"
+import { celebrities } from "~/model/CelebrityList"
 import { dailyRandom, getRandomNumber } from "~/utilities/Utils"
 import GamePresenter from "~/presenters/GamePresenter.vue"
 import SidebarPresenter from "~/presenters/SidebarPresenter.vue"
